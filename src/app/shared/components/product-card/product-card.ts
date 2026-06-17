@@ -63,6 +63,11 @@ import { Rating } from '../rating/rating';
             >También en alquiler</span
           >
         }
+
+        <!-- Colombia flag pin — shown only in football mode (pure CSS) -->
+        <span class="camp-flag pointer-events-none absolute bottom-2.5 right-2.5 z-[6]">
+          <span class="flag-co block h-4 w-6 rounded-[3px] shadow-md ring-1 ring-white/70"></span>
+        </span>
       </a>
 
       <!-- Body -->
