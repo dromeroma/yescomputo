@@ -55,8 +55,11 @@ function flattenWordmark() {
     const fill = nums[0] >= 640 && nums[1] >= 660 ? TEAL : GREEN;
     paths.push(`<path fill="${fill}" d="${d}"/>`);
   }
+  // Tight viewBox around the actual artwork (measured content bbox is
+  // ~x59 y59 w1916 h868 inside the original 2048×980), with a small pad so
+  // the wordmark fills its height box instead of floating in whitespace.
   const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 980" ` +
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="53 53 1929 880" ` +
     `fill-rule="evenodd" role="img" aria-label="Yes Computo">\n` +
     paths.join('\n') +
     `\n</svg>\n`;

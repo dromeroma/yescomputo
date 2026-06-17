@@ -32,6 +32,6 @@ export class Logo {
   /** Retained for API compatibility; the full-colour logo is used either way. */
   readonly tone = input<'dark' | 'light'>('dark');
 
-  /** Intrinsic aspect ratio of the logo artwork (2048×980). */
-  protected readonly width = computed(() => Math.round(this.size() * (2048 / 980)));
+  /** Intrinsic aspect ratio of the logo artwork (tight viewBox 1929×880). */
+  protected readonly width = computed(() => Math.round(this.size() * (1929 / 880)));
 }
