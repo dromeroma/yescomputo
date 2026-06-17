@@ -82,7 +82,7 @@ export const CAMPAIGNS: Partial<Record<CampaignId, CampaignDef>> = {
     hero: {
       eyebrow: 'Edición Mundial',
       titleTop: 'Vive cada partido',
-      titleMain: 'con la mejor pantalla',
+      titleMain: 'con la mejor tecnología',
       subtitle:
         'Monitores, portátiles y equipos para no perderte ni un gol. Tecnología que rinde dentro y fuera de la cancha. ¡Vamos, Colombia!',
       image: '/img/hero/mundial.jpg',

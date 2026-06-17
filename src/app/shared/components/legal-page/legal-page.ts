@@ -54,8 +54,8 @@ export interface LegalSection {
 
     <div class="container-page py-12 md:py-16">
       <div class="lg:grid lg:grid-cols-[230px_1fr] lg:gap-14">
-        <!-- Table of contents -->
-        <aside class="mb-10 lg:mb-0">
+        <!-- Table of contents (desktop only; on mobile the document reads full-width) -->
+        <aside class="hidden lg:block">
           <div class="lg:sticky lg:top-28">
             <p class="mb-3 text-2xs font-semibold uppercase tracking-[0.16em] text-content-subtle">Contenido</p>
             <nav class="flex flex-col gap-1 border-l border-line">

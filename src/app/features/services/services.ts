@@ -134,7 +134,7 @@ interface ServiceCard {
           <div class="shine group relative overflow-hidden rounded-3xl border border-line bg-surface-raised p-7 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
             <h3 class="text-xl">Arrendar vs. Comprar</h3>
             <p class="mt-1 text-sm text-content-muted">Por qué el alquiler es la decisión más inteligente.</p>
-            <div class="mt-6 grid grid-cols-2 gap-4">
+            <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div class="shine group relative overflow-hidden rounded-2xl border border-brand-200 bg-brand-50 p-5 transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-brand-300 hover:shadow-card-hover dark:border-brand-500/30">
                 <span class="eyebrow text-brand-700 dark:text-brand-300">Arrendar</span>
                 <ul class="mt-3 space-y-2.5">

@@ -84,14 +84,14 @@ import { Rating } from '../rating/rating';
         <p class="mt-1 hidden line-clamp-2 text-sm text-content-muted sm:block">{{ product().tagline }}</p>
 
         <!-- Price -->
-        <div class="mt-3 flex items-end justify-between gap-2 sm:mt-4">
+        <div class="mt-3 flex items-end justify-between gap-1.5 sm:mt-4 sm:gap-2">
           <div class="min-w-0">
             @if (product().compareAtPrice) {
-              <span class="block text-2xs text-content-subtle line-through sm:text-xs">{{
+              <span class="block truncate text-2xs text-content-subtle line-through sm:text-xs">{{
                 product().compareAtPrice | cop
               }}</span>
             }
-            <span class="font-display text-base font-bold text-content sm:text-xl">{{ product().price | cop }}</span>
+            <span class="block truncate font-display text-sm font-bold tabular-nums text-content sm:text-xl">{{ product().price | cop }}</span>
             @if (product().availableForRent && product().rentalMonthlyPrice) {
               <span class="hidden text-xs text-content-muted sm:block"
                 >o {{ product().rentalMonthlyPrice | cop }}/mes</span

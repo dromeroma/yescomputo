@@ -156,7 +156,7 @@
 
         <!-- Pagination -->
         @if (result().totalPages > 1) {
-          <nav class="mt-12 flex items-center justify-center gap-1.5" aria-label="Paginación">
+          <nav class="mt-12 flex flex-wrap items-center justify-center gap-1.5" aria-label="Paginación">
             <button type="button" [disabled]="result().page === 1" (click)="goToPage(result().page - 1)"
               class="grid h-10 w-10 place-items-center rounded-full border border-line-strong text-content-muted transition-colors hover:bg-surface-inset disabled:opacity-40">
               <yc-icon name="chevron-left" [size]="18" />

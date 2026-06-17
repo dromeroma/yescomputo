@@ -91,15 +91,15 @@
                 <div class="absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-white/10"></div>
               </div>
 
-              <!-- floating chips — framing the image (top-right + bottom-left),
-                   kept within the right column so they never cover the copy -->
-              <div class="glass-dark absolute -top-3 right-5 flex animate-[float_7s_ease-in-out_infinite] items-center gap-2 rounded-2xl p-2.5 pr-3.5">
-                <span class="grid h-8 w-8 place-items-center rounded-lg" [style.background]="slide.streakA + '33'" [style.color]="slide.streakA"><yc-icon name="sparkles" [size]="16" /></span>
-                <span class="text-2xs font-semibold leading-tight text-white">Calidad<br />premium</span>
+              <!-- floating chips — slim single-line pills framing the image
+                   (top-right + bottom-left), kept within the right column -->
+              <div class="glass-dark absolute top-2 right-4 flex animate-[float_7s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
+                <span class="grid h-6 w-6 place-items-center rounded-full" [style.background]="slide.streakA + '33'" [style.color]="slide.streakA"><yc-icon name="sparkles" [size]="13" /></span>
+                <span class="whitespace-nowrap text-2xs font-semibold text-white">Calidad premium</span>
               </div>
-              <div class="glass-dark absolute -bottom-3 left-5 flex animate-[float_8s_ease-in-out_infinite] items-center gap-2 rounded-2xl p-2.5 pr-3.5">
-                <span class="grid h-8 w-8 place-items-center rounded-lg bg-brand-500/20 text-brand-300"><yc-icon name="shield-check" [size]="16" /></span>
-                <span class="text-2xs font-semibold leading-tight text-white">Garantía<br />incluida</span>
+              <div class="glass-dark absolute -bottom-3 left-4 flex animate-[float_8s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
+                <span class="grid h-6 w-6 place-items-center rounded-full bg-brand-500/20 text-brand-300"><yc-icon name="shield-check" [size]="13" /></span>
+                <span class="whitespace-nowrap text-2xs font-semibold text-white">Garantía incluida</span>
               </div>
             </div>
           </div>
@@ -114,11 +114,11 @@
 
     <!-- Side arrows -->
     <button type="button" (click)="prev()" aria-label="Anterior"
-      class="absolute left-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition-colors hover:bg-white/15 md:left-5">
+      class="absolute left-3 top-1/2 z-20 hidden h-11 w-11 md:grid -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition-colors hover:bg-white/15 md:left-5">
       <yc-icon name="chevron-left" [size]="22" />
     </button>
     <button type="button" (click)="next()" aria-label="Siguiente"
-      class="absolute right-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition-colors hover:bg-white/15 md:right-5">
+      class="absolute right-3 top-1/2 z-20 hidden h-11 w-11 md:grid -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition-colors hover:bg-white/15 md:right-5">
       <yc-icon name="chevron-right" [size]="22" />
     </button>
 
