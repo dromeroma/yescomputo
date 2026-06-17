@@ -51,7 +51,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
       <div class="container-page">
         <div class="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
           @for (s of stats; track s.label) {
-            <div class="rounded-2xl bg-surface-raised p-6 text-center shadow-card transition hover:shadow-card-hover lg:p-8">
+            <div class="shine group relative overflow-hidden rounded-2xl bg-surface-raised p-6 text-center shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover lg:p-8">
               <p class="text-4xl font-bold text-gradient-brand lg:text-5xl">{{ s.value }}</p>
               <p class="mt-2 text-sm font-medium text-content-muted">{{ s.label }}</p>
             </div>
@@ -128,7 +128,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
         />
         <div class="mt-12 grid gap-6 lg:grid-cols-3">
           @for (p of purpose; track p.title) {
-            <div class="rounded-3xl border border-line bg-surface-raised p-8 shadow-card transition hover:-translate-y-1 hover:shadow-card-hover">
+            <div class="shine group relative overflow-hidden rounded-3xl border border-line bg-surface-raised p-8 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
               <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
                 <yc-icon [name]="p.icon" [size]="26" />
               </span>
@@ -160,7 +160,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
         />
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           @for (b of benefits; track b.title) {
-            <div class="group rounded-3xl bg-surface-raised p-7 shadow-card transition hover:shadow-card-hover">
+            <div class="shine group relative overflow-hidden rounded-3xl bg-surface-raised p-7 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover">
               <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent-50 text-accent-600 transition group-hover:bg-accent-500 group-hover:text-white">
                 <yc-icon [name]="b.icon" [size]="24" />
               </span>

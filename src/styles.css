@@ -427,17 +427,115 @@
   animation: camp-pop 0.5s var(--ease-spring) both;
 }
 
-/* --- Tricolor card shine: the hover sweep becomes the Colombia flag ------- */
+/* --- Tricolor card shine -------------------------------------------------
+   In football mode the hover effect is a SOFT, continuously FLOWING Colombia
+   tricolor band (right → left) instead of a single quick sweep — so the
+   yellow/blue/red are clearly identifiable. It only appears over the hovered
+   card. */
 [data-campaign='mundial'] .shine::after {
+  /* Three soft, feathered flag bands — each colour fades in/out (difuminado),
+     with transparent gaps so blue+red never blend into purple. */
   background: linear-gradient(
-    115deg,
-    transparent 18%,
-    rgba(252, 209, 22, 0.85) 36%,
-    /* yellow */ rgba(255, 255, 255, 0.6) 47%,
-    rgba(0, 70, 200, 0.72) 56%,
-    /* blue */ rgba(206, 17, 38, 0.78) 66%,
-    /* red */ transparent 84%
+    110deg,
+    transparent 41%,
+    rgba(252, 209, 22, 0) 44%,
+    rgba(252, 209, 22, 0.9) 47%,
+    rgba(252, 209, 22, 0) 50%,
+    /* yellow */ transparent 50.5%,
+    rgba(10, 79, 214, 0) 51%,
+    rgba(10, 79, 214, 0.9) 54%,
+    rgba(10, 79, 214, 0) 57%,
+    /* blue */ transparent 57.5%,
+    rgba(231, 20, 46, 0) 58%,
+    rgba(231, 20, 46, 0.9) 61%,
+    rgba(231, 20, 46, 0) 64%,
+    /* red */ transparent 67%
   );
+  background-size: auto;
+  background-position: center;
+  transform: translateX(-160%) skewX(-14deg);
+  filter: blur(0.8px);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  animation: none;
+}
+/* On hover: a soft tricolor streak sweeps across ONCE, slower (does not repeat
+   while the cursor stays inside; plays again only on a fresh hover/enter). */
+[data-campaign='mundial'] .group:hover .shine::after,
+[data-campaign='mundial'] .shine:hover::after {
+  opacity: 1;
+  animation: flag-streak 1.6s var(--ease-out-expo);
+}
+@keyframes flag-streak {
+  0% {
+    transform: translateX(-160%) skewX(-14deg);
+  }
+  100% {
+    transform: translateX(160%) skewX(-14deg);
+  }
+}
+
+/* Football: EVERY card (.shine) gets a Colombia tricolor light that travels
+   AROUND its border, looping while hovered; plus a subtle grow. The product
+   card's own green→teal top line is hidden to avoid doubling. */
+[data-campaign='mundial'] .card-accent {
+  display: none;
+}
+
+@property --yc-bd {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+[data-campaign='mundial'] .shine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  border-radius: inherit;
+  padding: 2.5px; /* border thickness */
+  background: conic-gradient(
+    from var(--yc-bd),
+    transparent 0deg,
+    transparent 165deg,
+    #fcd116 200deg,
+    /* yellow */ #0a4fd6 255deg,
+    /* blue */ #e7142e 310deg,
+    /* red */ transparent 350deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+[data-campaign='mundial'] .group:hover .shine::before,
+[data-campaign='mundial'] .shine:hover::before {
+  opacity: 1;
+  animation: yc-border-travel 2.2s linear infinite;
+}
+@keyframes yc-border-travel {
+  to {
+    --yc-bd: 360deg;
+  }
+}
+
+/* Subtle grow on hover (animated; composes with the card's lift). */
+[data-campaign='mundial'] .shine {
+  transition-property: transform, translate, scale, box-shadow, border-color, opacity;
+  transition-duration: 0.5s;
+  transition-timing-function: var(--ease-out-expo);
+}
+[data-campaign='mundial'] .group:hover .shine,
+[data-campaign='mundial'] .shine:hover {
+  scale: 1.03;
 }
 
 /* --- Flowing tricolor gradient (animated flag) --------------------------- */

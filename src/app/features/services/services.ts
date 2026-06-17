@@ -65,7 +65,7 @@ interface ServiceCard {
         />
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           @for (s of services; track s.title) {
-            <div class="group rounded-2xl border border-line bg-surface-raised p-6 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover">
+            <div class="shine group relative overflow-hidden rounded-2xl border border-line bg-surface-raised p-6 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
               <div class="grid h-12 w-12 place-items-center rounded-xl bg-brand-100 text-brand-700">
                 <yc-icon [name]="s.icon" [size]="24" />
               </div>
@@ -131,7 +131,7 @@ interface ServiceCard {
           </div>
 
           <!-- Arrendar vs Comprar -->
-          <div class="rounded-3xl border border-line bg-surface-raised p-7 shadow-card">
+          <div class="shine group relative overflow-hidden rounded-3xl border border-line bg-surface-raised p-7 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
             <h3 class="text-xl">Arrendar vs. Comprar</h3>
             <p class="mt-1 text-sm text-content-muted">Por qué el alquiler es la decisión más inteligente.</p>
             <div class="mt-6 grid grid-cols-2 gap-4">
@@ -146,7 +146,7 @@ interface ServiceCard {
                   }
                 </ul>
               </div>
-              <div class="rounded-2xl border border-line bg-surface-inset p-5">
+              <div class="shine group relative overflow-hidden rounded-2xl border border-line bg-surface-inset p-5 transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
                 <span class="eyebrow text-content-muted">Comprar</span>
                 <ul class="mt-3 space-y-2.5">
                   @for (c of rentVs.buy; track c) {
@@ -185,7 +185,7 @@ interface ServiceCard {
 
         <div class="mt-12 grid gap-6 sm:grid-cols-3">
           @for (p of pillars; track p.title) {
-            <div class="rounded-2xl border border-line bg-surface-raised p-7 text-center shadow-card">
+            <div class="shine group relative overflow-hidden rounded-2xl border border-line bg-surface-raised p-7 text-center shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
               <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-accent-100 text-accent-700">
                 <yc-icon [name]="p.icon" [size]="26" />
               </div>
@@ -195,7 +195,7 @@ interface ServiceCard {
           }
         </div>
 
-        <div class="mt-12 grid items-center gap-10 rounded-3xl border border-line bg-surface-inset p-8 lg:grid-cols-2 lg:p-10">
+        <div class="shine group relative mt-12 grid items-center gap-10 overflow-hidden rounded-3xl border border-line bg-surface-inset p-8 transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover lg:grid-cols-2 lg:p-10">
           <div>
             <h3 class="text-2xl">Lo que hacemos por ti</h3>
             <p class="mt-2 text-sm text-content-muted">
@@ -204,7 +204,7 @@ interface ServiceCard {
           </div>
           <ul class="grid gap-3">
             @for (t of techServices; track t) {
-              <li class="flex items-start gap-3 rounded-xl border border-line bg-surface-raised p-3.5 text-sm text-content-muted shadow-card">
+              <li class="shine group relative flex items-start gap-3 overflow-hidden rounded-xl border border-line bg-surface-raised p-3.5 text-sm text-content-muted shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
                 <yc-icon name="check-circle" [size]="20" class="mt-0.5 shrink-0 text-accent-600" />
                 <span>{{ t }}</span>
               </li>
@@ -232,7 +232,7 @@ interface ServiceCard {
         />
         <ol class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           @for (step of process; track step.title; let i = $index) {
-            <li class="relative rounded-2xl border border-line bg-surface-raised p-6 shadow-card">
+            <li class="shine group relative overflow-hidden rounded-2xl border border-line bg-surface-raised p-6 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
               <span class="grid h-11 w-11 place-items-center rounded-xl bg-ink-950 text-base font-bold text-brand-400">
                 {{ i + 1 }}
               </span>

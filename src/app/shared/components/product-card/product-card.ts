@@ -25,7 +25,7 @@ import { Rating } from '../rating/rating';
     >
       <!-- Hover accent line -->
       <span
-        class="absolute inset-x-0 top-0 z-10 h-[3px] origin-left scale-x-0 bg-gradient-to-r from-brand-500 to-accent-500
+        class="card-accent absolute inset-x-0 top-0 z-10 h-[3px] origin-left scale-x-0 bg-gradient-to-r from-brand-500 to-accent-500
                transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-x-100"
       ></span>
 

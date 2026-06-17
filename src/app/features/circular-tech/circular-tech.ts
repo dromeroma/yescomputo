@@ -79,7 +79,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
             @for (h of highlights; track h.title) {
-              <div class="rounded-2xl border border-line bg-surface-raised p-6 shadow-card">
+              <div class="shine group relative overflow-hidden rounded-2xl border border-line bg-surface-raised p-6 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
                 <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                   <yc-icon [name]="h.icon" [size]="22" />
                 </span>
@@ -103,7 +103,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
         />
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           @for (step of cycle; track step.title) {
-            <div class="group relative overflow-hidden rounded-3xl bg-surface-raised p-7 shadow-card transition hover:-translate-y-1 hover:shadow-card-hover">
+            <div class="shine group relative overflow-hidden rounded-3xl bg-surface-raised p-7 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover">
               <span class="absolute right-5 top-4 text-5xl font-bold text-ink-100">{{ step.step }}</span>
               <span class="relative inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-500/10 text-brand-600 transition group-hover:bg-brand-500 group-hover:text-white">
                 <yc-icon [name]="step.icon" [size]="26" />
@@ -131,7 +131,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
         />
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           @for (i of impact; track i.title) {
-            <div class="rounded-3xl border border-line bg-surface-raised p-7 text-center shadow-card transition hover:shadow-card-hover">
+            <div class="shine group relative overflow-hidden rounded-3xl border border-line bg-surface-raised p-7 text-center shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
               <span class="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-accent-50 text-accent-600">
                 <yc-icon [name]="i.icon" [size]="26" />
               </span>
@@ -154,7 +154,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
         />
         <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           @for (seg of segments; track seg.title) {
-            <div class="flex items-start gap-4 rounded-2xl bg-surface-raised p-6 shadow-card transition hover:shadow-card-hover">
+            <div class="shine group relative overflow-hidden flex items-start gap-4 rounded-2xl bg-surface-raised p-6 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover">
               <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                 <yc-icon [name]="seg.icon" [size]="24" />
               </span>
@@ -167,7 +167,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
         </div>
 
         <div class="mt-10 grid gap-6 lg:grid-cols-2">
-          <div class="rounded-3xl border border-brand-200 bg-brand-50/60 p-8">
+          <div class="shine group relative overflow-hidden rounded-3xl border border-brand-200 bg-brand-50/60 p-8 transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
             <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500 text-white">
               <yc-icon name="refresh" [size]="22" />
             </span>
@@ -181,7 +181,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
               }
             </ul>
           </div>
-          <div class="rounded-3xl border border-line bg-surface-raised p-8 shadow-card">
+          <div class="shine group relative overflow-hidden rounded-3xl border border-line bg-surface-raised p-8 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
             <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-accent-500 text-white">
               <yc-icon name="shield-check" [size]="22" />
             </span>
@@ -210,7 +210,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
         />
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           @for (c of commitments; track c.title) {
-            <div class="group rounded-3xl bg-surface-raised p-7 shadow-card transition hover:shadow-card-hover">
+            <div class="shine group relative overflow-hidden rounded-3xl bg-surface-raised p-7 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover">
               <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-accent-50 text-accent-600 transition group-hover:bg-accent-500 group-hover:text-white">
                 <yc-icon [name]="c.icon" [size]="24" />
               </span>

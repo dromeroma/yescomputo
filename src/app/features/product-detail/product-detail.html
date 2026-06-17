@@ -89,7 +89,7 @@
         </ul>
 
         <!-- Stock + actions -->
-        <div class="mt-7 rounded-2xl border border-line bg-surface-raised p-5 shadow-card">
+        <div class="shine group relative overflow-hidden mt-7 rounded-2xl border border-line bg-surface-raised p-5 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover hover:border-line-strong">
           <div class="mb-4 flex items-center gap-2 text-sm font-medium">
             @switch (p.stockStatus) {
               @case ('in_stock') { <span class="flex items-center gap-1.5 text-emerald-600"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>Disponible · entrega inmediata</span> }
@@ -120,7 +120,7 @@
         <!-- Trust -->
         <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           @for (t of trustItems; track t.label) {
-            <div class="flex flex-col items-center gap-1.5 rounded-xl bg-surface-inset px-2 py-4 text-center">
+            <div class="shine group relative overflow-hidden flex flex-col items-center gap-1.5 rounded-xl bg-surface-inset px-2 py-4 text-center transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover">
               <yc-icon [name]="t.icon" [size]="22" class="text-accent-600" />
               <span class="text-2xs font-medium leading-tight text-content-muted">{{ t.label }}</span>
             </div>
@@ -155,7 +155,7 @@
 
       <!-- Side card -->
       <aside class="lg:sticky lg:top-28 lg:self-start">
-        <div class="rounded-2xl border border-line bg-ink-950 p-6 text-white">
+        <div class="shine group relative overflow-hidden rounded-2xl border border-line bg-ink-950 p-6 text-white transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover hover:border-line-strong">
           <h3 class="font-display text-lg">¿Necesitas asesoría?</h3>
           <p class="mt-2 text-sm text-content-subtle">Nuestros expertos te ayudan a elegir el equipo ideal para tu operación.</p>
           <a ycButton variant="whatsapp" [block]="true" class="mt-4" [href]="whatsappLink()" target="_blank" rel="noopener">

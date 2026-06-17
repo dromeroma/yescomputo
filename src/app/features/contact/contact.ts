@@ -54,7 +54,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
         <div class="grid gap-8 lg:grid-cols-5 lg:gap-10">
           <!-- LEFT: form card -->
           <div class="lg:col-span-3">
-            <div class="rounded-3xl border border-line bg-surface-raised p-6 shadow-card sm:p-8">
+            <div class="shine group relative overflow-hidden rounded-3xl border border-line bg-surface-raised p-6 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover sm:p-8">
               <yc-section-heading
                 eyebrow="Escríbenos"
                 title="Cuéntanos qué necesitas"
@@ -164,7 +164,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
               [href]="directWaLink()"
               target="_blank"
               rel="noopener"
-              class="group flex items-start gap-4 rounded-2xl border border-line bg-surface-raised p-5 shadow-card transition hover:shadow-hover"
+              class="shine group relative overflow-hidden flex items-start gap-4 rounded-2xl border border-line bg-surface-raised p-5 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover"
             >
               <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#25D366]/10 text-[#25D366]">
                 <yc-icon name="whatsapp" [size]="22" />
@@ -180,7 +180,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
             </a>
 
             <!-- Dirección + map placeholder -->
-            <div class="rounded-2xl border border-line bg-surface-raised p-5 shadow-card">
+            <div class="shine group relative overflow-hidden rounded-2xl border border-line bg-surface-raised p-5 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
               <div class="flex items-start gap-4">
                 <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-500/15 text-brand-600">
                   <yc-icon name="map-pin" [size]="22" />
@@ -209,7 +209,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
             <!-- Email -->
             <a
               [href]="'mailto:' + config.company.email"
-              class="group flex items-start gap-4 rounded-2xl border border-line bg-surface-raised p-5 shadow-card transition hover:shadow-hover"
+              class="shine group relative overflow-hidden flex items-start gap-4 rounded-2xl border border-line bg-surface-raised p-5 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover"
             >
               <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-500/10 text-accent-600">
                 <yc-icon name="mail" [size]="22" />
@@ -221,7 +221,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
             </a>
 
             <!-- Horarios -->
-            <div class="rounded-2xl border border-line bg-surface-raised p-5 shadow-card">
+            <div class="shine group relative overflow-hidden rounded-2xl border border-line bg-surface-raised p-5 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
               <div class="flex items-center gap-4">
                 <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface-inset text-content-muted">
                   <yc-icon name="clock" [size]="22" />
@@ -239,7 +239,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
             </div>
 
             <!-- Redes sociales -->
-            <div class="rounded-2xl border border-line bg-surface-raised p-5 shadow-card">
+            <div class="shine group relative overflow-hidden rounded-2xl border border-line bg-surface-raised p-5 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
               <p class="text-sm font-semibold text-content">Síguenos</p>
               <div class="mt-3 flex gap-3">
                 @for (s of config.company.socials; track s.platform) {

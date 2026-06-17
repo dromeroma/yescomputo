@@ -13,6 +13,8 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'servicios', renderMode: RenderMode.Prerender },
   { path: 'contacto', renderMode: RenderMode.Prerender },
   { path: 'tecnologia-circular', renderMode: RenderMode.Prerender },
+  { path: 'terminos-y-condiciones', renderMode: RenderMode.Prerender },
+  { path: 'politica-de-privacidad', renderMode: RenderMode.Prerender },
   // Dynamic / data-driven routes → server render on demand.
   { path: '**', renderMode: RenderMode.Server },
 ];

@@ -49,7 +49,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
           <div class="mt-10 grid gap-6 md:grid-cols-2">
             @for (promo of promotions(); track promo.id) {
               <article
-                class="group relative flex min-h-[220px] flex-col justify-end overflow-hidden rounded-3xl bg-gradient-to-br p-8 text-white shadow-card transition hover:-translate-y-1 hover:shadow-card-hover"
+                class="shine group relative flex min-h-[220px] flex-col justify-end overflow-hidden rounded-3xl bg-gradient-to-br p-8 text-white shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover"
                 [class]="themeClass(promo.theme)"
               >
                 <div class="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-white/10 blur-2xl"></div>
@@ -79,7 +79,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
             }
           </div>
         } @else {
-          <div class="mt-10 rounded-3xl border border-dashed border-line-strong bg-surface-subtle p-12 text-center">
+          <div class="shine group relative overflow-hidden mt-10 rounded-3xl border border-dashed border-line-strong bg-surface-subtle p-12 text-center transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover hover:border-line-strong">
             <span class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-raised text-content-subtle shadow-card">
               <yc-icon name="sparkles" [size]="26" />
             </span>
@@ -98,7 +98,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
     <!-- 3 · SECONDARY BAND · ¿Buscas algo específico? -->
     <section class="section bg-surface-subtle">
       <div class="container-page">
-        <div class="relative overflow-hidden rounded-3xl bg-surface-raised p-8 shadow-card lg:p-12">
+        <div class="shine group relative overflow-hidden rounded-3xl bg-surface-raised p-8 shadow-card lg:p-12 transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover">
           <div class="absolute -right-10 -top-10 h-52 w-52 rounded-full bg-accent-500/10 blur-3xl"></div>
           <div class="relative grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
             <div>

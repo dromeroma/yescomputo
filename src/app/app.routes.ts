@@ -67,6 +67,16 @@ export const routes: Routes = [
     title: 'Carrito · Yes Computo',
   },
   {
+    path: 'terminos-y-condiciones',
+    loadComponent: () => import('./features/legal/terminos').then((m) => m.Terminos),
+    title: 'Términos y Condiciones · Yes Computo',
+  },
+  {
+    path: 'politica-de-privacidad',
+    loadComponent: () => import('./features/legal/privacidad').then((m) => m.Privacidad),
+    title: 'Política de Privacidad · Yes Computo',
+  },
+  {
     path: '**',
     loadComponent: () => import('./features/not-found/not-found').then((m) => m.NotFound),
     title: 'Página no encontrada · Yes Computo',
