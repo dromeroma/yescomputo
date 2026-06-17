@@ -1,0 +1,193 @@
+@if (product(); as p) {
+  <!-- Breadcrumb -->
+  <div class="border-b border-line bg-surface-subtle">
+    <div class="container-page py-4">
+      <nav class="flex flex-wrap items-center gap-1.5 text-sm text-content-muted" aria-label="Ruta de navegación">
+        <a routerLink="/" class="hover:text-content">Inicio</a>
+        <yc-icon name="chevron-right" [size]="14" />
+        <a routerLink="/catalogo" class="hover:text-content">Catálogo</a>
+        <yc-icon name="chevron-right" [size]="14" />
+        <span class="text-content-muted">{{ p.categoryName }}</span>
+        <yc-icon name="chevron-right" [size]="14" />
+        <span class="truncate font-medium text-content">{{ p.name }}</span>
+      </nav>
+    </div>
+  </div>
+
+  <div class="container-page py-8 md:py-12">
+    <div class="grid gap-10 lg:grid-cols-2">
+      <!-- Gallery -->
+      <div class="lg:sticky lg:top-28 lg:self-start">
+        <div class="aspect-[4/3] overflow-hidden rounded-3xl border border-line bg-white">
+          <yc-product-image [src]="p.images[0]?.url" [icon]="catIcon(p.categoryId)" [label]="p.brandName" [seed]="p.id" />
+        </div>
+        @if (p.images.length > 1) {
+          <div class="mt-4 grid grid-cols-4 gap-3">
+            @for (img of p.images; track img.url) {
+              <div class="aspect-square overflow-hidden rounded-xl border border-line bg-white">
+                <yc-product-image [src]="img.url" [icon]="catIcon(p.categoryId)" [label]="''" [seed]="p.id" />
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Info -->
+      <div>
+        <div class="flex flex-wrap items-center gap-2">
+          <yc-badge tone="accent">{{ p.brandName }}</yc-badge>
+          @if (p.condition === 'reacondicionado') {
+            <yc-badge tone="success"><yc-icon name="leaf" [size]="11" /> Reacondicionado</yc-badge>
+          } @else if (p.condition === 'nuevo') {
+            <yc-badge tone="brand">Nuevo</yc-badge>
+          } @else {
+            <yc-badge tone="warning">Outlet</yc-badge>
+          }
+          @if (p.productLine) { <yc-badge tone="outline">{{ p.productLine }}</yc-badge> }
+        </div>
+
+        <h1 class="mt-4 font-display text-3xl font-bold text-content sm:text-4xl">{{ p.name }}</h1>
+        <p class="mt-2 text-lg text-content-muted">{{ p.tagline }}</p>
+
+        @if (p.rating) {
+          <div class="mt-3"><yc-rating [value]="p.rating" [count]="p.reviewCount ?? 0" /></div>
+        }
+
+        <!-- Mode switch -->
+        @if (p.availableForRent && p.rentalMonthlyPrice) {
+          <div class="mt-6 inline-flex rounded-full border border-line-strong bg-surface-inset p-1 text-sm font-semibold">
+            <button type="button" (click)="setMode('buy')"
+              class="rounded-full px-5 py-2 transition-colors" [class]="mode() === 'buy' ? 'bg-surface-raised text-content shadow-card' : 'text-content-muted'">Comprar</button>
+            <button type="button" (click)="setMode('rent')"
+              class="rounded-full px-5 py-2 transition-colors" [class]="mode() === 'rent' ? 'bg-surface-raised text-content shadow-card' : 'text-content-muted'">Alquilar</button>
+          </div>
+        }
+
+        <!-- Price -->
+        <div class="mt-5 flex flex-wrap items-end gap-3">
+          @if (mode() === 'rent' && p.rentalMonthlyPrice) {
+            <span class="font-display text-4xl font-bold text-content">{{ p.rentalMonthlyPrice | cop }}</span>
+            <span class="pb-1 text-content-muted">/ mes</span>
+          } @else {
+            <span class="font-display text-4xl font-bold text-content">{{ p.price | cop }}</span>
+            @if (p.compareAtPrice) {
+              <span class="pb-1 text-lg text-content-subtle line-through">{{ p.compareAtPrice | cop }}</span>
+              <span class="mb-1 rounded-full bg-brand-100 px-2.5 py-1 text-xs font-bold text-brand-800">Ahorras {{ discount() }}%</span>
+            }
+          }
+        </div>
+        <p class="mt-1 text-xs text-content-subtle">Precio incluye IVA. Cotización formal y formas de pago vía asesor.</p>
+
+        <!-- Highlights -->
+        <ul class="mt-6 grid gap-2.5 sm:grid-cols-2">
+          @for (h of p.highlights; track h) {
+            <li class="flex items-start gap-2.5 text-sm text-content-muted">
+              <span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-brand-100 text-brand-700"><yc-icon name="check" [size]="13" /></span>
+              {{ h }}
+            </li>
+          }
+        </ul>
+
+        <!-- Stock + actions -->
+        <div class="mt-7 rounded-2xl border border-line bg-surface-raised p-5 shadow-card">
+          <div class="mb-4 flex items-center gap-2 text-sm font-medium">
+            @switch (p.stockStatus) {
+              @case ('in_stock') { <span class="flex items-center gap-1.5 text-emerald-600"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>Disponible · entrega inmediata</span> }
+              @case ('low_stock') { <span class="flex items-center gap-1.5 text-amber-600"><span class="h-2 w-2 rounded-full bg-amber-500"></span>Pocas unidades disponibles</span> }
+              @case ('on_demand') { <span class="flex items-center gap-1.5 text-accent-600"><span class="h-2 w-2 rounded-full bg-accent-500"></span>Bajo pedido · consulta tiempos</span> }
+              @default { <span class="flex items-center gap-1.5 text-content-subtle"><span class="h-2 w-2 rounded-full bg-ink-300"></span>Agotado temporalmente</span> }
+            }
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- Qty -->
+            <div class="flex h-12 items-center rounded-full border border-line-strong">
+              <button type="button" (click)="changeQty(-1)" class="grid h-12 w-11 place-items-center text-content-muted hover:text-content" aria-label="Disminuir"><yc-icon name="minus" [size]="16" /></button>
+              <span class="w-8 text-center font-semibold">{{ qty() }}</span>
+              <button type="button" (click)="changeQty(1)" class="grid h-12 w-11 place-items-center text-content-muted hover:text-content" aria-label="Aumentar"><yc-icon name="plus" [size]="16" /></button>
+            </div>
+
+            <button ycButton variant="primary" size="lg" class="flex-1" (click)="addToCart()" [disabled]="p.stockStatus === 'out_of_stock'">
+              @if (added()) { <yc-icon name="check" [size]="18" /> Agregado } @else { <yc-icon name="cart" [size]="18" /> Agregar al carrito }
+            </button>
+          </div>
+
+          <a ycButton variant="whatsapp" [block]="true" class="mt-3" [href]="whatsappLink()" target="_blank" rel="noopener">
+            <yc-icon name="whatsapp" [size]="18" /> {{ mode() === 'rent' ? 'Cotizar alquiler' : 'Consultar por WhatsApp' }}
+          </a>
+        </div>
+
+        <!-- Trust -->
+        <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          @for (t of trustItems; track t.label) {
+            <div class="flex flex-col items-center gap-1.5 rounded-xl bg-surface-inset px-2 py-4 text-center">
+              <yc-icon [name]="t.icon" [size]="22" class="text-accent-600" />
+              <span class="text-2xs font-medium leading-tight text-content-muted">{{ t.label }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Description + specs -->
+    <div class="mt-14 grid gap-10 lg:grid-cols-[1fr_360px]">
+      <div>
+        <h2 class="text-2xl">Descripción</h2>
+        <p class="mt-4 leading-relaxed text-content-muted">{{ p.description }}</p>
+
+        <h2 class="mt-10 text-2xl">Especificaciones técnicas</h2>
+        <div class="mt-5 space-y-6">
+          @for (group of specGroups(); track group.group) {
+            <div>
+              <h3 class="mb-2 text-sm font-semibold uppercase tracking-wider text-accent-600">{{ group.group }}</h3>
+              <dl class="overflow-hidden rounded-xl border border-line">
+                @for (s of group.items; track s.label; let even = $even) {
+                  <div class="flex flex-col gap-0.5 px-4 py-3 text-sm sm:flex-row sm:gap-4" [class.bg-surface-inset]="even">
+                    <dt class="font-medium text-content-subtle sm:w-44 sm:shrink-0 sm:text-content-muted">{{ s.label }}</dt>
+                    <dd class="font-medium text-content sm:font-normal">{{ s.value }}</dd>
+                  </div>
+                }
+              </dl>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Side card -->
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-2xl border border-line bg-ink-950 p-6 text-white">
+          <h3 class="font-display text-lg">¿Necesitas asesoría?</h3>
+          <p class="mt-2 text-sm text-content-subtle">Nuestros expertos te ayudan a elegir el equipo ideal para tu operación.</p>
+          <a ycButton variant="whatsapp" [block]="true" class="mt-4" [href]="whatsappLink()" target="_blank" rel="noopener">
+            <yc-icon name="whatsapp" [size]="18" /> Hablar con un asesor
+          </a>
+          <dl class="mt-6 space-y-3 border-t border-white/10 pt-5 text-sm">
+            <div class="flex justify-between"><dt class="text-ink-400">SKU</dt><dd class="font-medium">{{ p.sku }}</dd></div>
+            <div class="flex justify-between"><dt class="text-ink-400">Garantía</dt><dd class="font-medium">{{ p.warrantyMonths ?? 12 }} meses</dd></div>
+            <div class="flex justify-between"><dt class="text-ink-400">Marca</dt><dd class="font-medium">{{ p.brandName }}</dd></div>
+          </dl>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Related -->
+    @if (related().length) {
+      <section class="mt-16">
+        <h2 class="text-2xl">También te puede interesar</h2>
+        <div class="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+          @for (r of related(); track r.id) {
+            <yc-product-card [product]="r" [categoryIcon]="catIcon(r.categoryId)" />
+          }
+        </div>
+      </section>
+    }
+  </div>
+} @else {
+  <!-- Not found / loading -->
+  <div class="container-page grid place-items-center py-32 text-center">
+    <span class="grid h-16 w-16 place-items-center rounded-full bg-surface-inset text-content-subtle"><yc-icon name="search" [size]="30" /></span>
+    <h1 class="mt-5 font-display text-2xl text-content">Producto no encontrado</h1>
+    <p class="mt-2 text-content-muted">El producto que buscas no está disponible o fue movido.</p>
+    <a ycButton variant="primary" class="mt-6" routerLink="/catalogo">Volver al catálogo</a>
+  </div>
+}

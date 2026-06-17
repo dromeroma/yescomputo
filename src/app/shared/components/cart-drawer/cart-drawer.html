@@ -1,0 +1,117 @@
+<div class="fixed inset-0 z-[60]" [class.pointer-events-none]="!open()" (keydown.escape)="close()">
+  <!-- Backdrop -->
+  <div
+    class="absolute inset-0 bg-ink-950/55 backdrop-blur-sm transition-opacity duration-300"
+    [class.opacity-0]="!open()"
+    [class.opacity-100]="open()"
+    (click)="close()"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Panel -->
+  <aside
+    class="absolute right-0 top-0 flex h-full w-[92%] max-w-md flex-col bg-surface-raised shadow-ink transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+    [class.translate-x-full]="!open()"
+    [class.translate-x-0]="open()"
+    role="dialog"
+    aria-label="Carrito de compras"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-line px-5 py-4">
+      <div class="flex items-center gap-2.5">
+        <span class="grid h-9 w-9 place-items-center rounded-full bg-surface-inset text-content">
+          <yc-icon name="cart" [size]="18" />
+        </span>
+        <div>
+          <p class="font-display text-base font-semibold leading-none text-content">Tu carrito</p>
+          <p class="mt-0.5 text-2xs text-content-subtle">{{ count() }} artículo(s)</p>
+        </div>
+      </div>
+      <button type="button" (click)="close()"
+        class="grid h-9 w-9 place-items-center rounded-full text-content-muted hover:bg-surface-inset hover:text-content"
+        aria-label="Cerrar carrito">
+        <yc-icon name="close" [size]="22" />
+      </button>
+    </div>
+
+    @if (!isEmpty()) {
+      <!-- Items -->
+      <div class="flex-1 overflow-y-auto px-5 py-4">
+        <ul class="space-y-3">
+          @for (item of items(); track item.product.id + item.mode) {
+            <li class="relative flex gap-3 overflow-hidden rounded-2xl border border-line bg-surface p-3">
+              <!-- Removal confirmation overlay -->
+              @if (confirmingKey() === keyOf(item)) {
+                <div class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2.5 bg-surface/96 px-4 text-center backdrop-blur-sm"
+                  style="animation: var(--animate-fade-in)">
+                  <p class="text-sm font-medium text-content">¿Quitar este producto?</p>
+                  <div class="flex gap-2">
+                    <button ycButton variant="outline" size="sm" (click)="cancelRemove()">Cancelar</button>
+                    <button type="button" (click)="confirmRemove(item)"
+                      class="inline-flex h-9 items-center gap-1.5 rounded-full bg-danger px-4 text-sm font-semibold text-white transition-colors hover:brightness-110">
+                      <yc-icon name="trash" [size]="15" /> Quitar
+                    </button>
+                  </div>
+                </div>
+              }
+              <a [routerLink]="['/producto', item.product.slug]" (click)="close()"
+                class="h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-line bg-white">
+                <yc-product-image [src]="item.product.images[0]?.url" [icon]="catIcon(item.product.categoryId)" [label]="''" [seed]="item.product.id" />
+              </a>
+
+              <div class="flex min-w-0 flex-1 flex-col">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0">
+                    <span class="text-2xs font-semibold uppercase tracking-wider text-accent-600">{{ item.product.brandName }}</span>
+                    <h3 class="line-clamp-2 text-sm font-semibold leading-snug text-content">
+                      <a [routerLink]="['/producto', item.product.slug]" (click)="close()" class="hover:text-brand-700">{{ item.product.name }}</a>
+                    </h3>
+                  </div>
+                  <button type="button" (click)="askRemove(item)"
+                    class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-content-subtle hover:bg-surface-inset hover:text-danger"
+                    aria-label="Quitar"><yc-icon name="trash" [size]="15" /></button>
+                </div>
+
+                @if (item.mode === 'rent') {
+                  <span class="mt-1 w-fit rounded-full bg-accent-100 px-2 py-0.5 text-2xs font-semibold text-accent-700">Alquiler mensual</span>
+                }
+
+                <p class="mt-0.5 text-2xs text-content-subtle">{{ unitPrice(item) | cop }} c/u</p>
+
+                <div class="mt-auto flex items-center justify-between gap-2 pt-2">
+                  <div class="flex h-8 items-center rounded-full border border-line-strong">
+                    <button type="button" (click)="setQty(item, item.quantity - 1)" class="grid h-8 w-8 place-items-center text-content-muted hover:text-content" aria-label="Disminuir"><yc-icon name="minus" [size]="14" /></button>
+                    <span class="w-6 text-center text-sm font-semibold">{{ item.quantity }}</span>
+                    <button type="button" (click)="setQty(item, item.quantity + 1)" class="grid h-8 w-8 place-items-center text-content-muted hover:text-content" aria-label="Aumentar"><yc-icon name="plus" [size]="14" /></button>
+                  </div>
+                  <span class="font-display text-sm font-bold text-content">{{ unitPrice(item) * item.quantity | cop }}</span>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Footer -->
+      <div class="border-t border-line bg-surface px-5 py-4" style="padding-bottom: max(1rem, env(safe-area-inset-bottom))">
+        <div class="mb-3 flex items-center justify-between">
+          <span class="text-sm text-content-muted">Subtotal</span>
+          <span class="font-display text-xl font-bold text-content">{{ summary().subtotal | cop }}</span>
+        </div>
+        <p class="mb-3 text-2xs text-content-subtle">Impuestos y envío se confirman en la cotización.</p>
+        <a ycButton variant="whatsapp" [block]="true" [href]="quoteLink()" target="_blank" rel="noopener" (click)="close()">
+          <yc-icon name="whatsapp" [size]="18" /> Cotizar por WhatsApp
+        </a>
+        <a ycButton variant="outline" [block]="true" class="mt-2" routerLink="/carrito" (click)="close()">Ver carrito completo</a>
+      </div>
+    } @else {
+      <!-- Empty -->
+      <div class="flex flex-1 flex-col items-center justify-center px-6 text-center">
+        <span class="grid h-16 w-16 place-items-center rounded-full bg-surface-inset text-content-subtle"><yc-icon name="cart" [size]="30" /></span>
+        <h3 class="mt-5 font-display text-lg text-content">Tu carrito está vacío</h3>
+        <p class="mt-1.5 max-w-xs text-sm text-content-muted">Explora el catálogo y agrega los equipos que tu empresa necesita.</p>
+        <a ycButton variant="primary" class="mt-5" routerLink="/catalogo" (click)="close()">Explorar catálogo <yc-icon name="arrow-right" [size]="18" /></a>
+      </div>
+    }
+  </aside>
+</div>

@@ -1,0 +1,220 @@
+<!-- Utility top bar -->
+<div class="hidden bg-ink-950 text-ink-200 lg:block">
+  <div class="container-page flex h-9 items-center justify-between text-xs">
+    <div class="flex items-center gap-6">
+      <span class="inline-flex items-center gap-1.5">
+        <yc-icon name="map-pin" [size]="13" class="text-brand-400" />
+        {{ config.company.address.neighborhood }}, {{ config.company.address.city }}
+      </span>
+      <span class="inline-flex items-center gap-1.5">
+        <yc-icon name="clock" [size]="13" class="text-brand-400" />
+        Lun–Vie 8:00–18:00 · Sáb 9:00–13:00
+      </span>
+    </div>
+    <div class="flex items-center gap-5">
+      <span class="inline-flex items-center gap-1.5 font-medium text-brand-400">
+        <yc-icon name="sparkles" [size]="13" />{{ config.company.yearsInBusiness }} años de experiencia
+      </span>
+      <a [href]="'tel:+57' + config.company.whatsappNumber.slice(2)"
+        class="inline-flex items-center gap-1.5 transition-colors hover:text-white">
+        <yc-icon name="phone" [size]="13" />{{ config.company.phoneDisplay }}
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Main bar -->
+<div
+  class="border-b border-line bg-surface/85 backdrop-blur transition-shadow"
+  [class.shadow-card]="scrolled()"
+>
+  <div class="container-page flex h-[var(--header-height)] items-center gap-4">
+    <!-- Logo -->
+    <a routerLink="/" class="shrink-0" aria-label="Yes Computo · Inicio" (click)="closeAll()">
+      <yc-logo [size]="26" />
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="ml-2 hidden items-center gap-1 lg:flex">
+      <button
+        type="button"
+        (click)="toggleMega()"
+        class="inline-flex items-center gap-1 rounded-full px-3.5 py-2 text-sm font-semibold text-content-muted transition-colors hover:bg-surface-inset hover:text-content"
+        [class.bg-surface-inset]="megaOpen()"
+      >
+        Productos
+        <yc-icon name="chevron-down" [size]="15" class="transition-transform"
+          [class.rotate-180]="megaOpen()" />
+      </button>
+      @for (item of mainNav; track item.link) {
+        @if (item.link !== '/') {
+          <a
+            [routerLink]="item.link"
+            routerLinkActive="bg-surface-inset text-content"
+            class="rounded-full px-3.5 py-2 text-sm font-semibold text-content-muted transition-colors hover:bg-surface-inset hover:text-content"
+            >{{ item.label }}</a
+          >
+        }
+      }
+    </nav>
+
+    <!-- Search (desktop) -->
+    <div class="ml-auto hidden max-w-xs flex-1 md:block">
+      <div class="relative">
+        <yc-icon name="search" [size]="18"
+          class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-content-subtle" />
+        <input
+          #searchBox
+          type="search"
+          placeholder="Buscar equipos, marcas..."
+          (keyup.enter)="search(searchBox.value)"
+          class="h-10 w-full rounded-full border border-line-strong bg-surface-inset/60 pl-10 pr-4 text-sm text-content outline-none transition-colors placeholder:text-content-subtle focus:border-accent-400 focus:bg-surface-raised"
+          aria-label="Buscar productos"
+        />
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="ml-auto flex items-center gap-0.5 sm:gap-1 md:ml-0">
+      <!-- Seasonal campaign toggle (Modo Fútbol) -->
+      @if (campaign.available) {
+        <button
+          type="button"
+          (click)="campaign.toggle()"
+          class="relative grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-surface-inset"
+          [class.text-content]="campaign.enabled()"
+          [class.text-content-subtle]="!campaign.enabled()"
+          [attr.aria-pressed]="campaign.enabled()"
+          [attr.aria-label]="(campaign.enabled() ? 'Desactivar ' : 'Activar ') + (campaign.seasonal?.label || 'modo temporada')"
+          [title]="campaign.seasonal?.label"
+        >
+          <yc-icon name="soccer" [size]="20" />
+          @if (campaign.enabled()) {
+            <span class="flag-flow absolute bottom-1.5 h-[3px] w-4 rounded-full"></span>
+          }
+        </button>
+      }
+
+      <!-- Theme toggle -->
+      <button
+        type="button"
+        (click)="theme.toggle()"
+        class="grid h-10 w-10 place-items-center rounded-full text-content-muted transition-colors hover:bg-surface-inset"
+        [attr.aria-label]="theme.mode() === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
+      >
+        <yc-icon [name]="theme.mode() === 'dark' ? 'sun' : 'moon'" [size]="20" />
+      </button>
+
+      <button
+        type="button"
+        (click)="openCart()"
+        class="relative grid h-10 w-10 place-items-center rounded-full text-content-muted transition-colors hover:bg-surface-inset"
+        aria-label="Abrir carrito"
+      >
+        <yc-icon name="cart" [size]="21" />
+        @if (cartCount() > 0) {
+          <span
+            class="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-brand-500 px-1 text-2xs font-bold text-ink-950"
+            >{{ cartCount() }}</span
+          >
+        }
+      </button>
+
+      <!-- Mobile menu toggle -->
+      <button
+        type="button"
+        (click)="mobileOpen.set(true)"
+        class="grid h-10 w-10 place-items-center rounded-full text-content-muted hover:bg-surface-inset lg:hidden"
+        aria-label="Abrir menú"
+      >
+        <yc-icon name="menu" [size]="22" />
+      </button>
+    </div>
+  </div>
+
+  <!-- Mega menu -->
+  @if (megaOpen()) {
+    <div class="absolute inset-x-0 top-full border-b border-line bg-surface-raised shadow-ink"
+      style="animation: var(--animate-fade-up)">
+      <div class="container-page py-8">
+        <div class="mb-5 flex items-center justify-between">
+          <span class="eyebrow"><span class="h-1 w-1 rounded-full bg-accent-500"></span>Catálogo por categoría</span>
+          <a routerLink="/catalogo" (click)="closeAll()"
+            class="inline-flex items-center gap-1 text-sm font-semibold text-accent-600 hover:text-accent-700">
+            Ver todo el catálogo <yc-icon name="arrow-right" [size]="16" />
+          </a>
+        </div>
+        <div class="grid grid-cols-2 gap-2 md:grid-cols-3 xl:grid-cols-4">
+          @for (cat of categories(); track cat.id) {
+            <a
+              [routerLink]="['/categoria', cat.slug]"
+              (click)="closeAll()"
+              class="group flex items-start gap-3 rounded-xl border border-transparent p-3 transition-colors hover:border-line hover:bg-surface-inset"
+            >
+              <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-brand-100 text-brand-700 transition-colors group-hover:bg-brand-500 group-hover:text-ink-950">
+                <yc-icon [name]="cat.icon" [size]="20" />
+              </span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold text-content">{{ cat.name }}</span>
+                <span class="block text-xs text-content-muted">{{ cat.productCount }} productos</span>
+              </span>
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Mega menu backdrop -->
+@if (megaOpen()) {
+  <div class="fixed inset-0 top-[calc(var(--header-height)+0px)] z-[-1] bg-ink-950/20" (click)="closeAll()"></div>
+}
+
+<!-- Mobile drawer -->
+@if (mobileOpen()) {
+  <div class="fixed inset-0 z-50 lg:hidden">
+    <div class="absolute inset-0 bg-ink-950/50 backdrop-blur-sm" (click)="closeAll()"></div>
+    <div class="absolute right-0 top-0 flex h-full w-[86%] max-w-sm flex-col bg-surface-raised shadow-ink"
+      style="animation: var(--animate-fade-up)">
+      <div class="flex items-center justify-between border-b border-line px-5 py-4">
+        <yc-logo [size]="24" />
+        <button type="button" (click)="closeAll()" class="grid h-9 w-9 place-items-center rounded-full hover:bg-surface-inset"
+          aria-label="Cerrar menú"><yc-icon name="close" [size]="22" /></button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-5 py-4">
+        <div class="relative mb-5">
+          <yc-icon name="search" [size]="18" class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-content-subtle" />
+          <input #mSearch type="search" placeholder="Buscar..." (keyup.enter)="search(mSearch.value)"
+            class="h-11 w-full rounded-full border border-line-strong bg-surface-inset pl-10 pr-4 text-sm outline-none focus:border-accent-400 focus:bg-surface-raised" />
+        </div>
+
+        <a routerLink="/" (click)="closeAll()" class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-content hover:bg-surface-inset">Inicio</a>
+
+        <p class="px-3 pb-1 pt-4 text-2xs font-semibold uppercase tracking-wider text-content-subtle">Categorías</p>
+        @for (cat of categories(); track cat.id) {
+          <a [routerLink]="['/categoria', cat.slug]" (click)="closeAll()"
+            class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-content-muted hover:bg-surface-inset">
+            <yc-icon [name]="cat.icon" [size]="18" class="text-brand-600" />{{ cat.name }}
+          </a>
+        }
+
+        <p class="px-3 pb-1 pt-4 text-2xs font-semibold uppercase tracking-wider text-content-subtle">Explorar</p>
+        @for (item of mainNav; track item.link) {
+          @if (item.link !== '/') {
+            <a [routerLink]="item.link" (click)="closeAll()"
+              class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-content hover:bg-surface-inset">{{ item.label }}</a>
+          }
+        }
+      </div>
+
+      <div class="border-t border-line p-5">
+        <a [href]="'tel:+57' + config.company.whatsappNumber.slice(2)"
+          class="flex items-center gap-2 text-sm font-semibold text-content">
+          <yc-icon name="phone" [size]="16" class="text-brand-600" />{{ config.company.phoneDisplay }}
+        </a>
+      </div>
+    </div>
+  </div>
+}

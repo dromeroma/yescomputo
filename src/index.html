@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <title>Yes Computo · Tecnología Circular para empresas</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Primary meta -->
+    <meta
+      name="description"
+      content="Yes Computo · 20 años liderando la Tecnología Circular en Cartagena. Equipos corporativos, portátiles, workstations, alquiler de tecnología y servicio técnico especializado para empresas."
+    />
+    <meta name="theme-color" content="#0f1c32" />
+    <meta name="color-scheme" content="light" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Yes Computo" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:title" content="Yes Computo · Tecnología Circular para empresas" />
+    <meta
+      property="og:description"
+      content="Tecnología que evoluciona, confianza que permanece. Equipos corporativos, alquiler y servicio técnico en Cartagena."
+    />
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <!-- Fonts: Sora (display) + Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Apply saved theme + seasonal campaign before first paint (no flash). -->
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('yc.theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+          }
+          // Keep 'mundial' in sync with SEASONAL_CAMPAIGN in campaigns.ts.
+          var season = 'mundial';
+          if (season && localStorage.getItem('yc.campaign') !== 'off') {
+            document.documentElement.setAttribute('data-campaign', season);
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

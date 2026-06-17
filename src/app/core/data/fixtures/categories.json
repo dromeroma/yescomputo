@@ -1,0 +1,115 @@
+[
+  {
+    "id": "cat-01",
+    "slug": "portatiles-corporativos",
+    "name": "Portátiles Corporativos",
+    "description": "Portátiles empresariales de las líneas profesionales de las mejores marcas: durabilidad, seguridad y rendimiento para trabajar desde donde estés.",
+    "icon": "laptop",
+    "productCount": 6,
+    "order": 1,
+    "featured": true
+  },
+  {
+    "id": "cat-02",
+    "slug": "computadores-escritorio",
+    "name": "Computadores de Escritorio",
+    "description": "Equipos de escritorio confiables para oficina, hogar y empresa, con garantía y soporte técnico especializado.",
+    "icon": "desktop",
+    "productCount": 3,
+    "order": 2,
+    "featured": true
+  },
+  {
+    "id": "cat-03",
+    "slug": "workstations",
+    "name": "Workstations",
+    "description": "Estaciones de trabajo de alto rendimiento para arquitectura, ingeniería, edición y CAD.",
+    "icon": "cpu",
+    "productCount": 2,
+    "order": 3,
+    "featured": true
+  },
+  {
+    "id": "cat-04",
+    "slug": "reacondicionados",
+    "name": "Equipos Reacondicionados",
+    "description": "Tecnología circular: equipos corporativos revisados, optimizados y garantizados a una fracción del costo de uno nuevo.",
+    "icon": "recycle",
+    "productCount": 4,
+    "order": 4,
+    "featured": true
+  },
+  {
+    "id": "cat-05",
+    "slug": "monitores",
+    "name": "Monitores",
+    "description": "Monitores profesionales para productividad, diseño y videovigilancia.",
+    "icon": "monitor",
+    "productCount": 2,
+    "order": 5,
+    "featured": true
+  },
+  {
+    "id": "cat-06",
+    "slug": "impresoras",
+    "name": "Impresoras",
+    "description": "Impresoras y multifuncionales para empresas y oficinas, con bajo costo por página.",
+    "icon": "printer",
+    "productCount": 1,
+    "order": 6
+  },
+  {
+    "id": "cat-07",
+    "slug": "accesorios",
+    "name": "Accesorios",
+    "description": "Todo lo que necesitas para trabajar, estudiar y disfrutar al máximo: teclados, mouse, docks y más.",
+    "icon": "keyboard",
+    "productCount": 2,
+    "order": 7
+  },
+  {
+    "id": "cat-08",
+    "slug": "redes-conectividad",
+    "name": "Redes y Conectividad",
+    "description": "Diseño, instalación y mantenimiento de redes cableadas e inalámbricas para tu empresa.",
+    "icon": "network",
+    "productCount": 1,
+    "order": 8
+  },
+  {
+    "id": "cat-09",
+    "slug": "camaras-seguridad",
+    "name": "Cámaras y Seguridad",
+    "description": "Sistemas de videovigilancia y control de accesos para proteger lo que más importa.",
+    "icon": "camera",
+    "productCount": 1,
+    "order": 9
+  },
+  {
+    "id": "cat-10",
+    "slug": "audio-diademas",
+    "name": "Audio y Diademas",
+    "description": "Diademas y soluciones de audio profesionales para call centers, reuniones y trabajo remoto.",
+    "icon": "headphones",
+    "productCount": 1,
+    "order": 10
+  },
+  {
+    "id": "cat-11",
+    "slug": "celulares-tablets",
+    "name": "Celulares y Tablets",
+    "description": "Dispositivos móviles y tablets para potenciar la movilidad de tu equipo de trabajo.",
+    "icon": "smartphone",
+    "productCount": 1,
+    "order": 11
+  },
+  {
+    "id": "cat-12",
+    "slug": "movilidad-electrica",
+    "name": "Movilidad Eléctrica",
+    "description": "Tecnología sostenible sobre ruedas: movilidad eléctrica para desplazamientos inteligentes.",
+    "icon": "zap",
+    "productCount": 1,
+    "order": 12
+  }
+]

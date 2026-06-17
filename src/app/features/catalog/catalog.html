@@ -1,0 +1,188 @@
+<!-- Hero -->
+<section class="border-b border-line bg-surface-subtle">
+  <div class="container-page py-10 md:py-14">
+    <!-- Breadcrumb -->
+    <nav class="mb-4 flex items-center gap-1.5 text-sm text-content-muted" aria-label="Ruta de navegación">
+      <a routerLink="/" class="hover:text-content">Inicio</a>
+      <yc-icon name="chevron-right" [size]="14" />
+      @if (category()) {
+        <a routerLink="/catalogo" class="hover:text-content">Catálogo</a>
+        <yc-icon name="chevron-right" [size]="14" />
+        <span class="font-medium text-content">{{ category()!.name }}</span>
+      } @else {
+        <span class="font-medium text-content">{{ heading() }}</span>
+      }
+    </nav>
+
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div class="max-w-2xl">
+        @if (category()) {
+          <span class="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-700">
+            <yc-icon [name]="category()!.icon" [size]="24" />
+          </span>
+        }
+        <h1 class="text-3xl sm:text-4xl">{{ heading() }}</h1>
+        <p class="mt-2 text-content-muted">
+          {{ category()?.description ?? 'Tecnología corporativa con calidad, garantía y el mejor respaldo.' }}
+        </p>
+      </div>
+      <p class="text-sm text-content-muted">{{ result().total }} producto(s)</p>
+    </div>
+  </div>
+</section>
+
+<div class="container-page py-8 md:py-12">
+  <div class="lg:grid lg:grid-cols-[260px_1fr] lg:gap-10">
+    <!-- ===================== FILTERS (sidebar) ===================== -->
+    <aside
+      class="fixed inset-0 z-50 overflow-y-auto bg-surface-raised p-6 lg:static lg:z-auto lg:block lg:overflow-visible lg:bg-transparent lg:p-0"
+      [class.hidden]="!filtersOpen()"
+    >
+      <div class="mb-5 flex items-center justify-between lg:hidden">
+        <span class="font-display text-lg font-semibold">Filtros</span>
+        <button type="button" (click)="filtersOpen.set(false)" class="grid h-9 w-9 place-items-center rounded-full hover:bg-surface-inset">
+          <yc-icon name="close" [size]="22" />
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <h2 class="font-display text-sm font-semibold uppercase tracking-wider text-content">Filtrar</h2>
+        @if (activeFilterCount() > 0) {
+          <button type="button" (click)="clearFilters()" class="text-xs font-semibold text-accent-600 hover:text-accent-700">Limpiar</button>
+        }
+      </div>
+
+      <!-- Brands -->
+      @if (facets().brands.length) {
+        <div class="mt-6 border-t border-line pt-5">
+          <h3 class="mb-3 text-sm font-semibold text-content">Marca</h3>
+          <ul class="space-y-2">
+            @for (b of facets().brands; track b.value) {
+              <li>
+                <label class="flex cursor-pointer items-center gap-2.5 text-sm text-content-muted">
+                  <input type="checkbox" [checked]="activeBrands().includes(b.value)" (change)="toggleCsv('brand', b.value)"
+                    class="h-4 w-4 rounded border-line-strong text-brand-600 focus:ring-brand-400" />
+                  <span class="flex-1">{{ b.label }}</span>
+                  <span class="text-xs text-content-subtle">{{ b.count }}</span>
+                </label>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      <!-- Condition (hidden on refurb view) -->
+      @if (facets().conditions.length && heading() !== 'Equipos Reacondicionados') {
+        <div class="mt-6 border-t border-line pt-5">
+          <h3 class="mb-3 text-sm font-semibold text-content">Condición</h3>
+          <ul class="space-y-2">
+            @for (c of facets().conditions; track c.value) {
+              <li>
+                <label class="flex cursor-pointer items-center gap-2.5 text-sm text-content-muted">
+                  <input type="checkbox" [checked]="activeConditions().includes(c.value)" (change)="toggleCsv('condition', c.value)"
+                    class="h-4 w-4 rounded border-line-strong text-brand-600 focus:ring-brand-400" />
+                  <span class="flex-1">{{ c.label }}</span>
+                  <span class="text-xs text-content-subtle">{{ c.count }}</span>
+                </label>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+
+      <!-- Flags -->
+      <div class="mt-6 border-t border-line pt-5">
+        <h3 class="mb-3 text-sm font-semibold text-content">Disponibilidad</h3>
+        <label class="flex cursor-pointer items-center gap-2.5 text-sm text-content-muted">
+          <input type="checkbox" [checked]="query().rentableOnly" (change)="toggleFlag('rent')"
+            class="h-4 w-4 rounded border-line-strong text-brand-600 focus:ring-brand-400" />
+          Disponible en alquiler
+        </label>
+        <label class="mt-2 flex cursor-pointer items-center gap-2.5 text-sm text-content-muted">
+          <input type="checkbox" [checked]="query().inStockOnly" (change)="toggleFlag('stock')"
+            class="h-4 w-4 rounded border-line-strong text-brand-600 focus:ring-brand-400" />
+          Solo en stock
+        </label>
+      </div>
+
+      <div class="mt-8 lg:hidden">
+        <button ycButton variant="primary" [block]="true" (click)="filtersOpen.set(false)">Ver {{ result().total }} resultados</button>
+      </div>
+    </aside>
+
+    <!-- ===================== RESULTS ===================== -->
+    <div>
+      <!-- Toolbar -->
+      <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <button ycButton variant="outline" size="sm" (click)="filtersOpen.set(true)" class="lg:hidden">
+          <yc-icon name="sliders" [size]="16" /> Filtros
+          @if (activeFilterCount() > 0) { <span class="ml-1 rounded-full bg-brand-500 px-1.5 text-2xs text-ink-950">{{ activeFilterCount() }}</span> }
+        </button>
+
+        <div class="ml-auto flex items-center gap-2">
+          <label for="sort" class="text-sm text-content-muted">Ordenar:</label>
+          <select id="sort" [value]="query().sort" (change)="setSort($any($event.target).value)"
+            class="h-10 rounded-full border border-line-strong bg-surface-raised px-4 text-sm font-medium text-content outline-none focus:border-accent-400">
+            @for (opt of sortOptions; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Active chips -->
+      @if (activeFilterCount() > 0) {
+        <div class="mb-5 flex flex-wrap gap-2">
+          @if (query().search) {
+            <button type="button" (click)="setSearch('')" class="inline-flex items-center gap-1.5 rounded-full bg-surface-inset px-3 py-1.5 text-xs font-medium text-content-muted hover:bg-surface-inset">
+              "{{ query().search }}" <yc-icon name="close" [size]="13" />
+            </button>
+          }
+          @for (b of activeBrands(); track b) {
+            <button type="button" (click)="toggleCsv('brand', b)" class="inline-flex items-center gap-1.5 rounded-full bg-surface-inset px-3 py-1.5 text-xs font-medium capitalize text-content-muted hover:bg-surface-inset">
+              {{ b }} <yc-icon name="close" [size]="13" />
+            </button>
+          }
+        </div>
+      }
+
+      <!-- Grid -->
+      @if (result().items.length) {
+        <div class="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3">
+          @for (p of result().items; track p.id) {
+            <yc-product-card [product]="p" [categoryIcon]="catIcon(p.categoryId)" />
+          }
+        </div>
+
+        <!-- Pagination -->
+        @if (result().totalPages > 1) {
+          <nav class="mt-12 flex items-center justify-center gap-1.5" aria-label="Paginación">
+            <button type="button" [disabled]="result().page === 1" (click)="goToPage(result().page - 1)"
+              class="grid h-10 w-10 place-items-center rounded-full border border-line-strong text-content-muted transition-colors hover:bg-surface-inset disabled:opacity-40">
+              <yc-icon name="chevron-left" [size]="18" />
+            </button>
+            @for (pg of pages(); track pg) {
+              <button type="button" (click)="goToPage(pg)"
+                class="grid h-10 min-w-10 place-items-center rounded-full px-3 text-sm font-semibold transition-colors"
+                [class]="pg === result().page ? 'bg-ink-950 text-white' : 'border border-line-strong text-content-muted hover:bg-surface-inset'">
+                {{ pg }}
+              </button>
+            }
+            <button type="button" [disabled]="result().page === result().totalPages" (click)="goToPage(result().page + 1)"
+              class="grid h-10 w-10 place-items-center rounded-full border border-line-strong text-content-muted transition-colors hover:bg-surface-inset disabled:opacity-40">
+              <yc-icon name="chevron-right" [size]="18" />
+            </button>
+          </nav>
+        }
+      } @else {
+        <!-- Empty state -->
+        <div class="grid place-items-center rounded-2xl border border-dashed border-line-strong py-20 text-center">
+          <span class="grid h-16 w-16 place-items-center rounded-full bg-surface-inset text-content-subtle"><yc-icon name="search" [size]="30" /></span>
+          <h3 class="mt-5 font-display text-xl text-content">No encontramos productos</h3>
+          <p class="mt-2 max-w-sm text-sm text-content-muted">Prueba ajustando los filtros o explora todo nuestro catálogo.</p>
+          <button ycButton variant="primary" class="mt-6" (click)="clearFilters()">Limpiar filtros</button>
+        </div>
+      }
+    </div>
+  </div>
+</div>

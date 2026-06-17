@@ -1,0 +1,297 @@
+<!-- ============================ HERO CAROUSEL ============================ -->
+<yc-hero-carousel />
+
+<!-- Trust stats strip -->
+<section class="border-b border-line bg-surface">
+  <div class="container-page">
+    <dl class="grid grid-cols-2 gap-px overflow-hidden bg-line sm:grid-cols-4">
+      @for (s of stats; track s.label) {
+        <div
+          class="group flex flex-col items-center gap-3 bg-surface px-4 py-8 text-center transition-colors hover:bg-surface-subtle sm:flex-row sm:gap-4 sm:text-left"
+        >
+          <span
+            class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-surface-raised text-accent-600 shadow-card ring-1 ring-line transition-transform duration-300 group-hover:-translate-y-0.5 dark:text-accent-300"
+          >
+            <yc-icon [name]="s.icon" [size]="22" />
+          </span>
+          <div>
+            <dt class="font-display text-3xl font-extrabold tracking-tight text-content sm:text-4xl">
+              {{ s.value }}
+            </dt>
+            <dd class="mt-0.5 text-2xs font-semibold uppercase tracking-[0.14em] text-content-subtle">
+              {{ s.label }}
+            </dd>
+          </div>
+        </div>
+      }
+    </dl>
+  </div>
+</section>
+
+<!-- ============================ CATEGORIES ============================ -->
+<section class="pb-16 pt-12 md:pb-24 md:pt-16">
+  <div class="container-page">
+    <yc-section-heading
+      eyebrow="Explora por categoría"
+      title="Todo en tecnología para ti y tu empresa"
+      description="Desde portátiles corporativos hasta movilidad eléctrica. Encuentra exactamente lo que tu operación necesita.">
+      <a ycButton variant="outline" routerLink="/categorias">Ver todas <yc-icon name="arrow-right" [size]="16" /></a>
+    </yc-section-heading>
+
+    <div class="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 sm:gap-4">
+      @for (cat of categories(); track cat.id) {
+        <a [routerLink]="['/categoria', cat.slug]"
+          class="shine group relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-line bg-surface-raised p-5 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
+          <span class="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-brand-400/15 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-brand-100 text-brand-700 transition-all duration-300 group-hover:scale-110 group-hover:bg-brand-500 group-hover:text-ink-950">
+            <yc-icon [name]="cat.icon" [size]="24" />
+          </span>
+          <span class="font-display font-semibold leading-tight text-content">{{ cat.name }}</span>
+          <span class="mt-auto inline-flex items-center gap-1 text-xs font-semibold text-accent-600">
+            {{ cat.productCount }} productos <yc-icon name="arrow-right" [size]="13" class="transition-transform duration-300 group-hover:translate-x-1" />
+          </span>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FEATURED PRODUCTS ============================ -->
+<section class="section bg-surface-subtle">
+  <div class="container-page">
+    <yc-section-heading
+      eyebrow="Selección destacada"
+      title="Equipos recomendados por nuestros expertos"
+      description="Las referencias corporativas más buscadas por las empresas, con el mejor retorno de inversión.">
+      <a ycButton variant="outline" routerLink="/catalogo">Ver catálogo <yc-icon name="arrow-right" [size]="16" /></a>
+    </yc-section-heading>
+
+    <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+      @for (p of featured(); track p.id) {
+        <yc-product-card [product]="p" [categoryIcon]="catIcon(p.categoryId)" />
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============================ TECNOLOGÍA CIRCULAR ============================ -->
+<section class="section relative overflow-hidden bg-ink-950 text-white">
+  <div class="absolute -right-20 top-0 h-80 w-80 rounded-full bg-brand-500/20 blur-[120px]"></div>
+  <div class="container-page relative grid gap-12 lg:grid-cols-2 lg:items-center">
+    <div>
+      <span class="eyebrow text-brand-300"><span class="h-1 w-1 rounded-full bg-brand-400"></span>Tecnología Circular</span>
+      <h2 class="mt-3 text-3xl text-white sm:text-4xl">Innovación que cuida nuestro planeta</h2>
+      <p class="mt-4 max-w-lg text-ink-300">
+        La tecnología no tiene por qué terminar. Reparamos, renovamos, reutilizamos y reciclamos
+        equipos corporativos para alargar su vida útil, reducir residuos electrónicos y entregarte
+        calidad garantizada a una fracción del costo.
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a ycButton variant="primary" routerLink="/categoria/reacondicionados">Ver reacondicionados</a>
+        <a ycButton variant="dark" routerLink="/tecnologia-circular">Conocer más</a>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      @for (step of circularSteps; track step.title) {
+        <div class="glass-dark rounded-2xl p-5">
+          <span class="grid h-11 w-11 place-items-center rounded-xl bg-brand-500/20 text-brand-300">
+            <yc-icon [name]="step.icon" [size]="22" />
+          </span>
+          <h3 class="mt-4 font-display text-lg text-white">{{ step.title }}</h3>
+          <p class="mt-1 text-sm text-ink-400">{{ step.text }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PROMOTIONS ============================ -->
+<section class="section">
+  <div class="container-page">
+    <yc-section-heading eyebrow="Aprovecha" title="Promociones y soluciones para tu negocio"
+      description="Beneficios pensados para que tu empresa crezca con la mejor tecnología." />
+
+    <!-- Cohesive dark promo cards with per-promo accent glow -->
+    <div class="mt-10 grid gap-4 sm:gap-5 md:grid-cols-2">
+      <!-- Featured seasonal campaign promo (full-width when active) -->
+      @if (campaign.campaign(); as c) {
+        <a [routerLink]="c.promo.ctaLink"
+          class="shine group relative flex min-h-[15rem] flex-col justify-end overflow-hidden rounded-3xl border border-white/10 bg-ink-950 p-7 text-white shadow-ink transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover md:col-span-2">
+          <div class="flag-flow absolute inset-x-0 top-0 h-1"></div>
+          <div class="absolute inset-0 bg-grid opacity-25"></div>
+          <div class="absolute -right-16 -top-16 h-56 w-56 rounded-full blur-[90px] transition-opacity duration-500 group-hover:opacity-80"
+            [style.background]="c.accent.primary" [style.opacity]="0.4"></div>
+          <div class="absolute -left-10 top-1/3 h-40 w-40 rounded-full blur-[90px]" [style.background]="c.accent.secondary" [style.opacity]="0.25"></div>
+
+          <div class="absolute inset-x-7 top-7 flex items-start justify-between">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur transition-transform duration-300 group-hover:scale-110"
+              [style.color]="c.accent.primary"><yc-icon [name]="c.promo.icon" [size]="26" /></span>
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-2xs font-bold uppercase tracking-wider backdrop-blur"
+              [style.color]="c.accent.primary">{{ c.emoji }} {{ c.promo.badge }}</span>
+          </div>
+
+          <div class="relative max-w-xl">
+            <p class="text-sm font-medium text-ink-300">{{ c.promo.subtitle }}</p>
+            <h3 class="mt-1 font-display text-2xl font-bold text-white sm:text-3xl">{{ c.promo.title }}</h3>
+            <p class="mt-2 max-w-md text-sm leading-relaxed text-ink-300">{{ c.promo.description }}</p>
+            <span class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold" [style.color]="c.accent.primary">
+              {{ c.promo.ctaLabel }} <yc-icon name="arrow-right" [size]="16" class="transition-transform duration-300 group-hover:translate-x-1" />
+            </span>
+          </div>
+        </a>
+      }
+
+      @for (promo of promotions(); track promo.id) {
+        <a [routerLink]="promo.ctaLink.split('#')[0]"
+          class="shine group relative flex min-h-[15rem] flex-col justify-end overflow-hidden rounded-3xl border border-white/10 bg-ink-950 p-7 text-white shadow-ink transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover">
+          <!-- texture + accent glow -->
+          <div class="absolute inset-0 bg-grid opacity-25"></div>
+          <div class="absolute -right-12 -top-12 h-48 w-48 rounded-full blur-[80px] transition-opacity duration-500 group-hover:opacity-80"
+            [style.background]="promoAccent(promo.theme)" [style.opacity]="0.4"></div>
+
+          <!-- top row: icon + badge -->
+          <div class="absolute inset-x-7 top-7 flex items-start justify-between">
+            <span class="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur transition-transform duration-300 group-hover:scale-110"
+              [style.color]="promoAccent(promo.theme)">
+              <yc-icon [name]="promoIcon(promo.theme)" [size]="24" />
+            </span>
+            @if (promo.badge) {
+              <span class="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-2xs font-bold uppercase tracking-wider backdrop-blur"
+                [style.color]="promoAccent(promo.theme)">{{ promo.badge }}</span>
+            }
+          </div>
+
+          <!-- body -->
+          <div class="relative">
+            @if (promo.subtitle) { <p class="text-sm font-medium text-ink-300">{{ promo.subtitle }}</p> }
+            <h3 class="mt-1 font-display text-2xl font-bold text-white">{{ promo.title }}</h3>
+            @if (promo.description) { <p class="mt-2 max-w-md text-sm leading-relaxed text-ink-300">{{ promo.description }}</p> }
+            <span class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold"
+              [style.color]="promoAccent(promo.theme)">
+              {{ promo.ctaLabel }} <yc-icon name="arrow-right" [size]="16" class="transition-transform duration-300 group-hover:translate-x-1" />
+            </span>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ============================ RENTAL CTA ============================ -->
+<section class="section bg-surface-subtle">
+  <div class="container-page">
+    <div class="relative overflow-hidden rounded-[2rem] border border-line bg-surface-raised p-8 shadow-card md:p-12">
+      <div class="grid gap-10 lg:grid-cols-2 lg:items-center">
+        <div>
+          <span class="eyebrow"><span class="h-1 w-1 rounded-full bg-accent-500"></span>Alquiler de equipos</span>
+          <h2 class="mt-3 text-3xl sm:text-4xl">Arrendar es avanzar</h2>
+          <p class="mt-4 max-w-lg text-content-muted">
+            Más tecnología, más productividad, sin grandes inversiones iniciales. Alquila equipos
+            corporativos por días, semanas o meses, con mantenimiento y soporte incluidos.
+          </p>
+          <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+            @for (item of ['Menor inversión inicial','Renovación constante','Soporte incluido','Flexibilidad total']; track item) {
+              <li class="flex items-center gap-2.5 text-sm font-medium text-content-muted">
+                <span class="grid h-6 w-6 place-items-center rounded-full bg-brand-100 text-brand-700"><yc-icon name="check" [size]="14" /></span>
+                {{ item }}
+              </li>
+            }
+          </ul>
+          <div class="mt-8">
+            <a ycButton variant="dark" size="lg" routerLink="/servicios">Cotizar alquiler <yc-icon name="arrow-right" [size]="18" /></a>
+          </div>
+        </div>
+
+        <div class="rounded-3xl bg-ink-950 p-8 text-white">
+          <p class="text-sm text-ink-400">Comparativa rápida</p>
+          <div class="mt-4 space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+              <span class="font-display font-semibold">Comprar</span>
+              <span class="text-sm text-ink-400">Adquirir un activo</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="font-display font-semibold text-brand-400">Alquilar</span>
+              <span class="text-sm text-white">Flexibilidad y liquidez</span>
+            </div>
+          </div>
+          <p class="mt-6 rounded-2xl bg-white/5 p-4 text-sm text-ink-300">
+            "Comprar es adquirir un activo; alquilar es adquirir flexibilidad, liquidez y continuidad operativa."
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ BEST SELLERS ============================ -->
+@if (bestSellers().length) {
+  <section class="section">
+    <div class="container-page">
+      <yc-section-heading eyebrow="Los más vendidos" title="Favoritos de nuestros clientes">
+        <a ycButton variant="outline" routerLink="/catalogo">Ver más <yc-icon name="arrow-right" [size]="16" /></a>
+      </yc-section-heading>
+      <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+        @for (p of bestSellers(); track p.id) {
+          <yc-product-card [product]="p" [categoryIcon]="catIcon(p.categoryId)" />
+        }
+      </div>
+    </div>
+  </section>
+}
+
+<!-- ============================ BENEFITS ============================ -->
+<section class="section bg-surface-subtle">
+  <div class="container-page">
+    <yc-section-heading [centered]="true" eyebrow="Por qué Yes Computo"
+      title="Más que tecnología, tranquilidad para tu empresa" />
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      @for (b of benefits; track b.title) {
+        <div class="shine group relative overflow-hidden rounded-2xl border border-line bg-surface-raised p-6 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover">
+          <span class="grid h-12 w-12 place-items-center rounded-xl bg-ink-950 text-brand-400 transition-transform duration-300 group-hover:scale-110 dark:bg-white/10">
+            <yc-icon [name]="b.icon" [size]="24" />
+          </span>
+          <h3 class="mt-5 font-display text-lg text-content">{{ b.title }}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-content-muted">{{ b.text }}</p>
+        </div>
+      }
+    </div>
+
+    <!-- Segments -->
+    <div class="mt-12 rounded-3xl border border-line bg-surface-raised p-8 shadow-card">
+      <p class="text-center text-sm font-semibold uppercase tracking-widest text-content-subtle">Ideal para</p>
+      <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        @for (s of segments; track s.label) {
+          <div class="flex flex-col items-center gap-2 text-center">
+            <span class="grid h-12 w-12 place-items-center rounded-full bg-accent-50 text-accent-600"><yc-icon [name]="s.icon" [size]="22" /></span>
+            <span class="text-xs font-medium text-content-muted">{{ s.label }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ FINAL CTA ============================ -->
+<section class="section">
+  <div class="container-page">
+    <div class="relative overflow-hidden rounded-[2rem] bg-ink-950 px-8 py-14 text-center text-white md:py-20">
+      <div class="absolute inset-0 bg-grid opacity-50"></div>
+      <div class="absolute left-1/2 top-0 h-64 w-64 -translate-x-1/2 rounded-full bg-brand-500/25 blur-[100px]"></div>
+      <div class="relative mx-auto max-w-2xl">
+        <div class="mb-6 flex justify-center"><yc-logo [size]="34" tone="light" /></div>
+        <h2 class="text-3xl text-white sm:text-4xl">¿Listo para potenciar tu tecnología?</h2>
+        <p class="mt-4 text-ink-300">
+          Conversemos sobre las necesidades de tu empresa. Te asesoramos para elegir los equipos
+          ideales, con la mejor relación calidad-precio.
+        </p>
+        <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <a ycButton variant="whatsapp" size="lg" [href]="whatsappLink" target="_blank" rel="noopener">
+            <yc-icon name="whatsapp" [size]="18" /> Escríbenos por WhatsApp
+          </a>
+          <a ycButton variant="primary" size="lg" routerLink="/contacto">Contáctanos</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

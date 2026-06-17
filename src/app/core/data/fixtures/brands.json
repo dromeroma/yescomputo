@@ -1,0 +1,87 @@
+[
+  {
+    "id": "br-01",
+    "slug": "lenovo",
+    "name": "Lenovo",
+    "tagline": "Líneas ThinkPad, ThinkCentre y ThinkStation",
+    "description": "La línea corporativa más confiable del mercado: construcción resistente, seguridad empresarial y durabilidad probada.",
+    "corporateLines": ["ThinkPad T Series", "ThinkPad X Series", "ThinkCentre", "ThinkStation"],
+    "productCount": 5,
+    "featured": true
+  },
+  {
+    "id": "br-02",
+    "slug": "hp",
+    "name": "HP",
+    "tagline": "Líneas EliteBook, ProBook y ZBook",
+    "description": "Equipos empresariales con seguridad avanzada y excelente relación rendimiento-durabilidad.",
+    "corporateLines": ["EliteBook", "ProBook", "ZBook"],
+    "productCount": 4,
+    "featured": true
+  },
+  {
+    "id": "br-03",
+    "slug": "dell",
+    "name": "Dell",
+    "tagline": "Líneas Latitude, Precision y OptiPlex",
+    "description": "Confiabilidad corporativa con líneas diseñadas para entornos empresariales exigentes.",
+    "corporateLines": ["Latitude", "Precision", "OptiPlex"],
+    "productCount": 4,
+    "featured": true
+  },
+  {
+    "id": "br-04",
+    "slug": "acer",
+    "name": "Acer",
+    "tagline": "Líneas TravelMate y Veriton",
+    "description": "Computadores empresariales con gran relación calidad-precio.",
+    "corporateLines": ["TravelMate", "Veriton"],
+    "productCount": 1,
+    "featured": true
+  },
+  {
+    "id": "br-05",
+    "slug": "asus",
+    "name": "ASUS",
+    "tagline": "Líneas ExpertBook y ExpertCenter",
+    "description": "Equipos de oficina ultralivianos y eficientes para el trabajo diario.",
+    "corporateLines": ["ExpertBook", "ExpertCenter"],
+    "productCount": 1,
+    "featured": true
+  },
+  {
+    "id": "br-06",
+    "slug": "epson",
+    "name": "Epson",
+    "description": "Impresión profesional de bajo costo por página.",
+    "productCount": 1
+  },
+  {
+    "id": "br-07",
+    "slug": "logitech",
+    "name": "Logitech",
+    "description": "Periféricos y accesorios de productividad de referencia mundial.",
+    "productCount": 2
+  },
+  {
+    "id": "br-08",
+    "slug": "samsung",
+    "name": "Samsung",
+    "description": "Monitores, dispositivos móviles y tecnología de consumo y empresarial.",
+    "productCount": 2
+  },
+  {
+    "id": "br-09",
+    "slug": "hikvision",
+    "name": "Hikvision",
+    "description": "Líder mundial en videovigilancia y soluciones de seguridad electrónica.",
+    "productCount": 1
+  },
+  {
+    "id": "br-10",
+    "slug": "xiaomi",
+    "name": "Xiaomi",
+    "description": "Tecnología inteligente y movilidad eléctrica para el día a día.",
+    "productCount": 1
+  }
+]

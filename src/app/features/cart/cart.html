@@ -1,0 +1,132 @@
+<div class="container-page py-10 md:py-14">
+  <h1 class="text-3xl sm:text-4xl">Tu carrito</h1>
+  <p class="mt-2 text-content-muted">
+    Arma tu lista de equipos y solicita una cotización formal. Confirmamos disponibilidad y formas de pago por WhatsApp.
+  </p>
+
+  @if (!isEmpty()) {
+    <div class="mt-10 grid gap-8 lg:grid-cols-[1fr_380px]">
+      <!-- Items -->
+      <div>
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <span class="text-sm font-medium text-content-muted">{{ summary().itemCount }} artículo(s)</span>
+          @if (!confirmingClear()) {
+            <button type="button" (click)="askClear()" class="inline-flex items-center gap-1.5 text-sm font-semibold text-content-muted hover:text-danger">
+              <yc-icon name="trash" [size]="16" /> Vaciar carrito
+            </button>
+          } @else {
+            <span class="inline-flex items-center gap-2 text-sm" style="animation: var(--animate-fade-in)">
+              <span class="font-medium text-content">¿Vaciar todo?</span>
+              <button type="button" (click)="cancelClear()" class="font-semibold text-content-muted hover:text-content">Cancelar</button>
+              <button type="button" (click)="confirmClear()" class="font-semibold text-danger hover:brightness-110">Sí, vaciar</button>
+            </span>
+          }
+        </div>
+
+        <ul class="space-y-4">
+          @for (item of items(); track item.product.id + item.mode) {
+            <li class="relative flex gap-4 overflow-hidden rounded-2xl border border-line bg-surface-raised p-4 shadow-card">
+              <!-- Removal confirmation overlay -->
+              @if (confirmingKey() === keyOf(item)) {
+                <div class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-surface-raised/95 px-5 text-center backdrop-blur-sm sm:flex-row sm:justify-between sm:text-left"
+                  style="animation: var(--animate-fade-in)">
+                  <p class="text-sm font-medium text-content">¿Quitar <span class="font-semibold">{{ item.product.name }}</span> del carrito?</p>
+                  <div class="flex shrink-0 gap-2">
+                    <button ycButton variant="outline" size="sm" (click)="cancelRemove()">Cancelar</button>
+                    <button type="button" (click)="confirmRemove(item)"
+                      class="inline-flex h-9 items-center gap-1.5 rounded-full bg-danger px-4 text-sm font-semibold text-white transition-colors hover:brightness-110">
+                      <yc-icon name="trash" [size]="15" /> Quitar
+                    </button>
+                  </div>
+                </div>
+              }
+              <a [routerLink]="['/producto', item.product.slug]" class="h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-line bg-white sm:h-28 sm:w-28">
+                <yc-product-image [src]="item.product.images[0]?.url" [icon]="catIcon(item.product.categoryId)" [label]="''" [seed]="item.product.id" />
+              </a>
+
+              <div class="flex min-w-0 flex-1 flex-col">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0">
+                    <span class="text-2xs font-semibold uppercase tracking-wider text-accent-600">{{ item.product.brandName }}</span>
+                    <h3 class="truncate font-display font-semibold text-content">
+                      <a [routerLink]="['/producto', item.product.slug]" class="hover:text-brand-700">{{ item.product.name }}</a>
+                    </h3>
+                    @if (item.mode === 'rent') {
+                      <span class="mt-1 inline-block rounded-full bg-accent-100 px-2 py-0.5 text-2xs font-semibold text-accent-700">Alquiler mensual</span>
+                    }
+                  </div>
+                  <button type="button" (click)="askRemove(item)" class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-content-subtle hover:bg-surface-inset hover:text-danger" aria-label="Quitar">
+                    <yc-icon name="trash" [size]="17" />
+                  </button>
+                </div>
+
+                <!-- Unit price -->
+                <p class="mt-1 text-xs text-content-muted">
+                  {{ unitPrice(item) | cop }}<span class="text-content-subtle"> c/u{{ item.mode === 'rent' ? ' · mensual' : '' }}</span>
+                </p>
+
+                <div class="mt-auto flex items-center justify-between pt-3">
+                  <div class="flex h-10 items-center rounded-full border border-line-strong">
+                    <button type="button" (click)="setQty(item, item.quantity - 1)" class="grid h-10 w-9 place-items-center text-content-muted hover:text-content" aria-label="Disminuir"><yc-icon name="minus" [size]="15" /></button>
+                    <span class="w-7 text-center text-sm font-semibold">{{ item.quantity }}</span>
+                    <button type="button" (click)="setQty(item, item.quantity + 1)" class="grid h-10 w-9 place-items-center text-content-muted hover:text-content" aria-label="Aumentar"><yc-icon name="plus" [size]="15" /></button>
+                  </div>
+                  <div class="text-right">
+                    @if (item.quantity > 1) {
+                      <span class="block text-2xs text-content-subtle">{{ item.quantity }} × {{ unitPrice(item) | cop }}</span>
+                    }
+                    <span class="font-display text-lg font-bold text-content">{{ unitPrice(item) * item.quantity | cop }}</span>
+                    @if (item.mode === 'rent') { <span class="text-xs text-content-muted">/mes</span> }
+                  </div>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+
+        <a routerLink="/catalogo" class="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-600 hover:text-accent-700">
+          <yc-icon name="chevron-left" [size]="16" /> Seguir comprando
+        </a>
+      </div>
+
+      <!-- Summary -->
+      <aside class="lg:sticky lg:top-28 lg:self-start">
+        <div class="rounded-2xl border border-line bg-surface-raised p-6 shadow-card">
+          <h2 class="font-display text-lg font-semibold">Resumen</h2>
+          <dl class="mt-4 space-y-3 text-sm">
+            <div class="flex justify-between">
+              <dt class="text-content-muted">Subtotal <span class="text-content-subtle">({{ summary().itemCount }} art.)</span></dt>
+              <dd class="font-medium text-content">{{ summary().subtotal | cop }}</dd>
+            </div>
+            <div class="flex justify-between"><dt class="text-content-muted">IVA estimado (19%)</dt><dd class="font-medium text-content">{{ summary().estimatedTax | cop }}</dd></div>
+            <div class="flex justify-between border-t border-line pt-3 text-base">
+              <dt class="font-semibold text-content">Total estimado</dt>
+              <dd class="font-display font-bold text-content">{{ summary().total | cop }}</dd>
+            </div>
+          </dl>
+          <p class="mt-3 rounded-xl bg-surface-inset p-3 text-2xs text-content-muted">
+            * Valor referencial. La cotización final, disponibilidad y formas de pago se confirman con un asesor.
+          </p>
+
+          <a ycButton variant="whatsapp" [block]="true" size="lg" class="mt-5" [href]="quoteLink()" target="_blank" rel="noopener">
+            <yc-icon name="whatsapp" [size]="18" /> Solicitar cotización
+          </a>
+          <a ycButton variant="outline" [block]="true" class="mt-3" routerLink="/contacto">Otras formas de contacto</a>
+
+          <div class="mt-6 flex items-center justify-center gap-4 border-t border-line pt-5 text-2xs text-content-muted">
+            <span class="inline-flex items-center gap-1"><yc-icon name="shield-check" [size]="14" class="text-accent-600" /> Compra segura</span>
+            <span class="inline-flex items-center gap-1"><yc-icon name="wrench" [size]="14" class="text-accent-600" /> Soporte propio</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  } @else {
+    <!-- Empty -->
+    <div class="mt-10 grid place-items-center rounded-3xl border border-dashed border-line-strong py-20 text-center">
+      <span class="grid h-20 w-20 place-items-center rounded-full bg-surface-inset text-content-subtle"><yc-icon name="cart" [size]="36" /></span>
+      <h2 class="mt-6 font-display text-2xl text-content">Tu carrito está vacío</h2>
+      <p class="mt-2 max-w-sm text-content-muted">Explora nuestro catálogo y agrega los equipos que tu empresa necesita.</p>
+      <a ycButton variant="primary" size="lg" class="mt-6" routerLink="/catalogo">Explorar catálogo <yc-icon name="arrow-right" [size]="18" /></a>
+    </div>
+  }
+</div>

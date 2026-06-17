@@ -1,0 +1,148 @@
+<section
+  class="relative isolate overflow-hidden bg-ink-950 text-white"
+  aria-live="polite"
+>
+  <!-- Slides (crossfade stack) -->
+  <div
+    class="relative h-[calc((100svh-4.5rem)*0.62)] min-h-[440px] max-h-[660px] lg:h-[calc((100svh-6.75rem)*0.58)]"
+  >
+    @for (slide of slides(); track slide.titleMain; let i = $index) {
+      <div
+        class="absolute inset-0 transition-opacity duration-[1100ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+        [class.opacity-100]="i === index()"
+        [class.opacity-0]="i !== index()"
+        [class.pointer-events-none]="i !== index()"
+        [attr.aria-hidden]="i !== index()"
+      >
+        <!-- Cinematic background: deep base + light rays + grid + vignette -->
+        <div class="absolute inset-0 bg-[#04070e]"></div>
+        <!-- Mobile product image (hidden ≥lg, where the framed showcase shows instead) -->
+        <div class="absolute inset-0 lg:hidden">
+          <img [src]="slide.image" alt="" class="h-full w-full object-cover object-center opacity-45"
+            [attr.loading]="i === 0 ? 'eager' : 'lazy'" decoding="async" />
+          <div class="absolute inset-0 bg-gradient-to-r from-[#04070e] via-[#04070e]/88 to-[#04070e]/45"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#04070e] via-transparent to-transparent"></div>
+        </div>
+        <div class="absolute inset-0 overflow-hidden">
+          <div class="absolute -top-1/3 left-[12%] h-[180%] w-48 rotate-[18deg] blur-[90px]"
+            [style.background]="'linear-gradient(180deg,' + slide.streakA + ',transparent)'" [style.opacity]="0.35"></div>
+          <div class="absolute -top-1/3 left-[42%] h-[180%] w-32 rotate-[18deg] blur-[80px]"
+            [style.background]="'linear-gradient(180deg,' + slide.streakB + ',transparent)'" [style.opacity]="0.3"></div>
+          <div class="absolute -top-1/3 right-[8%] h-[180%] w-56 rotate-[18deg] blur-[110px]"
+            [style.background]="'linear-gradient(180deg,' + slide.streakA + ',transparent)'" [style.opacity]="0.28"></div>
+        </div>
+        <div class="absolute inset-0 bg-grid opacity-40"></div>
+        <div
+          class="absolute right-0 top-1/2 h-[34rem] w-[34rem] -translate-y-1/2 translate-x-1/4 rounded-full blur-[130px] transition-opacity duration-1000"
+          [style.background]="slide.streakA" [style.opacity]="i === index() ? 0.26 : 0"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#04070e] via-[#04070e]/70 to-transparent"></div>
+
+        <!-- Content -->
+        <div class="container-page relative grid h-full items-center gap-8 pb-16 pt-3 lg:grid-cols-[55fr_45fr]">
+          <!-- Copy -->
+          <div class="z-10 max-w-xl">
+            <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1 text-2xs font-bold uppercase tracking-[0.18em] backdrop-blur"
+              [style.color]="slide.streakA">
+              <span class="h-1.5 w-1.5 rounded-full" [style.background]="slide.streakA"></span>{{ slide.eyebrow }}
+            </span>
+
+            <h1 class="mt-4 font-display font-extrabold leading-[0.96] tracking-tight text-[clamp(2.1rem,4.4vw,3.9rem)]">
+              <span class="block text-white/90">{{ slide.titleTop }}</span>
+              <span [class]="'block ' + (slide.titleClass || 'text-gradient-brand')">{{ slide.titleMain }}</span>
+            </h1>
+
+            <p class="mt-4 max-w-md text-sm text-ink-300 sm:text-base">{{ slide.subtitle }}</p>
+
+            <div class="mt-6 flex flex-wrap items-center gap-3">
+              <a
+                [routerLink]="slide.ctaLink"
+                class="group inline-flex items-center gap-2 rounded-full bg-white py-2 pl-5 pr-2 text-sm font-bold text-ink-950 shadow-[0_10px_36px_-12px_rgba(255,255,255,0.5)] transition-transform hover:scale-[1.03] active:scale-100"
+              >
+                {{ slide.ctaLabel }}
+                <span class="grid h-8 w-8 place-items-center rounded-full bg-ink-950 text-white transition-transform group-hover:translate-x-0.5">
+                  <yc-icon name="arrow-right" [size]="16" />
+                </span>
+              </a>
+              <a routerLink="/catalogo"
+                class="inline-flex h-10 items-center justify-center rounded-full border border-white/20 bg-white/5 px-5 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-white/15">Ver catálogo</a>
+            </div>
+
+            <div class="mt-5 hidden flex-wrap gap-2 sm:flex">
+              @for (chip of slide.chips; track chip.label) {
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-2xs font-medium text-ink-200 backdrop-blur">
+                  <yc-icon [name]="chip.icon" [size]="13" [style.color]="slide.streakA" />{{ chip.label }}
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Product showcase -->
+          <div class="relative hidden h-full items-center justify-center lg:flex"
+            style="perspective: 1600px">
+            <div
+              class="relative w-full max-w-md transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)] xl:max-w-lg"
+              [style.transform]="i === index() ? 'rotateY(-15deg) rotateX(7deg) scale(1)' : 'rotateY(-24deg) rotateX(7deg) scale(0.94)'"
+              [class.opacity-100]="i === index()"
+              [class.opacity-0]="i !== index()"
+              style="transform-style: preserve-3d"
+            >
+              <!-- Ambient glow behind the frame -->
+              <div class="absolute -inset-6 rounded-[2.5rem] blur-3xl"
+                [style.background]="slide.aurora" [style.opacity]="0.28"></div>
+
+              <!-- Framed real image -->
+              <div class="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-white/15 bg-ink-900 shadow-[0_50px_120px_-30px_rgba(0,0,0,0.9)]">
+                <img [src]="slide.image" [alt]="slide.titleTop + ' ' + slide.titleMain"
+                  class="h-full w-full object-cover" loading="eager" decoding="async" />
+                <!-- subtle top sheen + bottom gradient for text legibility on chips -->
+                <div class="absolute inset-0 bg-gradient-to-t from-ink-950/40 via-transparent to-white/10"></div>
+                <div class="absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-white/10"></div>
+              </div>
+
+              <!-- floating chips -->
+              <div class="glass-dark absolute -left-3 top-6 flex animate-[float_7s_ease-in-out_infinite] items-center gap-2 rounded-2xl p-2.5 pr-3.5">
+                <span class="grid h-8 w-8 place-items-center rounded-lg" [style.background]="slide.streakA + '33'" [style.color]="slide.streakA"><yc-icon name="sparkles" [size]="16" /></span>
+                <span class="text-2xs font-semibold leading-tight text-white">Calidad<br />premium</span>
+              </div>
+              <div class="glass-dark absolute -right-3 bottom-5 flex animate-[float_8s_ease-in-out_infinite] items-center gap-2 rounded-2xl p-2.5 pr-3.5">
+                <span class="grid h-8 w-8 place-items-center rounded-lg bg-brand-500/20 text-brand-300"><yc-icon name="shield-check" [size]="16" /></span>
+                <span class="text-2xs font-semibold leading-tight text-white">Garantía<br />incluida</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <p class="absolute bottom-5 left-0 right-0 px-5 text-2xs text-ink-500 md:px-8">
+          <span class="container-page block">Imágenes de referencia. Precios y disponibilidad sujetos a cambios según inventario.</span>
+        </p>
+      </div>
+    }
+
+    <!-- Side arrows -->
+    <button type="button" (click)="prev()" aria-label="Anterior"
+      class="absolute left-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition-colors hover:bg-white/15 md:left-5">
+      <yc-icon name="chevron-left" [size]="22" />
+    </button>
+    <button type="button" (click)="next()" aria-label="Siguiente"
+      class="absolute right-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition-colors hover:bg-white/15 md:right-5">
+      <yc-icon name="chevron-right" [size]="22" />
+    </button>
+
+    <!-- Dots + progress -->
+    <div class="absolute bottom-12 left-0 right-0 z-20 md:bottom-14">
+      <div class="container-page flex items-center gap-2.5" role="tablist" aria-label="Seleccionar destacado">
+        @for (slide of slides(); track slide.titleMain; let i = $index) {
+          <button type="button" (click)="go(i)" role="tab"
+            class="group relative h-1.5 overflow-hidden rounded-full transition-all duration-500"
+            [class.w-10]="i === index()"
+            [class.w-5]="i !== index()"
+            [class.bg-white]="i === index()"
+            [class.bg-ink-600]="i !== index()"
+            [attr.aria-selected]="i === index()"
+            [attr.aria-label]="'Ir al destacado ' + (i + 1)"></button>
+        }
+      </div>
+    </div>
+  </div>
+</section>

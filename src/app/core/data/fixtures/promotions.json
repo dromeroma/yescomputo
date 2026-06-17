@@ -1,0 +1,50 @@
+[
+  {
+    "id": "promo-01",
+    "slug": "tecnologia-circular",
+    "title": "Tecnología Circular",
+    "subtitle": "Reutilizamos hoy, protegemos mañana",
+    "description": "Equipos corporativos reacondicionados con calidad y garantía, hasta 60% por debajo del valor de uno nuevo.",
+    "badge": "HASTA -60%",
+    "ctaLabel": "Ver reacondicionados",
+    "ctaLink": "/categoria/reacondicionados",
+    "theme": "sustainability",
+    "featured": true
+  },
+  {
+    "id": "promo-02",
+    "slug": "alquiler-equipos",
+    "title": "Alquiler de equipos tecnológicos",
+    "subtitle": "Por días, semanas o meses",
+    "description": "La tecnología que impulsa tu negocio, sin descapitalizarlo. Flexibilidad total para proyectos y crecimiento.",
+    "badge": "SIN ATADURAS",
+    "ctaLabel": "Cotizar alquiler",
+    "ctaLink": "/servicios#alquiler",
+    "theme": "ink",
+    "featured": true
+  },
+  {
+    "id": "promo-03",
+    "slug": "servicio-tecnico",
+    "title": "Servicio Técnico Especializado",
+    "subtitle": "Tu tecnología en las mejores manos",
+    "description": "Diagnóstico transparente, reparación y mantenimiento con más de 20 años de experiencia.",
+    "badge": "20 AÑOS",
+    "ctaLabel": "Agendar servicio",
+    "ctaLink": "/servicios#tecnico",
+    "theme": "accent",
+    "featured": true
+  },
+  {
+    "id": "promo-04",
+    "slug": "portatiles-corporativos",
+    "title": "Portátiles que rinden por años",
+    "subtitle": "ThinkPad · EliteBook · Latitude",
+    "description": "Las líneas empresariales más confiables, diseñadas para durar y seguir generando valor.",
+    "badge": "TOP VENTAS",
+    "ctaLabel": "Explorar portátiles",
+    "ctaLink": "/categoria/portatiles-corporativos",
+    "theme": "brand",
+    "featured": true
+  }
+]
