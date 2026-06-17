@@ -1,35 +1,37 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 /**
- * Yes Computo wordmark. Reconstructed as crisp markup (not a raster) so it
- * stays sharp at any size and adapts to light/dark surfaces via the `tone`
- * input. The bracket-plus glyph echoes the brand's cursor motif.
+ * Yes Computo wordmark — the official brand artwork (flat two-colour SVG,
+ * derived from the marketing logo). Scales crisply at any size and reads on
+ * both light and dark surfaces, so a single asset covers every placement.
+ *
+ * `size` is the rendered height in px; width is derived from the logo's
+ * intrinsic 2048×980 aspect ratio (and set as an attribute to avoid layout
+ * shift while the SVG loads). The `tone` input is kept for call-site
+ * compatibility — the full-colour mark is used regardless.
  */
 @Component({
   selector: 'yc-logo',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'inline-flex items-center' },
   template: `
-    <span class="inline-flex items-baseline font-display font-extrabold leading-none tracking-tight"
-      [style.font-size.px]="size()">
-      <span class="text-brand-500">yes</span>
-      <span
-        class="mx-[0.12em] inline-grid place-items-center rounded-[0.18em] border-[0.09em] text-brand-500"
-        [style.width.em]="0.66"
-        [style.height.em]="0.66"
-        [class.border-brand-500]="true"
-        aria-hidden="true"
-      >
-        <span class="text-[0.5em] leading-none">+</span>
-      </span>
-      <span [class]="tone() === 'light' ? 'text-white' : 'text-accent-600'">computo</span>
-    </span>
-    <span class="sr-only">Yes Computo</span>
+    <img
+      src="/img/logo.svg"
+      alt="Yes Computo"
+      class="block w-auto select-none"
+      draggable="false"
+      [width]="width()"
+      [height]="size()"
+      [style.height.px]="size()"
+    />
   `,
 })
 export class Logo {
-  /** Pixel font-size of the wordmark. */
+  /** Rendered height of the wordmark in px. */
   readonly size = input(26);
-  /** `dark` → teal "computo" (light backgrounds); `light` → white (dark backgrounds). */
+  /** Retained for API compatibility; the full-colour logo is used either way. */
   readonly tone = input<'dark' | 'light'>('dark');
+
+  /** Intrinsic aspect ratio of the logo artwork (2048×980). */
+  protected readonly width = computed(() => Math.round(this.size() * (2048 / 980)));
 }

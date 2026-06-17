@@ -28,32 +28,63 @@ export class SeoService {
   private readonly doc = inject(DOCUMENT);
   private readonly config = inject(APP_CONFIG);
 
+  /** Default social share card (1200×630), used when a page has no own image. */
+  private static readonly DEFAULT_IMAGE = '/img/og-cover.png';
+
   update(data: SeoData): void {
     const brand = this.config.company.name;
     const fullTitle = data.title.includes(brand)
       ? data.title
       : `${data.title} · ${brand}`;
-    const description =
-      data.description ?? this.config.company.tagline;
+    const description = data.description ?? this.config.company.tagline;
     const url = this.config.company.website + (data.path ?? '');
+    const usingDefaultImage = !data.image;
+    const image = this.absolute(data.image ?? SeoService.DEFAULT_IMAGE);
 
     this.title.setTitle(fullTitle);
     this.setTag('name', 'description', description);
 
     // Open Graph
+    this.setTag('property', 'og:site_name', brand);
+    this.setTag('property', 'og:locale', this.config.company.locale.replace('-', '_'));
     this.setTag('property', 'og:title', fullTitle);
     this.setTag('property', 'og:description', description);
     this.setTag('property', 'og:type', data.type ?? 'website');
     this.setTag('property', 'og:url', url);
-    if (data.image) this.setTag('property', 'og:image', data.image);
+    this.setTag('property', 'og:image', image);
+    this.setTag('property', 'og:image:secure_url', image);
+    this.setTag('property', 'og:image:alt', `${brand} · ${this.config.company.tagline}`);
+    // The default card has known dimensions; per-page images may differ.
+    if (usingDefaultImage) {
+      this.setTag('property', 'og:image:type', 'image/png');
+      this.setTag('property', 'og:image:width', '1200');
+      this.setTag('property', 'og:image:height', '630');
+    } else {
+      this.removeTag('property', 'og:image:type');
+      this.removeTag('property', 'og:image:width');
+      this.removeTag('property', 'og:image:height');
+    }
 
     // Twitter
-    this.setTag('name', 'twitter:card', data.image ? 'summary_large_image' : 'summary');
+    this.setTag('name', 'twitter:card', 'summary_large_image');
     this.setTag('name', 'twitter:title', fullTitle);
     this.setTag('name', 'twitter:description', description);
+    this.setTag('name', 'twitter:image', image);
+    this.setTag('name', 'twitter:image:alt', `${brand} · ${this.config.company.tagline}`);
 
     this.setCanonical(url);
     this.setJsonLd(data.jsonLd);
+  }
+
+  /** Resolve a path or relative URL to an absolute one for social scrapers. */
+  private absolute(src: string): string {
+    if (/^https?:\/\//i.test(src)) return src;
+    const base = this.config.company.website.replace(/\/$/, '');
+    return base + (src.startsWith('/') ? src : `/${src}`);
+  }
+
+  private removeTag(attr: 'name' | 'property', key: string): void {
+    this.meta.removeTag(`${attr}='${key}'`);
   }
 
   private setTag(attr: 'name' | 'property', key: string, content: string): void {
