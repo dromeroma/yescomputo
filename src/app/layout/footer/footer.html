@@ -107,12 +107,24 @@
 
   <!-- Bottom legal -->
   <div class="border-t border-white/10">
-    <div class="container-page flex flex-col items-center justify-between gap-3 py-5 text-xs text-ink-500 sm:flex-row">
+    <div class="container-page flex flex-col items-center gap-3 py-5 text-xs text-ink-500 sm:flex-row sm:justify-between">
       <p>© {{ year }} {{ config.company.legalName }}. Todos los derechos reservados.</p>
-      <div class="flex items-center gap-5">
+      <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
         <a routerLink="/terminos-y-condiciones" class="hover:text-ink-300">Términos y condiciones</a>
         <a routerLink="/politica-de-privacidad" class="hover:text-ink-300">Política de privacidad</a>
+        <span
+          class="rounded-full border border-white/10 px-2.5 py-0.5 font-mono text-2xs tracking-tight text-ink-600"
+          title="Versión del sitio"
+          >v{{ config.appVersion }}</span
+        >
       </div>
     </div>
+  </div>
+
+  <!-- Credit -->
+  <div class="border-t border-white/5 py-4">
+    <p class="container-page text-center text-2xs text-ink-600">
+      Developed by <span class="font-medium text-ink-300">Savvytrix Solutions — Savvy</span>
+    </p>
   </div>
 </footer>

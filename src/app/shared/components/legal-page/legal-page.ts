@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { APP_CONFIG } from '../../../core/config/app-config';
 import { WhatsappService } from '../../../core/services/whatsapp.service';
@@ -51,8 +60,14 @@ export interface LegalSection {
             <p class="mb-3 text-2xs font-semibold uppercase tracking-[0.16em] text-content-subtle">Contenido</p>
             <nav class="flex flex-col gap-1 border-l border-line">
               @for (s of sections(); track s.id; let i = $index) {
-                <a [href]="'#' + s.id"
-                  class="-ml-px border-l-2 border-transparent py-1.5 pl-4 text-sm text-content-muted transition-colors hover:border-accent-500 hover:text-content">
+                <a [href]="'#' + s.id" (click)="scrollTo($event, s.id)"
+                  class="-ml-px border-l-2 py-1.5 pl-4 text-sm transition-colors hover:text-content"
+                  [class.border-accent-500]="activeId() === s.id"
+                  [class.font-semibold]="activeId() === s.id"
+                  [class.text-content]="activeId() === s.id"
+                  [class.border-transparent]="activeId() !== s.id"
+                  [class.text-content-muted]="activeId() !== s.id"
+                  [attr.aria-current]="activeId() === s.id ? 'true' : null">
                   <span class="text-content-subtle">{{ i + 1 }}.</span> {{ s.heading }}
                 </a>
               }
@@ -95,7 +110,7 @@ export interface LegalSection {
             </p>
             <div class="mt-5 flex flex-wrap gap-3">
               <a [href]="whatsappLink" target="_blank" rel="noopener"
-                class="inline-flex h-11 items-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]">
+                class="yc-wa relative inline-flex h-11 items-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]">
                 <yc-icon name="whatsapp" [size]="18" /> WhatsApp
               </a>
               <a [href]="'mailto:' + config.company.email"
@@ -112,6 +127,7 @@ export interface LegalSection {
 export class LegalPage {
   protected readonly config = inject(APP_CONFIG);
   private readonly whatsapp = inject(WhatsappService);
+  private readonly doc = inject(DOCUMENT);
 
   readonly title = input.required<string>();
   readonly subtitle = input<string>('');
@@ -121,4 +137,46 @@ export class LegalPage {
   protected readonly whatsappLink = this.whatsapp.link(
     '¡Hola Yes Computo! 👋 Tengo una consulta sobre sus políticas/términos.',
   );
+
+  /** Id of the section currently in view (drives the TOC highlight). */
+  protected readonly activeId = signal('');
+
+  private observer?: IntersectionObserver;
+
+  constructor() {
+    // Scroll-spy — browser only (afterNextRender doesn't run on the server).
+    afterNextRender(() => this.setupScrollSpy());
+    inject(DestroyRef).onDestroy(() => this.observer?.disconnect());
+  }
+
+  /**
+   * Smoothly scroll to a section within the same page. Intercepting the click
+   * (instead of relying on the `#hash` href) avoids the SPA router treating it
+   * as a navigation. `scroll-margin-top` on each section handles the offset.
+   */
+  protected scrollTo(event: Event, id: string): void {
+    event.preventDefault();
+    this.activeId.set(id);
+    this.doc.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.doc.defaultView?.history.replaceState(null, '', '#' + id);
+  }
+
+  private setupScrollSpy(): void {
+    const visible = new Map<string, boolean>();
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) visible.set(e.target.id, e.isIntersecting);
+        // Active = the first section (in document order) currently in the band.
+        const current = this.sections().find((s) => visible.get(s.id));
+        if (current) this.activeId.set(current.id);
+      },
+      // Band just below the sticky header → the section occupying the top of
+      // the viewport is the active one.
+      { rootMargin: '-120px 0px -65% 0px', threshold: 0 },
+    );
+    for (const s of this.sections()) {
+      const el = this.doc.getElementById(s.id);
+      if (el) this.observer.observe(el);
+    }
+  }
 }

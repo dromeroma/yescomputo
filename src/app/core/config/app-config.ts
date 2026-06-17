@@ -14,6 +14,8 @@ export interface AppConfig {
   apiBaseUrl: string;
   /** Path (or URL) to the local JSON fixtures used while `dataSource === 'local'`. */
   localDataPath: string;
+  /** Application version shown in the footer. Keep in sync with package.json. */
+  appVersion: string;
 
   company: CompanyInfo;
 }
@@ -49,6 +51,7 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
   dataSource: 'local',
   apiBaseUrl: 'https://api.yescomputo.com/v1',
   localDataPath: 'data',
+  appVersion: '0.0.1',
   company: {
     name: 'Yes Computo',
     legalName: 'Yes Computo S.A.S.',

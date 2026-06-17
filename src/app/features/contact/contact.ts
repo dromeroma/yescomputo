@@ -263,7 +263,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
     <!-- (3) CTA BAND -->
     <section class="section pt-0">
       <div class="container-page">
-        <div class="relative overflow-hidden rounded-3xl bg-ink-950 px-6 py-12 text-center text-white shadow-ink sm:px-12 sm:py-16">
+        <div class="shine group relative overflow-hidden rounded-3xl bg-ink-950 px-6 py-12 text-center text-white shadow-ink sm:px-12 sm:py-16">
           <div class="absolute -left-10 top-0 h-40 w-40 rounded-full bg-accent-500/20 blur-3xl"></div>
           <div class="absolute -right-10 bottom-0 h-40 w-40 rounded-full bg-brand-500/20 blur-3xl"></div>
           <div class="relative mx-auto max-w-2xl">

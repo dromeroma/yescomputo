@@ -135,12 +135,12 @@ interface ServiceCard {
             <h3 class="text-xl">Arrendar vs. Comprar</h3>
             <p class="mt-1 text-sm text-content-muted">Por qué el alquiler es la decisión más inteligente.</p>
             <div class="mt-6 grid grid-cols-2 gap-4">
-              <div class="rounded-2xl border border-brand-200 bg-brand-50 p-5">
-                <span class="eyebrow text-brand-700">Arrendar</span>
+              <div class="shine group relative overflow-hidden rounded-2xl border border-brand-200 bg-brand-50 p-5 transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-brand-300 hover:shadow-card-hover dark:border-brand-500/30">
+                <span class="eyebrow text-brand-700 dark:text-brand-300">Arrendar</span>
                 <ul class="mt-3 space-y-2.5">
                   @for (r of rentVs.rent; track r) {
-                    <li class="flex items-start gap-2 text-sm text-ink-700">
-                      <yc-icon name="check" [size]="16" class="mt-0.5 shrink-0 text-brand-600" />
+                    <li class="flex items-start gap-2 text-sm text-ink-700 dark:text-ink-100">
+                      <yc-icon name="check" [size]="16" class="mt-0.5 shrink-0 text-brand-600 dark:text-brand-400" />
                       <span>{{ r }}</span>
                     </li>
                   }
@@ -254,7 +254,7 @@ interface ServiceCard {
     <!-- (6) FINAL CTA -->
     <section class="section bg-surface">
       <div class="container-page">
-        <div class="relative overflow-hidden rounded-3xl bg-ink-950 px-8 py-14 text-center text-white shadow-ink sm:px-12">
+        <div class="shine group relative overflow-hidden rounded-3xl bg-ink-950 px-8 py-14 text-center text-white shadow-ink sm:px-12">
           <div class="absolute -top-24 -left-20 h-72 w-72 rounded-full bg-brand-500/20 blur-3xl"></div>
           <div class="absolute -bottom-28 -right-16 h-80 w-80 rounded-full bg-accent-500/20 blur-3xl"></div>
           <div class="relative mx-auto max-w-2xl">

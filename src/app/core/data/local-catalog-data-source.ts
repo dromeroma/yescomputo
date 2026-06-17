@@ -55,21 +55,17 @@ export class LocalCatalogDataSource extends CatalogDataSource {
   }
 
   override getFacets(query: ProductQuery): Observable<CatalogFacets> {
-    // Facets are computed against the query *ignoring* brand/condition/price so
-    // users can see sibling options — the standard ecommerce facet behaviour.
-    const base = this.applyFilters({
-      search: query.search,
-      categorySlug: query.categorySlug,
-      rentableOnly: query.rentableOnly,
-      inStockOnly: query.inStockOnly,
-      tags: query.tags,
-    });
-
+    // Cross-faceting: each facet group is computed against the full query while
+    // ignoring ONLY its own selection — so the counts stay coherent and a click
+    // never yields an empty result. In particular, brand counts respect the
+    // active condition filter (e.g. the fixed "reacondicionado" view), so a
+    // brand with no matching products simply doesn't appear.
+    const forBrands = this.applyFilters({ ...query, brandSlugs: undefined });
     const brandFacets: Facet[] = this.brands
       .map((b) => ({
         value: b.slug,
         label: b.name,
-        count: base.filter((p) => p.brandId === b.id).length,
+        count: forBrands.filter((p) => p.brandId === b.id).length,
       }))
       .filter((f) => f.count > 0);
 
@@ -78,15 +74,17 @@ export class LocalCatalogDataSource extends CatalogDataSource {
       reacondicionado: 'Reacondicionado',
       outlet: 'Outlet',
     };
+    const forConditions = this.applyFilters({ ...query, conditions: undefined });
     const conditionFacets: Facet[] = Object.keys(conditionLabels)
       .map((value) => ({
         value,
         label: conditionLabels[value],
-        count: base.filter((p) => p.condition === value).length,
+        count: forConditions.filter((p) => p.condition === value).length,
       }))
       .filter((f) => f.count > 0);
 
-    const prices = base.map((p) => p.price);
+    const forPrice = this.applyFilters({ ...query, minPrice: undefined, maxPrice: undefined });
+    const prices = forPrice.map((p) => p.price);
     const priceRange = {
       min: prices.length ? Math.min(...prices) : 0,
       max: prices.length ? Math.max(...prices) : 0,

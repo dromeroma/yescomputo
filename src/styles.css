@@ -199,6 +199,12 @@
     transition: background-color 0.4s var(--ease-out-expo), color 0.3s ease;
   }
 
+  /* Clip horizontal overflow from decorative glows / hover-scaled cards
+     without creating a scroll container (keeps position:sticky working). */
+  main {
+    overflow-x: clip;
+  }
+
   h1, h2, h3, h4, h5 {
     font-family: var(--font-display);
     font-weight: 700;
@@ -525,6 +531,34 @@
   to {
     --yc-bd: 360deg;
   }
+}
+
+/* Football: every WhatsApp button (.yc-wa) gets a rotating Colombia tricolor
+   ring at its edge — continuous, matching the floating WhatsApp button. */
+[data-campaign='mundial'] .yc-wa::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 2.5px;
+  background: conic-gradient(
+    from var(--yc-bd),
+    #fcd116,
+    #0a4fd6,
+    #e7142e,
+    #fcd116
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: yc-border-travel 3s linear infinite;
 }
 
 /* Subtle grow on hover (animated; composes with the card's lift). */

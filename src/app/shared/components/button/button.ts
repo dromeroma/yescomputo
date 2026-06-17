@@ -43,7 +43,7 @@ export class Button {
         'border border-line-strong text-content bg-surface-raised hover:border-content hover:bg-surface-inset',
       ghost: 'text-content-muted hover:bg-surface-inset hover:text-content',
       whatsapp:
-        'bg-[#25D366] text-white hover:bg-[#20bd5a] shadow-[0_8px_24px_-8px_rgba(37,211,102,0.6)] ' +
+        'yc-wa relative bg-[#25D366] text-white hover:bg-[#20bd5a] shadow-[0_8px_24px_-8px_rgba(37,211,102,0.6)] ' +
         'hover:-translate-y-0.5 active:translate-y-0',
     };
 
