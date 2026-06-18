@@ -43,6 +43,19 @@ app.use(
 );
 
 /**
+ * Hosting proxies (e.g. Vercel) add x-forwarded-* headers. Angular SSR only
+ * trusts host/proto by default and de-opts to client-side rendering (no
+ * server-rendered data) if it sees the others. Drop the untrusted ones so SSR
+ * renders normally; x-forwarded-host/proto are kept for correct URL resolution.
+ */
+app.use((req, _res, next) => {
+  delete req.headers['x-forwarded-for'];
+  delete req.headers['x-forwarded-port'];
+  delete req.headers['x-forwarded-prefix'];
+  next();
+});
+
+/**
  * Handle all other requests by rendering the Angular application.
  */
 app.use((req, res, next) => {
