@@ -62,13 +62,35 @@
     <yc-section-heading
       eyebrow="Selección destacada"
       title="Equipos recomendados por nuestros expertos"
-      description="Las referencias corporativas más buscadas por las empresas, con el mejor retorno de inversión.">
+      description="Lo mejor de cada categoría, seleccionado para ti. Explora una muestra y entra al catálogo para verlo todo.">
       <a ycButton variant="outline" routerLink="/catalogo">Ver catálogo <yc-icon name="arrow-right" [size]="16" /></a>
     </yc-section-heading>
 
-    <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-      @for (p of featured(); track p.id) {
-        <yc-product-card [product]="p" [categoryIcon]="catIcon(p.categoryId)" />
+    <div class="mt-12 space-y-14">
+      @for (sec of categorySections(); track sec.category.id) {
+        <div>
+          <!-- Per-category row header -->
+          <div class="flex items-end justify-between gap-4 border-b border-line pb-4">
+            <div class="flex items-center gap-3">
+              <span class="grid h-11 w-11 place-items-center rounded-xl bg-brand-100 text-brand-700">
+                <yc-icon [name]="sec.category.icon" [size]="22" />
+              </span>
+              <div>
+                <h3 class="font-display text-xl font-bold leading-tight text-content sm:text-2xl">{{ sec.category.name }}</h3>
+                <p class="mt-0.5 text-xs font-medium text-content-subtle">{{ sec.category.productCount }} productos disponibles</p>
+              </div>
+            </div>
+            <a ycButton variant="ghost" [routerLink]="['/categoria', sec.category.slug]" class="shrink-0">
+              Ver todos <yc-icon name="arrow-right" [size]="16" />
+            </a>
+          </div>
+
+          <div class="mt-6 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+            @for (p of sec.products; track p.id) {
+              <yc-product-card [product]="p" [categoryIcon]="catIcon(p.categoryId)" />
+            }
+          </div>
+        </div>
       }
     </div>
   </div>

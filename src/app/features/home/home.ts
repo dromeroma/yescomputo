@@ -39,11 +39,19 @@ export class Home implements OnInit {
     { initialValue: [] as Product[] },
   );
 
-  protected readonly featured = computed(() =>
-    this.allProducts()
-      .filter((p) => p.isFeatured)
-      .slice(0, 4),
-  );
+  /** "Selección destacada": one row per active category (max 4 products each),
+      with a link to that category's full listing. Categories with no loaded
+      products are skipped. Order follows the categories' sort order. */
+  protected readonly categorySections = computed(() => {
+    const products = this.allProducts();
+    return this.categories()
+      .map((category) => ({
+        category,
+        products: products.filter((p) => p.categoryId === category.id).slice(0, 4),
+      }))
+      .filter((section) => section.products.length > 0);
+  });
+
   protected readonly bestSellers = computed(() =>
     this.allProducts()
       .filter((p) => p.isBestSeller)
