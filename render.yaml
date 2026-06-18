@@ -1,0 +1,21 @@
+# Render Blueprint — Yes Computo · sitio público (Angular SSR)
+#
+# Servicio Node que corre el servidor SSR (server.mjs). Sirve las rutas
+# dinámicas (catálogo, producto, categoría) renderizadas en servidor, leyendo
+# del backend (API) — lo que Vercel no logra con el nuevo builder de Angular.
+#
+# Crear: New + → Blueprint → repo `dromeroma/yescomputo`.
+services:
+  - type: web
+    name: yescomputo-web
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node dist/yescomputo/server/server.mjs
+    healthCheckPath: /favicon.ico
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      # apiBaseUrl de producción ya está en el código (Render del backend).
+      # NG_ALLOWED_HOSTS ya incluye *.onrender.com y yescomputo.com en server.ts.
