@@ -61,9 +61,15 @@ app.use((req, _res, next) => {
 app.use((req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then((response) => {
+      if (!response) return next();
+      // Don't let the CDN cache SSR responses: a render made while the backend
+      // was cold would otherwise be cached empty. Always serve fresh data
+      // (also means admin changes show immediately). Static assets are still
+      // cached by the filesystem layer.
+      response.headers.set('Cache-Control', 'no-store');
+      return writeResponseToNodeResponse(response, res);
+    })
     .catch(next);
 });
 
