@@ -1,5 +1,6 @@
 import {
   ApplicationConfig,
+  isDevMode,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
 } from '@angular/core';
@@ -8,9 +9,19 @@ import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
-import { APP_CONFIG, DEFAULT_APP_CONFIG } from './core/config/app-config';
+import { AppConfig, APP_CONFIG, DEFAULT_APP_CONFIG } from './core/config/app-config';
 import { CatalogDataSource } from './core/data/catalog-data-source';
 import { LocalCatalogDataSource } from './core/data/local-catalog-data-source';
+import { ApiCatalogDataSource } from './core/data/api-catalog-data-source';
+
+// Resolve the runtime config: in dev the FastAPI backend runs locally; in a
+// production build the deployed API URL from DEFAULT_APP_CONFIG is used.
+const appRuntimeConfig: AppConfig = {
+  ...DEFAULT_APP_CONFIG,
+  // 127.0.0.1 (not "localhost") so Node's SSR fetch hits the IPv4 the API
+  // binds to, instead of preferring IPv6 ::1 and getting ECONNREFUSED.
+  apiBaseUrl: isDevMode() ? 'http://127.0.0.1:8000/v1' : DEFAULT_APP_CONFIG.apiBaseUrl,
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,11 +38,15 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
 
     // --- Application configuration -----------------------------------------
-    { provide: APP_CONFIG, useValue: DEFAULT_APP_CONFIG },
+    { provide: APP_CONFIG, useValue: appRuntimeConfig },
 
     // --- Catalog data source ------------------------------------------------
-    // Swap `LocalCatalogDataSource` for an `ApiCatalogDataSource` (HttpClient +
-    // AppConfig.apiBaseUrl) to go live against FastAPI. Nothing else changes.
-    { provide: CatalogDataSource, useClass: LocalCatalogDataSource },
+    // Driven by AppConfig.dataSource: 'api' → FastAPI (HttpClient), 'local' →
+    // JSON fixtures. Flip the switch in app-config.ts to fall back to local.
+    {
+      provide: CatalogDataSource,
+      useClass:
+        appRuntimeConfig.dataSource === 'api' ? ApiCatalogDataSource : LocalCatalogDataSource,
+    },
   ],
 };

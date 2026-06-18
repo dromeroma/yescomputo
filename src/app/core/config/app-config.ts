@@ -48,7 +48,7 @@ export const APP_CONFIG = new InjectionToken<AppConfig>('APP_CONFIG');
 
 /** Default production-ready configuration for Yes Computo. */
 export const DEFAULT_APP_CONFIG: AppConfig = {
-  dataSource: 'local',
+  dataSource: 'api',
   apiBaseUrl: 'https://api.yescomputo.com/v1',
   localDataPath: 'data',
   appVersion: '0.0.1',

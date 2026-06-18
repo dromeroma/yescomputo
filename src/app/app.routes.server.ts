@@ -8,7 +8,9 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
  * always reflect live data once the FastAPI backend is connected.
  */
 export const serverRoutes: ServerRoute[] = [
-  { path: '', renderMode: RenderMode.Prerender },
+  // Home shows live featured products → server-rendered on demand (cacheable),
+  // so builds don't depend on the API and the page reflects live data.
+  { path: '', renderMode: RenderMode.Server },
   { path: 'nosotros', renderMode: RenderMode.Prerender },
   { path: 'servicios', renderMode: RenderMode.Prerender },
   { path: 'contacto', renderMode: RenderMode.Prerender },
