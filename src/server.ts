@@ -7,6 +7,13 @@ import {
 import express from 'express';
 import { join } from 'node:path';
 
+// Allowlist the production hosts for Angular's SSR host-header check (SSRF
+// protection). Without this, unknown Host headers de-opt to client-side
+// rendering (no server-rendered data / SEO). A real NG_ALLOWED_HOSTS env var,
+// if set on the host, takes precedence. Read at AngularNodeAppEngine construction.
+process.env['NG_ALLOWED_HOSTS'] ??=
+  'yescomputo.com,www.yescomputo.com,*.vercel.app,localhost,127.0.0.1';
+
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
