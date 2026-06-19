@@ -67,6 +67,11 @@ export const routes: Routes = [
     title: 'Carrito · Yes Computo',
   },
   {
+    path: 'asesor',
+    loadComponent: () => import('./features/asesor/asesor').then((m) => m.Asesor),
+    title: 'Asesor de compra · Yes Computo',
+  },
+  {
     path: 'terminos-y-condiciones',
     loadComponent: () => import('./features/legal/terminos').then((m) => m.Terminos),
     title: 'Términos y Condiciones · Yes Computo',

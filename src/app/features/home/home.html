@@ -96,6 +96,31 @@
   </div>
 </section>
 
+<!-- ============================ ASESOR DE COMPRA (gated: buy_advisor) ============================ -->
+@if (advisorEnabled()) {
+  <section class="section">
+    <div class="container-page">
+      <a routerLink="/asesor"
+        class="shine group relative flex flex-col items-start gap-5 overflow-hidden rounded-[2rem] border border-line bg-surface-raised p-8 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-line-strong hover:shadow-card-hover md:flex-row md:items-center md:justify-between md:p-10">
+        <div class="absolute -right-10 -top-10 h-44 w-44 rounded-full bg-brand-400/15 blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+        <div class="relative flex items-center gap-5">
+          <span class="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-brand-100 text-brand-700">
+            <yc-icon name="sparkles" [size]="28" />
+          </span>
+          <div>
+            <span class="eyebrow"><span class="h-1 w-1 rounded-full bg-accent-500"></span>Asesor de compra</span>
+            <h2 class="mt-2 font-display text-2xl font-bold text-content sm:text-3xl">¿No sabes cuál elegir?</h2>
+            <p class="mt-1.5 max-w-md text-content-muted">Responde 4 preguntas rápidas y te recomendamos el equipo ideal para ti.</p>
+          </div>
+        </div>
+        <span ycButton variant="primary" size="lg" class="relative shrink-0">
+          Iniciar asesoría <yc-icon name="arrow-right" [size]="18" />
+        </span>
+      </a>
+    </div>
+  </section>
+}
+
 <!-- ============================ TECNOLOGÍA CIRCULAR ============================ -->
 <section class="section relative overflow-hidden bg-ink-950 text-white">
   <div class="absolute -right-20 top-0 h-80 w-80 rounded-full bg-brand-500/20 blur-[120px]"></div>

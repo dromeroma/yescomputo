@@ -8,6 +8,7 @@ import { CatalogService } from '../../core/services/catalog.service';
 import { SeoService } from '../../core/services/seo.service';
 import { WhatsappService } from '../../core/services/whatsapp.service';
 import { CampaignService } from '../../core/services/campaign.service';
+import { FeaturesService } from '../../core/services/features.service';
 import { Product } from '../../core/models';
 import { categoryIcon } from '../../shared/utils/category-icons';
 
@@ -30,6 +31,10 @@ export class Home implements OnInit {
   private readonly whatsapp = inject(WhatsappService);
   protected readonly config = inject(APP_CONFIG);
   protected readonly campaign = inject(CampaignService);
+  private readonly features = inject(FeaturesService);
+
+  /** Premium "Asesor de compra" entry point (gated by buy_advisor). */
+  protected readonly advisorEnabled = this.features.flag('buy_advisor');
 
   protected readonly categories = toSignal(this.catalog.getCategories(), { initialValue: [] });
   protected readonly promotions = toSignal(this.catalog.getPromotions(), { initialValue: [] });
