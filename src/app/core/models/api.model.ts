@@ -12,6 +12,8 @@ export interface Paginated<T> {
   page: number;
   pageSize: number;
   totalPages: number;
+  /** True when a search found no exact match and these are closest suggestions. */
+  approximate?: boolean;
 }
 
 export type SortOption =
