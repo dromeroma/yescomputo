@@ -1,8 +1,10 @@
 import {
   ApplicationConfig,
   isDevMode,
+  provideAppInitializer,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
+  inject,
 } from '@angular/core';
 import { provideRouter, withInMemoryScrolling, withViewTransitions } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
@@ -13,6 +15,7 @@ import { AppConfig, APP_CONFIG, DEFAULT_APP_CONFIG } from './core/config/app-con
 import { CatalogDataSource } from './core/data/catalog-data-source';
 import { LocalCatalogDataSource } from './core/data/local-catalog-data-source';
 import { ApiCatalogDataSource } from './core/data/api-catalog-data-source';
+import { FeaturesService } from './core/services/features.service';
 
 // Resolve the runtime config: in dev the FastAPI backend runs locally; in a
 // production build the deployed API URL from DEFAULT_APP_CONFIG is used.
@@ -39,6 +42,11 @@ export const appConfig: ApplicationConfig = {
 
     // --- Application configuration -----------------------------------------
     { provide: APP_CONFIG, useValue: appRuntimeConfig },
+
+    // --- Feature flags (white-label premium on/off) ------------------------
+    // Loads the site's enabled features before first render; premium UI gates
+    // on FeaturesService.isOn(...). Fails safe to all-off.
+    provideAppInitializer(() => inject(FeaturesService).load()),
 
     // --- Catalog data source ------------------------------------------------
     // Driven by AppConfig.dataSource: 'api' → FastAPI (HttpClient), 'local' →
