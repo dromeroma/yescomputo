@@ -135,6 +135,87 @@
         <h2 class="text-2xl">Descripción</h2>
         <p class="mt-4 leading-relaxed text-content-muted">{{ p.description }}</p>
 
+        <!-- ============ PASAPORTE DEL EQUIPO (gated: equipment_passport) ============ -->
+        @if (passport(); as pp) {
+          <section class="mt-10 overflow-hidden rounded-2xl border border-line bg-surface-raised shadow-card">
+            <div class="flex items-center gap-2.5 border-b border-line bg-surface-inset/60 px-5 py-4">
+              <span class="grid h-9 w-9 place-items-center rounded-xl bg-brand-100 text-brand-700"><yc-icon name="shield-check" [size]="18" /></span>
+              <div>
+                <h2 class="font-display text-lg font-bold leading-tight text-content">Pasaporte del equipo</h2>
+                <p class="text-xs text-content-subtle">Datos reales de esta unidad, probada y certificada por Yes Computo.</p>
+              </div>
+            </div>
+
+            <div class="space-y-5 p-5">
+              <!-- Grade -->
+              @if (pp.grade) {
+                <div class="flex items-center gap-3">
+                  <span class="grid h-10 w-10 place-items-center rounded-xl bg-brand-500 font-display text-lg font-extrabold text-ink-950">{{ pp.grade }}</span>
+                  <div>
+                    <p class="text-sm font-semibold text-content">{{ gradeLabels[pp.grade] }}</p>
+                    <p class="text-xs text-content-subtle">Estado estético</p>
+                  </div>
+                </div>
+              }
+
+              <!-- Health bars -->
+              @if (pp.batteryHealth != null || pp.diskHealth != null) {
+                <div class="grid gap-4 sm:grid-cols-2">
+                  @if (pp.batteryHealth != null) {
+                    <div>
+                      <div class="mb-1 flex items-center justify-between text-sm">
+                        <span class="inline-flex items-center gap-1.5 font-medium text-content"><yc-icon name="zap" [size]="15" class="text-accent-600" /> Salud de batería</span>
+                        <span class="font-semibold text-content">{{ pp.batteryHealth }}%</span>
+                      </div>
+                      <div class="h-2 overflow-hidden rounded-full bg-surface-inset">
+                        <div class="h-full rounded-full bg-brand-500" [style.width.%]="pp.batteryHealth"></div>
+                      </div>
+                    </div>
+                  }
+                  @if (pp.diskHealth != null) {
+                    <div>
+                      <div class="mb-1 flex items-center justify-between text-sm">
+                        <span class="inline-flex items-center gap-1.5 font-medium text-content"><yc-icon name="shield" [size]="15" class="text-accent-600" /> Salud de disco</span>
+                        <span class="font-semibold text-content">{{ pp.diskHealth }}%</span>
+                      </div>
+                      <div class="h-2 overflow-hidden rounded-full bg-surface-inset">
+                        <div class="h-full rounded-full bg-brand-500" [style.width.%]="pp.diskHealth"></div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+
+              <!-- QA checklist -->
+              @if (pp.tested?.length) {
+                <div>
+                  <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-content-subtle">Pruebas superadas</p>
+                  <div class="flex flex-wrap gap-2">
+                    @for (t of pp.tested; track t) {
+                      <span class="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium text-content">
+                        <yc-icon name="check-circle" [size]="14" class="text-brand-600" /> {{ t }}
+                      </span>
+                    }
+                  </div>
+                </div>
+              }
+
+              <!-- Notes -->
+              @if (pp.notes) {
+                <p class="rounded-xl bg-surface-inset p-3 text-sm text-content-muted">{{ pp.notes }}</p>
+              }
+
+              <!-- Serial / warranty footer -->
+              <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-line pt-4 text-sm">
+                @if (pp.serial) {
+                  <span class="text-content-muted">Serial: <span class="font-mono font-semibold text-content">{{ pp.serial }}</span></span>
+                }
+                <span class="inline-flex items-center gap-1.5 text-content-muted"><yc-icon name="shield-check" [size]="15" class="text-brand-600" /> Garantía {{ p.warrantyMonths ?? 12 }} meses</span>
+              </div>
+            </div>
+          </section>
+        }
+
         <h2 class="mt-10 text-2xl">Especificaciones técnicas</h2>
         <div class="mt-5 space-y-6">
           @for (group of specGroups(); track group.group) {

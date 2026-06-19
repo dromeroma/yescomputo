@@ -7,7 +7,8 @@ import { CatalogService } from '../../core/services/catalog.service';
 import { CartService } from '../../core/services/cart.service';
 import { SeoService } from '../../core/services/seo.service';
 import { WhatsappService } from '../../core/services/whatsapp.service';
-import { AcquisitionMode, Product, SpecItem } from '../../core/models';
+import { FeaturesService } from '../../core/services/features.service';
+import { AcquisitionMode, Product, ProductPassport, SpecItem } from '../../core/models';
 import { categoryIcon } from '../../shared/utils/category-icons';
 
 import { Button } from '../../shared/components/button/button';
@@ -30,8 +31,33 @@ export class ProductDetail {
   private readonly cart = inject(CartService);
   private readonly seo = inject(SeoService);
   private readonly whatsapp = inject(WhatsappService);
+  private readonly features = inject(FeaturesService);
 
   readonly catIcon = categoryIcon;
+
+  /** Premium "Pasaporte del equipo" (gated by equipment_passport). */
+  private readonly passportEnabled = this.features.flag('equipment_passport');
+
+  /** The passport panel shows only when the feature is on AND there is data. */
+  protected readonly passport = computed<ProductPassport | null>(() => {
+    if (!this.passportEnabled()) return null;
+    const pp = this.product()?.passport;
+    if (!pp) return null;
+    const hasData =
+      pp.grade ||
+      pp.batteryHealth != null ||
+      pp.diskHealth != null ||
+      pp.serial ||
+      (pp.tested?.length ?? 0) > 0 ||
+      pp.notes;
+    return hasData ? pp : null;
+  });
+
+  protected readonly gradeLabels: Record<string, string> = {
+    A: 'Grado A · Como nuevo',
+    B: 'Grado B · Buen estado',
+    C: 'Grado C · Con detalles de uso',
+  };
 
   protected readonly product = toSignal<Product | undefined>(
     this.route.paramMap.pipe(

@@ -78,4 +78,21 @@ export interface Product {
 
   tags?: string[];
   createdAt?: string;
+
+  /** "Pasaporte del equipo" — per-unit trust data (refurbished). */
+  passport?: ProductPassport;
+}
+
+/** Per-unit trust/QA data shown in the Pasaporte del equipo panel. */
+export interface ProductPassport {
+  /** Cosmetic grade: A (como nuevo), B (buen estado), C (con detalles). */
+  grade?: 'A' | 'B' | 'C';
+  /** Battery health %, 0–100. */
+  batteryHealth?: number;
+  /** Disk/SSD health %, 0–100. */
+  diskHealth?: number;
+  serial?: string;
+  /** QA checks passed (Pantalla, Teclado, Puertos…). */
+  tested?: string[];
+  notes?: string;
 }
