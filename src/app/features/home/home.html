@@ -135,7 +135,11 @@
       </p>
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
         <a ycButton variant="primary" routerLink="/categoria/reacondicionados">Ver reacondicionados</a>
-        <a ycButton variant="dark" routerLink="/tecnologia-circular">Conocer más</a>
+        @if (tradeinEnabled()) {
+          <a ycButton variant="dark" routerLink="/recompra">Vende tu equipo <yc-icon name="arrow-right" [size]="16" /></a>
+        } @else {
+          <a ycButton variant="dark" routerLink="/tecnologia-circular">Conocer más</a>
+        }
       </div>
     </div>
 

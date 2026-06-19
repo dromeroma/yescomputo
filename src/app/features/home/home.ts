@@ -35,6 +35,8 @@ export class Home implements OnInit {
 
   /** Premium "Asesor de compra" entry point (gated by buy_advisor). */
   protected readonly advisorEnabled = this.features.flag('buy_advisor');
+  /** Premium "Trade-in" entry point (gated by tradein). */
+  protected readonly tradeinEnabled = this.features.flag('tradein');
 
   protected readonly categories = toSignal(this.catalog.getCategories(), { initialValue: [] });
   protected readonly promotions = toSignal(this.catalog.getPromotions(), { initialValue: [] });

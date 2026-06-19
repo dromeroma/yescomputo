@@ -1,0 +1,82 @@
+<div class="container-page py-10 md:py-16">
+  @if (!enabled()) {
+    <div class="mx-auto grid max-w-md place-items-center rounded-3xl border border-dashed border-line-strong py-20 text-center">
+      <span class="grid h-16 w-16 place-items-center rounded-full bg-surface-inset text-content-subtle"><yc-icon name="recycle" [size]="30" /></span>
+      <h1 class="mt-5 font-display text-xl text-content">No disponible</h1>
+      <p class="mt-2 max-w-xs text-sm text-content-muted">Esta función no está activa en este momento.</p>
+      <a ycButton variant="primary" class="mt-6" routerLink="/catalogo">Explorar catálogo <yc-icon name="arrow-right" [size]="18" /></a>
+    </div>
+  } @else {
+    <div class="mx-auto max-w-2xl">
+      <!-- Header -->
+      <div class="text-center">
+        <span class="eyebrow justify-center"><span class="h-1 w-1 rounded-full bg-accent-500"></span>Plan Trade-in</span>
+        <h1 class="mt-3 text-3xl sm:text-4xl">Vende tu equipo usado</h1>
+        <p class="mx-auto mt-3 max-w-lg text-content-muted">Cuéntanos qué tienes y te damos una cotización para usarlo como parte de pago. Te respondemos por WhatsApp.</p>
+      </div>
+
+      @if (submitted()) {
+        <!-- Success -->
+        <div class="mt-10 grid place-items-center rounded-3xl border border-line bg-surface-raised py-16 text-center shadow-card" style="animation: var(--animate-fade-in)">
+          <span class="grid h-16 w-16 place-items-center rounded-full bg-brand-100 text-brand-700"><yc-icon name="check-circle" [size]="32" /></span>
+          <h2 class="mt-5 font-display text-2xl text-content">¡Solicitud enviada!</h2>
+          <p class="mt-2 max-w-sm text-content-muted">Recibimos los datos de tu equipo. Un asesor te contactará por WhatsApp con la cotización.</p>
+          <a ycButton variant="primary" class="mt-6" routerLink="/catalogo">Seguir explorando <yc-icon name="arrow-right" [size]="18" /></a>
+        </div>
+      } @else {
+        <!-- Form -->
+        <div class="mt-10 rounded-3xl border border-line bg-surface-raised p-6 shadow-card sm:p-8">
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block text-sm font-medium text-content">Nombre *</label>
+              <input [value]="name()" (input)="set(name, $event)" class="h-12 w-full rounded-xl border border-line-strong bg-surface-raised px-4 text-sm outline-none focus:border-accent-400" placeholder="Tu nombre" />
+            </div>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-content">WhatsApp / teléfono *</label>
+              <input [value]="phone()" (input)="set(phone, $event)" inputmode="tel" class="h-12 w-full rounded-xl border border-line-strong bg-surface-raised px-4 text-sm outline-none focus:border-accent-400" placeholder="300 123 4567" />
+            </div>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-content">Tipo de equipo</label>
+              <select [value]="deviceType()" (change)="set(deviceType, $event)" class="h-12 w-full rounded-xl border border-line-strong bg-surface-raised px-4 text-sm outline-none focus:border-accent-400">
+                <option value="">Selecciona…</option>
+                @for (d of deviceTypes; track d) { <option [value]="d">{{ d }}</option> }
+              </select>
+            </div>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-content">Marca</label>
+              <input [value]="brand()" (input)="set(brand, $event)" class="h-12 w-full rounded-xl border border-line-strong bg-surface-raised px-4 text-sm outline-none focus:border-accent-400" placeholder="Dell, HP, Lenovo…" />
+            </div>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-content">Modelo</label>
+              <input [value]="model()" (input)="set(model, $event)" class="h-12 w-full rounded-xl border border-line-strong bg-surface-raised px-4 text-sm outline-none focus:border-accent-400" placeholder="Latitude 7490…" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block text-sm font-medium text-content">Características (procesador, RAM, disco)</label>
+              <input [value]="specs()" (input)="set(specs, $event)" class="h-12 w-full rounded-xl border border-line-strong bg-surface-raised px-4 text-sm outline-none focus:border-accent-400" placeholder="Core i5, 8GB RAM, 256GB SSD" />
+            </div>
+            <div>
+              <label class="mb-1.5 block text-sm font-medium text-content">Estado</label>
+              <select [value]="condition()" (change)="set(condition, $event)" class="h-12 w-full rounded-xl border border-line-strong bg-surface-raised px-4 text-sm outline-none focus:border-accent-400">
+                <option value="">Selecciona…</option>
+                @for (c of conditions; track c) { <option [value]="c">{{ c }}</option> }
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="mb-1.5 block text-sm font-medium text-content">Notas (opcional)</label>
+              <textarea [value]="notes()" (input)="set(notes, $event)" rows="3" class="w-full resize-y rounded-xl border border-line-strong bg-surface-raised px-4 py-3 text-sm outline-none focus:border-accent-400" placeholder="Detalles, accesorios, motivo de venta…"></textarea>
+            </div>
+          </div>
+
+          @if (error()) {
+            <p class="mt-4 rounded-xl bg-danger/10 p-3 text-sm text-danger">No pudimos enviar tu solicitud. Inténtalo de nuevo o escríbenos por WhatsApp.</p>
+          }
+
+          <button ycButton variant="primary" size="lg" [block]="true" class="mt-6" [disabled]="!valid() || submitting()" (click)="submit()">
+            {{ submitting() ? 'Enviando…' : 'Solicitar cotización' }}
+          </button>
+          <p class="mt-3 text-center text-2xs text-content-subtle">* Campos obligatorios. La valoración final la confirma un asesor.</p>
+        </div>
+      }
+    </div>
+  }
+</div>

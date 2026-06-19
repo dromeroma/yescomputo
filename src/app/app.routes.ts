@@ -72,6 +72,11 @@ export const routes: Routes = [
     title: 'Asesor de compra · Yes Computo',
   },
   {
+    path: 'recompra',
+    loadComponent: () => import('./features/tradein/tradein').then((m) => m.Tradein),
+    title: 'Plan Trade-in · Yes Computo',
+  },
+  {
     path: 'terminos-y-condiciones',
     loadComponent: () => import('./features/legal/terminos').then((m) => m.Terminos),
     title: 'Términos y Condiciones · Yes Computo',
