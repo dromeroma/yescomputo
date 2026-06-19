@@ -99,9 +99,15 @@
           <span class="font-display text-xl font-bold text-content">{{ summary().subtotal | cop }}</span>
         </div>
         <p class="mb-3 text-2xs text-content-subtle">Impuestos y envío se confirman en la cotización.</p>
-        <a ycButton variant="whatsapp" [block]="true" [href]="quoteLink()" target="_blank" rel="noopener" (click)="close()">
-          <yc-icon name="whatsapp" [size]="18" /> Cotizar por WhatsApp
-        </a>
+        @if (checkoutEnabled()) {
+          <a ycButton variant="whatsapp" [block]="true" [href]="checkoutLink()" target="_blank" rel="noopener" (click)="close()">
+            <yc-icon name="whatsapp" [size]="18" /> Finalizar pedido por WhatsApp
+          </a>
+        } @else {
+          <a ycButton variant="whatsapp" [block]="true" [href]="quoteLink()" target="_blank" rel="noopener" (click)="close()">
+            <yc-icon name="whatsapp" [size]="18" /> Cotizar por WhatsApp
+          </a>
+        }
         <a ycButton variant="outline" [block]="true" class="mt-2" routerLink="/carrito" (click)="close()">Ver carrito completo</a>
       </div>
     } @else {

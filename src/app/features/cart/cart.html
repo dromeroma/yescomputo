@@ -108,9 +108,25 @@
             * Valor referencial. La cotización final, disponibilidad y formas de pago se confirman con un asesor.
           </p>
 
-          <a ycButton variant="whatsapp" [block]="true" size="lg" class="mt-5" [href]="quoteLink()" target="_blank" rel="noopener">
-            <yc-icon name="whatsapp" [size]="18" /> Solicitar cotización
-          </a>
+          @if (checkoutEnabled()) {
+            <!-- Premium: Checkout por WhatsApp (gated by whatsapp_checkout) -->
+            <div class="mt-5 space-y-2.5">
+              <input type="text" [value]="customerName()" (input)="customerName.set($any($event.target).value)"
+                placeholder="Tu nombre (opcional)"
+                class="w-full rounded-xl border border-line-strong bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent-400" />
+              <input type="text" [value]="customerNote()" (input)="customerNote.set($any($event.target).value)"
+                placeholder="Nota: zona de entrega, horario… (opcional)"
+                class="w-full rounded-xl border border-line-strong bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent-400" />
+            </div>
+            <a ycButton variant="whatsapp" [block]="true" size="lg" class="mt-3" [href]="checkoutLink()" target="_blank" rel="noopener">
+              <yc-icon name="whatsapp" [size]="18" /> Finalizar pedido por WhatsApp
+            </a>
+            <p class="mt-2 text-center text-2xs text-content-subtle">Tu pedido se abre en WhatsApp con el detalle y el total listos.</p>
+          } @else {
+            <a ycButton variant="whatsapp" [block]="true" size="lg" class="mt-5" [href]="quoteLink()" target="_blank" rel="noopener">
+              <yc-icon name="whatsapp" [size]="18" /> Solicitar cotización
+            </a>
+          }
           <a ycButton variant="outline" [block]="true" class="mt-3" routerLink="/contacto">Otras formas de contacto</a>
 
           <div class="mt-6 flex items-center justify-center gap-4 border-t border-line pt-5 text-2xs text-content-muted">

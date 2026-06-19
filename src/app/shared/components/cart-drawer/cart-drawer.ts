@@ -12,6 +12,7 @@ import { RouterLink } from '@angular/router';
 
 import { CartService } from '../../../core/services/cart.service';
 import { WhatsappService } from '../../../core/services/whatsapp.service';
+import { FeaturesService } from '../../../core/services/features.service';
 import { CartItem } from '../../../core/models';
 import { categoryIcon } from '../../utils/category-icons';
 
@@ -35,6 +36,7 @@ import { CopCurrencyPipe } from '../../pipes/cop-currency.pipe';
 export class CartDrawer {
   private readonly cart = inject(CartService);
   private readonly whatsapp = inject(WhatsappService);
+  private readonly features = inject(FeaturesService);
   private readonly doc = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
@@ -47,6 +49,12 @@ export class CartDrawer {
   protected readonly isEmpty = this.cart.isEmpty;
 
   protected readonly quoteLink = computed(() => this.whatsapp.cartQuote(this.items()));
+
+  /** Premium Checkout por WhatsApp (gated by whatsapp_checkout). */
+  protected readonly checkoutEnabled = this.features.flag('whatsapp_checkout');
+  protected readonly checkoutLink = computed(() =>
+    this.whatsapp.cartCheckout(this.items(), this.summary()),
+  );
 
   /** Key of the line item pending removal confirmation (null = none). */
   protected readonly confirmingKey = signal<string | null>(null);

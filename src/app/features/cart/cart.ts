@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
 import { SeoService } from '../../core/services/seo.service';
 import { WhatsappService } from '../../core/services/whatsapp.service';
+import { FeaturesService } from '../../core/services/features.service';
 import { AcquisitionMode, CartItem } from '../../core/models';
 import { categoryIcon } from '../../shared/utils/category-icons';
 
@@ -22,6 +23,7 @@ export class Cart implements OnInit {
   private readonly cart = inject(CartService);
   private readonly whatsapp = inject(WhatsappService);
   private readonly seo = inject(SeoService);
+  private readonly features = inject(FeaturesService);
 
   readonly catIcon = categoryIcon;
 
@@ -30,6 +32,17 @@ export class Cart implements OnInit {
   protected readonly isEmpty = this.cart.isEmpty;
 
   protected readonly quoteLink = computed(() => this.whatsapp.cartQuote(this.items()));
+
+  /** Premium feature: full Checkout por WhatsApp (gated). */
+  protected readonly checkoutEnabled = this.features.flag('whatsapp_checkout');
+  protected readonly customerName = signal('');
+  protected readonly customerNote = signal('');
+  protected readonly checkoutLink = computed(() =>
+    this.whatsapp.cartCheckout(this.items(), this.summary(), {
+      name: this.customerName(),
+      note: this.customerNote(),
+    }),
+  );
 
   /** Key of the line item pending removal confirmation (null = none). */
   protected readonly confirmingKey = signal<string | null>(null);
