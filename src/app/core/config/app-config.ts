@@ -71,7 +71,7 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
     },
     hours: [
       { label: 'Lunes a Viernes', value: '8:00 a.m. – 6:00 p.m.' },
-      { label: 'Sábados', value: '9:00 a.m. – 1:00 p.m.' },
+      { label: 'Sábados', value: '9:00 a.m. – 6:00 p.m.' },
       { label: 'Domingos y festivos', value: 'Cerrado' },
     ],
     socials: [
