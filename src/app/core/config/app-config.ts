@@ -59,9 +59,9 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
     tagline: 'Tecnología que evoluciona, confianza que permanece.',
     yearsInBusiness: 20,
     foundedYear: 2005,
-    phoneDisplay: '300 496 4276',
-    whatsappNumber: '573004964276',
-    email: 'comercial@yescomputo.com',
+    phoneDisplay: '301 217 2061',
+    whatsappNumber: '573012172061',
+    email: 'yescomputo@gmail.com',
     website: 'https://www.yescomputo.com',
     address: {
       street: 'Calle 30 #58A-99, Local 1',
@@ -77,7 +77,7 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
     socials: [
       { platform: 'facebook', url: 'https://facebook.com/yescomputo' },
       { platform: 'instagram', url: 'https://instagram.com/yescomputo' },
-      { platform: 'whatsapp', url: 'https://wa.me/573004964276' },
+      { platform: 'whatsapp', url: 'https://wa.me/573012172061' },
     ],
     currency: 'COP',
     locale: 'es-CO',

@@ -347,7 +347,7 @@ export class Contact implements OnInit {
     this.seo.update({
       title: 'Contacto',
       description:
-        'Contáctanos para compra y alquiler de equipos, servicio técnico y redes. Estamos en Cartagena · WhatsApp 300 496 4276.',
+        'Contáctanos para compra y alquiler de equipos, servicio técnico y redes. Estamos en Cartagena · WhatsApp 301 217 2061.',
       path: '/contacto',
     });
   }
