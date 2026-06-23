@@ -18,11 +18,20 @@ import { Logo } from '../../shared/components/logo/logo';
 import { ProductCard } from '../../shared/components/product-card/product-card';
 import { SectionHeading } from '../../shared/components/section-heading/section-heading';
 import { HeroCarousel } from '../../shared/components/hero-carousel/hero-carousel';
+import { CategoryCarousel } from '../../shared/components/category-carousel/category-carousel';
+
+interface FeaturedRow {
+  title: string;
+  icon: string;
+  link: (string | number)[];
+  query?: Record<string, string>;
+  products: Product[];
+}
 
 @Component({
   selector: 'yc-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Button, Icon, Logo, ProductCard, SectionHeading, HeroCarousel],
+  imports: [RouterLink, Button, Icon, Logo, ProductCard, SectionHeading, HeroCarousel, CategoryCarousel],
   templateUrl: './home.html',
 })
 export class Home implements OnInit {
@@ -46,17 +55,39 @@ export class Home implements OnInit {
     { initialValue: [] as Product[] },
   );
 
-  /** "Selección destacada": one row per active category (max 4 products each),
-      with a link to that category's full listing. Categories with no loaded
-      products are skipped. Order follows the categories' sort order. */
-  protected readonly categorySections = computed(() => {
+  /** Categories that are NOT computers — excluded from the "Nuevos" row. */
+  private static readonly NON_COMPUTER = ['Monitores', 'Audio y Diademas', 'Accesorios'];
+
+  /** "Selección destacada": auto-scrolling carousels.
+      Row 1 = all NEW computers (laptops, desktops, CPUs) across categories;
+      then one carousel per active category. Each row scrolls in the alternating
+      direction set in the template. */
+  protected readonly featuredRows = computed<FeaturedRow[]>(() => {
     const products = this.allProducts();
-    return this.categories()
-      .map((category) => ({
-        category,
-        products: products.filter((p) => p.categoryId === category.id).slice(0, 4),
-      }))
-      .filter((section) => section.products.length > 0);
+    const rows: FeaturedRow[] = [];
+
+    const nuevos = products.filter(
+      (p) => p.condition === 'nuevo' && !Home.NON_COMPUTER.includes(p.categoryName),
+    );
+    if (nuevos.length) {
+      rows.push({
+        title: 'Equipos nuevos',
+        icon: 'sparkles',
+        link: ['/catalogo'],
+        query: { condition: 'nuevo' },
+        products: nuevos,
+      });
+    }
+
+    for (const cat of this.categories()) {
+      // 'equipos-nuevos' is already covered by the Nuevos row above.
+      if (cat.slug === 'equipos-nuevos') continue;
+      const items = products.filter((p) => p.categoryId === cat.id);
+      if (items.length) {
+        rows.push({ title: cat.name, icon: cat.icon, link: ['/categoria', cat.slug], products: items });
+      }
+    }
+    return rows;
   });
 
   protected readonly bestSellers = computed(() =>
