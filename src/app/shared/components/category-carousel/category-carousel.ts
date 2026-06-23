@@ -31,7 +31,14 @@ import { ProductCard } from '../product-card/product-card';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ProductCard],
   template: `
-    <div #viewport class="overflow-hidden">
+    <div
+      #viewport
+      class="overflow-hidden transition-transform duration-300 ease-out"
+      style="-webkit-mask-image: linear-gradient(to right, transparent 0, #000 2rem, #000 calc(100% - 2rem), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 2rem, #000 calc(100% - 2rem), transparent 100%);"
+      [style.transform]="hovered() ? 'scale(1.02)' : 'scale(1)'"
+      (pointerenter)="hovered.set(true)"
+      (pointerleave)="hovered.set(false)"
+    >
       <div
         #track
         class="flex select-none gap-3 will-change-transform sm:gap-5"
@@ -66,6 +73,8 @@ export class CategoryCarousel implements OnDestroy {
   protected readonly copies = signal(2);
   protected readonly offset = signal(0);
   protected readonly dragging = signal(false);
+  /** Pause + slightly enlarge the row while the cursor is over it. */
+  protected readonly hovered = signal(false);
 
   /** Items repeated enough times to fill the viewport and loop seamlessly. */
   protected readonly loop = computed(() => {
@@ -140,7 +149,8 @@ export class CategoryCarousel implements OnDestroy {
   private step = (t: number): void => {
     const dt = Math.min(0.05, (t - this.lastT) / 1000);
     this.lastT = t;
-    if (!this.dragging()) {
+    // Pause while dragging or hovered (so the user can read / click).
+    if (!this.dragging() && !this.hovered()) {
       // Recover the default direction after a minute of no interaction.
       if (
         this.lastInteraction &&
