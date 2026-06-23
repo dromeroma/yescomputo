@@ -81,12 +81,12 @@ import { Rating } from '../rating/rating';
           }
         </div>
 
-        <h3 class="line-clamp-2 font-display text-sm font-semibold leading-snug text-content sm:text-base">
+        <h3 class="line-clamp-2 min-h-[2.5rem] font-display text-sm font-semibold leading-snug text-content sm:min-h-[2.75rem] sm:text-base">
           <a [routerLink]="['/producto', product().slug]" class="hover:text-brand-700">{{
             product().name
           }}</a>
         </h3>
-        <p class="mt-1 hidden line-clamp-2 text-sm text-content-muted sm:block">{{ product().tagline }}</p>
+        <p class="mt-1 hidden line-clamp-2 text-sm text-content-muted sm:block sm:min-h-[2.5rem]">{{ product().tagline }}</p>
 
         <!-- Price -->
         <div class="mt-3 flex items-end justify-between gap-1.5 sm:mt-4 sm:gap-2">

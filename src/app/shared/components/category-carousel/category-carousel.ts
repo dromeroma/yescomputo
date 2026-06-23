@@ -33,15 +33,14 @@ import { ProductCard } from '../product-card/product-card';
   template: `
     <div
       #viewport
-      class="overflow-hidden transition-transform duration-300 ease-out"
+      class="overflow-hidden py-4 sm:py-6"
       style="-webkit-mask-image: linear-gradient(to right, transparent 0, #000 2rem, #000 calc(100% - 2rem), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 2rem, #000 calc(100% - 2rem), transparent 100%);"
-      [style.transform]="hovered() ? 'scale(1.02)' : 'scale(1)'"
       (pointerenter)="hovered.set(true)"
       (pointerleave)="hovered.set(false)"
     >
       <div
         #track
-        class="flex select-none gap-3 will-change-transform sm:gap-5"
+        class="flex select-none items-stretch gap-3 will-change-transform sm:gap-5"
         [class.cursor-grab]="!dragging()"
         [class.cursor-grabbing]="dragging()"
         style="touch-action: pan-y"
@@ -52,7 +51,9 @@ import { ProductCard } from '../product-card/product-card';
         (pointercancel)="onUp()"
       >
         @for (p of loop(); track $index) {
-          <div class="w-[62%] shrink-0 sm:w-52 lg:w-60">
+          <div
+            class="relative w-[62%] shrink-0 transition-transform duration-300 ease-out hover:z-20 hover:scale-[1.04] sm:w-52 lg:w-60"
+          >
             <yc-product-card [product]="p" [categoryIcon]="catIcon(p.categoryId)" />
           </div>
         }
