@@ -119,6 +119,9 @@ export class ProductDetail {
         description: p.tagline,
         path: `/producto/${p.slug}`,
         type: 'product',
+        // Share preview shows this product's own photo (falls back to the
+        // branded og-cover when the product has no image).
+        image: p.images?.find((i) => i.primary)?.url ?? p.images?.[0]?.url,
         jsonLd: {
           '@context': 'https://schema.org',
           '@type': 'Product',

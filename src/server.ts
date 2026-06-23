@@ -43,6 +43,56 @@ app.use(
 );
 
 /**
+ * SEO: robots.txt + dynamic sitemap.xml (built from the backend's /v1/sitemap).
+ * Defined before the Angular handler so they aren't swallowed by the SPA router.
+ */
+const API_BASE = process.env['API_BASE'] ?? 'https://yescomputo-admin.onrender.com/v1';
+
+function siteOrigin(req: express.Request): string {
+  const proto = (req.headers['x-forwarded-proto'] as string) || req.protocol || 'https';
+  const host =
+    (req.headers['x-forwarded-host'] as string) ||
+    req.headers['host'] ||
+    'www.yescomputo.com';
+  return `${proto}://${host}`;
+}
+
+app.get('/robots.txt', (req, res) => {
+  const origin = siteOrigin(req);
+  res
+    .type('text/plain')
+    .set('Cache-Control', 'public, max-age=86400')
+    .send(`User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`);
+});
+
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const origin = siteOrigin(req);
+    const r = await fetch(`${API_BASE}/sitemap`);
+    const data = (await r.json()) as {
+      urls?: { loc: string; changefreq?: string; priority?: number }[];
+    };
+    const items = (data.urls ?? [])
+      .map((u) => {
+        const loc = u.loc.startsWith('http') ? u.loc : origin + u.loc;
+        const cf = u.changefreq ? `<changefreq>${u.changefreq}</changefreq>` : '';
+        const pr = u.priority != null ? `<priority>${u.priority}</priority>` : '';
+        return `  <url><loc>${loc}</loc>${cf}${pr}</url>`;
+      })
+      .join('\n');
+    const xml =
+      `<?xml version="1.0" encoding="UTF-8"?>\n` +
+      `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${items}\n</urlset>\n`;
+    res
+      .type('application/xml')
+      .set('Cache-Control', 'public, max-age=3600')
+      .send(xml);
+  } catch {
+    res.status(502).type('text/plain').send('sitemap unavailable');
+  }
+});
+
+/**
  * Hosting proxies (e.g. Vercel) add x-forwarded-* headers. Angular SSR only
  * trusts host/proto by default and de-opts to client-side rendering (no
  * server-rendered data) if it sees the others. Drop the untrusted ones so SSR
