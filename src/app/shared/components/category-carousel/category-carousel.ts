@@ -52,7 +52,7 @@ import { ProductCard } from '../product-card/product-card';
       >
         @for (p of loop(); track $index) {
           <div
-            class="relative w-[62%] shrink-0 transition-transform duration-300 ease-out hover:z-20 hover:scale-[1.04] sm:w-52 lg:w-60"
+            class="relative w-[62%] shrink-0 transition-transform duration-300 ease-out hover:z-20 hover:[transform:scale(1.04)] sm:w-52 lg:w-60"
           >
             <yc-product-card [product]="p" [categoryIcon]="catIcon(p.categoryId)" />
           </div>
