@@ -79,6 +79,28 @@ export class ProductDetail {
   protected readonly qty = signal(1);
   protected readonly added = signal(false);
 
+  // --- Gallery: large main image + thumbnails (hover/tap to switch) ---------
+  /** User-picked image, scoped to the product so it resets on navigation. */
+  private readonly picked = signal<{ pid: string; url: string } | null>(null);
+  protected readonly fading = signal(false);
+  /** The image shown large: the picked one (if for this product) or the first. */
+  protected readonly mainImage = computed<string | undefined>(() => {
+    const p = this.product();
+    const pick = this.picked();
+    return pick && pick.pid === p?.id ? pick.url : p?.images?.[0]?.url;
+  });
+
+  /** Switch the large image with a soft fade. */
+  protected selectImage(url: string): void {
+    const p = this.product();
+    if (!p || url === this.mainImage()) return;
+    this.fading.set(true);
+    setTimeout(() => {
+      this.picked.set({ pid: p.id, url });
+      this.fading.set(false);
+    }, 170);
+  }
+
   protected readonly discount = computed(() => {
     const p = this.product();
     if (!p?.compareAtPrice || p.compareAtPrice <= p.price) return 0;

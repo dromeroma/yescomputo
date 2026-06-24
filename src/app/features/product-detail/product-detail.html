@@ -16,20 +16,41 @@
 
   <div class="container-page py-8 md:py-12">
     <div class="grid gap-10 lg:grid-cols-2">
-      <!-- Gallery -->
+      <!-- Gallery: thumbnails (left on desktop / below on mobile) + big image -->
       <div class="lg:sticky lg:top-28 lg:self-start">
-        <div class="aspect-[4/3] overflow-hidden rounded-3xl border border-line bg-white">
-          <yc-product-image [src]="p.images[0]?.url" [icon]="catIcon(p.categoryId)" [label]="p.brandName" [seed]="p.id" />
-        </div>
-        @if (p.images.length > 1) {
-          <div class="mt-4 grid grid-cols-4 gap-3">
-            @for (img of p.images; track img.url) {
-              <div class="aspect-square overflow-hidden rounded-xl border border-line bg-white">
-                <yc-product-image [src]="img.url" [icon]="catIcon(p.categoryId)" [label]="''" [seed]="p.id" />
-              </div>
-            }
+        <div class="flex flex-col gap-3 sm:flex-row-reverse sm:items-start">
+          <!-- Main image -->
+          <div class="relative aspect-[4/3] flex-1 overflow-hidden rounded-3xl border border-line bg-white">
+            <yc-product-image
+              [src]="mainImage()"
+              [icon]="catIcon(p.categoryId)"
+              [label]="p.brandName"
+              [seed]="p.id"
+              class="absolute inset-0 transition-opacity duration-300 ease-out"
+              [class.opacity-0]="fading()"
+              [class.opacity-100]="!fading()" />
           </div>
-        }
+
+          <!-- Thumbnails -->
+          @if (p.images.length > 1) {
+            <div class="flex gap-2.5 overflow-x-auto sm:max-h-[28rem] sm:w-20 sm:flex-col sm:overflow-y-auto sm:overflow-x-visible">
+              @for (img of p.images; track img.url) {
+                <button type="button"
+                  (mouseenter)="selectImage(img.url)"
+                  (focus)="selectImage(img.url)"
+                  (click)="selectImage(img.url)"
+                  class="aspect-square w-16 shrink-0 overflow-hidden rounded-xl border-2 bg-white transition-all duration-200 hover:opacity-100 sm:w-full"
+                  [class.border-brand-500]="img.url === mainImage()"
+                  [class.opacity-100]="img.url === mainImage()"
+                  [class.border-line]="img.url !== mainImage()"
+                  [class.opacity-70]="img.url !== mainImage()"
+                  [attr.aria-label]="'Ver imagen'">
+                  <yc-product-image [src]="img.url" [icon]="catIcon(p.categoryId)" [label]="''" [seed]="p.id" />
+                </button>
+              }
+            </div>
+          }
+        </div>
       </div>
 
       <!-- Info -->

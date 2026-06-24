@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnDestroy, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Product } from '../../../core/models';
 import { CartService } from '../../../core/services/cart.service';
@@ -18,6 +18,8 @@ import { ProductImage } from '../product-image/product-image';
   host: { class: 'group block h-full reveal' },
   template: `
     <article
+      (mouseenter)="onEnter()"
+      (mouseleave)="onLeave()"
       class="shine relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface-raised
              shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
              hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover"
@@ -36,12 +38,22 @@ import { ProductImage } from '../product-image/product-image';
       >
         <div class="h-full w-full transition-transform duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.07]">
           <yc-product-image
-            [src]="product().images[0]?.url"
+            [src]="cardImage()"
             [icon]="categoryIcon()"
             [label]="product().brandName"
             [seed]="product().id"
           />
         </div>
+        @if (product().images.length > 1) {
+          <!-- little dots indicating multiple photos -->
+          <div class="pointer-events-none absolute bottom-2 left-1/2 z-[6] flex -translate-x-1/2 gap-1">
+            @for (img of product().images; track img.url; let i = $index) {
+              <span class="h-1.5 w-1.5 rounded-full bg-white/70 shadow ring-1 ring-black/10 transition-all"
+                [class.!w-3]="i === imgIndex() % product().images.length"
+                [class.bg-white]="i === imgIndex() % product().images.length"></span>
+            }
+          </div>
+        }
 
         <!-- Flags -->
         <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">
@@ -121,12 +133,39 @@ import { ProductImage } from '../product-image/product-image';
     </article>
   `,
 })
-export class ProductCard {
+export class ProductCard implements OnDestroy {
   readonly product = input.required<Product>();
   /** Category glyph for the placeholder image. */
   readonly categoryIcon = input('cpu');
 
   private readonly cart = inject(CartService);
+
+  // --- Image cycling on hover (when the product has more than one photo) ----
+  protected readonly imgIndex = signal(0);
+  /** The image shown on the card (cycles through all on hover). */
+  protected readonly cardImage = computed(() => {
+    const imgs = this.product().images;
+    return imgs?.[this.imgIndex() % (imgs.length || 1)]?.url ?? imgs?.[0]?.url;
+  });
+  private cycleTimer: ReturnType<typeof setInterval> | null = null;
+
+  protected onEnter(): void {
+    const imgs = this.product().images;
+    if (!imgs || imgs.length < 2 || this.cycleTimer) return;
+    this.cycleTimer = setInterval(() => this.imgIndex.update((i) => i + 1), 1100);
+  }
+
+  protected onLeave(): void {
+    if (this.cycleTimer) {
+      clearInterval(this.cycleTimer);
+      this.cycleTimer = null;
+    }
+    this.imgIndex.set(0);
+  }
+
+  ngOnDestroy(): void {
+    this.onLeave();
+  }
 
   protected readonly discount = computed(() => {
     const p = this.product();
