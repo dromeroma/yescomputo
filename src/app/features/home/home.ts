@@ -90,11 +90,19 @@ export class Home implements OnInit {
     return rows;
   });
 
-  protected readonly bestSellers = computed(() =>
-    this.allProducts()
-      .filter((p) => p.isBestSeller)
-      .slice(0, 4),
-  );
+  /** "Favoritos de nuestros clientes": best-sellers first, then featured, then
+      a spread of the rest so the section is always nicely filled (up to 8). */
+  protected readonly bestSellers = computed(() => {
+    const all = this.allProducts();
+    const seen = new Set<string>();
+    const take = (list: Product[]) =>
+      list.filter((p) => (seen.has(p.id) ? false : (seen.add(p.id), true)));
+    return [
+      ...take(all.filter((p) => p.isBestSeller)),
+      ...take(all.filter((p) => p.isFeatured)),
+      ...take(all),
+    ].slice(0, 8);
+  });
 
   protected readonly whatsappLink = this.whatsapp.link(
     '¡Hola Yes Computo! 👋 Quiero asesoría para elegir los equipos ideales para mi empresa.',
