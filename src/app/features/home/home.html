@@ -55,8 +55,24 @@
   </div>
 </section>
 
+<!-- ============================ BEST SELLERS (Favoritos) ============================ -->
+@if (bestSellers().length) {
+  <section class="section bg-surface-subtle">
+    <div class="container-page">
+      <yc-section-heading eyebrow="Los más vendidos" title="Favoritos de nuestros clientes">
+        <a ycButton variant="outline" routerLink="/catalogo">Ver más <yc-icon name="arrow-right" [size]="16" /></a>
+      </yc-section-heading>
+      <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
+        @for (p of bestSellers(); track p.id) {
+          <yc-product-card [product]="p" [categoryIcon]="catIcon(p.categoryId)" />
+        }
+      </div>
+    </div>
+  </section>
+}
+
 <!-- ============================ FEATURED PRODUCTS ============================ -->
-<section class="section bg-surface-subtle">
+<section class="section">
   <div class="container-page">
     <yc-section-heading
       eyebrow="Selección destacada"
@@ -274,22 +290,6 @@
     </div>
   </div>
 </section>
-
-<!-- ============================ BEST SELLERS ============================ -->
-@if (bestSellers().length) {
-  <section class="section">
-    <div class="container-page">
-      <yc-section-heading eyebrow="Los más vendidos" title="Favoritos de nuestros clientes">
-        <a ycButton variant="outline" routerLink="/catalogo">Ver más <yc-icon name="arrow-right" [size]="16" /></a>
-      </yc-section-heading>
-      <div class="mt-10 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-        @for (p of bestSellers(); track p.id) {
-          <yc-product-card [product]="p" [categoryIcon]="catIcon(p.categoryId)" />
-        }
-      </div>
-    </div>
-  </section>
-}
 
 <!-- ============================ BENEFITS ============================ -->
 <section class="section bg-surface-subtle">
