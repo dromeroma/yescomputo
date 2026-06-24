@@ -41,6 +41,7 @@ export class Header {
 
   protected readonly mainNav = [
     { label: 'Inicio', link: '/' },
+    { label: 'Catálogo', link: '/catalogo' },
     { label: 'Reacondicionados', link: '/categoria/reacondicionados' },
     { label: 'Servicios', link: '/servicios' },
     { label: 'Tecnología Circular', link: '/tecnologia-circular' },

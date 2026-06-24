@@ -1,35 +1,39 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { isPlatformBrowser } from '@angular/common';
 import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
+  contentChild,
   ElementRef,
   inject,
   input,
   OnDestroy,
   PLATFORM_ID,
   signal,
+  TemplateRef,
   viewChild,
 } from '@angular/core';
 
-import { Product } from '../../../core/models';
-import { categoryIcon } from '../../utils/category-icons';
-import { ProductCard } from '../product-card/product-card';
-
 /**
- * Auto-scrolling, draggable product carousel (marquee-style).
+ * Generic auto-scrolling, draggable marquee row.
  *
- * - Continuously scrolls in its default direction (alternating per row via the
- *   `reverse` input) with a peek of the next/previous card.
- * - The user can drag/swipe it; it follows the user's direction.
- * - After ~1 minute without interaction it recovers its default direction.
- * - Infinite, seamless loop. SSR-safe (animation only runs in the browser).
+ * - Continuously scrolls (alternating direction via `reverse`) with a peek and
+ *   soft faded edges.
+ * - Pauses while hovered/dragged; the hovered item grows slightly (handled by
+ *   each wrapper's CSS hover). After ~1 min idle it recovers the default
+ *   direction. Infinite seamless loop. SSR-safe.
+ *
+ * Render any card via a projected template:
+ *   <yc-marquee-row [items]="list">
+ *     <ng-template let-item>…</ng-template>
+ *   </yc-marquee-row>
  */
 @Component({
-  selector: 'yc-category-carousel',
+  selector: 'yc-marquee-row',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ProductCard],
+  imports: [NgTemplateOutlet],
   template: `
     <div
       #viewport
@@ -50,38 +54,45 @@ import { ProductCard } from '../product-card/product-card';
         (pointerup)="onUp()"
         (pointercancel)="onUp()"
       >
-        @for (p of loop(); track $index) {
+        @for (item of loop(); track $index) {
           <div
-            class="relative w-[62%] shrink-0 transition-transform duration-300 ease-out hover:z-20 hover:[transform:scale(1.04)] sm:w-52 lg:w-60"
+            [class]="
+              'relative shrink-0 transition-transform duration-300 ease-out hover:z-20 hover:[transform:scale(1.04)] ' +
+              itemClass()
+            "
           >
-            <yc-product-card [product]="p" [categoryIcon]="catIcon(p.categoryId)" />
+            <ng-container *ngTemplateOutlet="tpl(); context: { $implicit: item }" />
           </div>
         }
       </div>
     </div>
   `,
 })
-export class CategoryCarousel implements OnDestroy {
-  readonly products = input.required<Product[]>();
-  /** false → scrolls right-to-left (default), true → left-to-right. */
+export class MarqueeRow implements OnDestroy {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly items = input.required<readonly any[]>();
+  /** false → right-to-left (default), true → left-to-right. */
   readonly reverse = input(false);
+  readonly speed = input(34); // px/s
+  /** Tailwind width/sizing classes for each item wrapper. */
+  readonly itemClass = input('w-[62%] sm:w-52 lg:w-60');
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  protected readonly tpl = contentChild.required<TemplateRef<{ $implicit: any }>>(TemplateRef);
 
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly trackRef = viewChild.required<ElementRef<HTMLElement>>('track');
   private readonly viewportRef = viewChild.required<ElementRef<HTMLElement>>('viewport');
 
-  readonly catIcon = categoryIcon;
   protected readonly copies = signal(2);
   protected readonly offset = signal(0);
   protected readonly dragging = signal(false);
-  /** Pause + slightly enlarge the row while the cursor is over it. */
   protected readonly hovered = signal(false);
 
-  /** Items repeated enough times to fill the viewport and loop seamlessly. */
   protected readonly loop = computed(() => {
-    const items = this.products();
-    const out: Product[] = [];
-    for (let i = 0; i < this.copies(); i++) out.push(...items);
+    const items = this.items();
+    const out: unknown[] = [];
+    for (let i = 0; i < this.copies(); i++) out.push(...(items as unknown[]));
     return out;
   });
 
@@ -89,12 +100,10 @@ export class CategoryCarousel implements OnDestroy {
   private setWidth = 0;
   private dir = -1;
   private defaultDir = -1;
-  private readonly speed = 34; // px/s
   private lastT = 0;
   private raf = 0;
   private lastInteraction = 0;
   private suppressClick = false;
-  // drag state
   private startX = 0;
   private startOffset = 0;
   private lastX = 0;
@@ -105,7 +114,6 @@ export class CategoryCarousel implements OnDestroy {
       this.defaultDir = this.reverse() ? 1 : -1;
       this.dir = this.defaultDir;
       this.measure();
-      // Cancel a card's navigation if the pointer actually dragged.
       this.trackRef().nativeElement.addEventListener(
         'click',
         (e) => {
@@ -125,7 +133,7 @@ export class CategoryCarousel implements OnDestroy {
 
   private measure(): void {
     const track = this.trackRef().nativeElement;
-    const n = this.products().length;
+    const n = this.items().length;
     const kids = track.children;
     if (n === 0 || kids.length <= n) return;
     const w = (kids[n] as HTMLElement).offsetLeft - (kids[0] as HTMLElement).offsetLeft;
@@ -138,7 +146,6 @@ export class CategoryCarousel implements OnDestroy {
     }
   }
 
-  /** Keep the offset within (-setWidth, 0] for a seamless infinite loop. */
   private wrap(o: number): number {
     const w = this.setWidth;
     if (w <= 0) return o;
@@ -150,9 +157,7 @@ export class CategoryCarousel implements OnDestroy {
   private step = (t: number): void => {
     const dt = Math.min(0.05, (t - this.lastT) / 1000);
     this.lastT = t;
-    // Pause while dragging or hovered (so the user can read / click).
     if (!this.dragging() && !this.hovered()) {
-      // Recover the default direction after a minute of no interaction.
       if (
         this.lastInteraction &&
         performance.now() - this.lastInteraction > 60_000 &&
@@ -160,7 +165,7 @@ export class CategoryCarousel implements OnDestroy {
       ) {
         this.dir = this.defaultDir;
       }
-      const o = this.wrap(this.offsetVal + this.dir * this.speed * dt);
+      const o = this.wrap(this.offsetVal + this.dir * this.speed() * dt);
       this.offsetVal = o;
       this.offset.set(o);
     }
@@ -168,7 +173,7 @@ export class CategoryCarousel implements OnDestroy {
   };
 
   protected onDown(e: PointerEvent): void {
-    if (!this.products().length) return;
+    if (!this.items().length) return;
     this.dragging.set(true);
     this.startX = e.clientX;
     this.lastX = e.clientX;

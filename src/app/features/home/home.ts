@@ -18,7 +18,7 @@ import { Logo } from '../../shared/components/logo/logo';
 import { ProductCard } from '../../shared/components/product-card/product-card';
 import { SectionHeading } from '../../shared/components/section-heading/section-heading';
 import { HeroCarousel } from '../../shared/components/hero-carousel/hero-carousel';
-import { CategoryCarousel } from '../../shared/components/category-carousel/category-carousel';
+import { MarqueeRow } from '../../shared/components/marquee-row/marquee-row';
 
 interface FeaturedRow {
   title: string;
@@ -31,7 +31,7 @@ interface FeaturedRow {
 @Component({
   selector: 'yc-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Button, Icon, Logo, ProductCard, SectionHeading, HeroCarousel, CategoryCarousel],
+  imports: [RouterLink, Button, Icon, Logo, ProductCard, SectionHeading, HeroCarousel, MarqueeRow],
   templateUrl: './home.html',
 })
 export class Home implements OnInit {
