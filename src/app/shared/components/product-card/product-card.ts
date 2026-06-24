@@ -81,21 +81,21 @@ import { Rating } from '../rating/rating';
           }
         </div>
 
-        <h3 class="line-clamp-2 min-h-[2.5rem] font-display text-sm font-semibold leading-snug text-content sm:min-h-[2.75rem] sm:text-base">
+        <h3 class="line-clamp-2 min-h-10 font-display text-sm font-semibold leading-snug text-content sm:min-h-11 sm:text-base">
           <a [routerLink]="['/producto', product().slug]" class="hover:text-brand-700">{{
             product().name
           }}</a>
         </h3>
-        <p class="mt-1 hidden line-clamp-2 text-sm text-content-muted sm:block sm:min-h-[2.5rem]">{{ product().tagline }}</p>
+        <p class="mt-1 line-clamp-2 text-sm text-content-muted max-sm:hidden sm:min-h-10">{{ product().tagline }}</p>
 
         <!-- Price (anchored to the bottom so every card lines up) -->
         <div class="mt-auto flex items-end justify-between gap-1.5 pt-3 sm:gap-2 sm:pt-4">
           <div class="min-w-0">
-            <!-- Reserve one line for the strike-through price always (min-h: 1lh)
-                 so discounted and non-discounted cards have identical height. -->
-            <span class="block min-h-[1lh] truncate text-2xs text-content-subtle line-through sm:text-xs">
-              @if (product().compareAtPrice) { {{ product().compareAtPrice | cop }} }
-            </span>
+            @if (product().compareAtPrice) {
+              <span class="block truncate text-2xs text-content-subtle line-through sm:text-xs">{{
+                product().compareAtPrice | cop
+              }}</span>
+            }
             <span class="block truncate font-display text-sm font-bold tabular-nums text-content sm:text-xl">{{ product().price | cop }}</span>
             @if (product().availableForRent && product().rentalMonthlyPrice) {
               <span class="hidden text-xs text-content-muted sm:block"
