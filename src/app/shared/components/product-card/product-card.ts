@@ -91,10 +91,10 @@ import { Rating } from '../rating/rating';
         <!-- Price (anchored to the bottom so every card lines up) -->
         <div class="mt-auto flex items-end justify-between gap-1.5 pt-3 sm:gap-2 sm:pt-4">
           <div class="min-w-0">
-            <!-- Always render the strike-through line (placeholder when no promo)
-                 so discounted and non-discounted cards have the same height. -->
-            <span class="block truncate text-2xs text-content-subtle line-through sm:text-xs">
-              @if (product().compareAtPrice) { {{ product().compareAtPrice | cop }} } @else { &nbsp; }
+            <!-- Reserve one line for the strike-through price always (min-h: 1lh)
+                 so discounted and non-discounted cards have identical height. -->
+            <span class="block min-h-[1lh] truncate text-2xs text-content-subtle line-through sm:text-xs">
+              @if (product().compareAtPrice) { {{ product().compareAtPrice | cop }} }
             </span>
             <span class="block truncate font-display text-sm font-bold tabular-nums text-content sm:text-xl">{{ product().price | cop }}</span>
             @if (product().availableForRent && product().rentalMonthlyPrice) {
