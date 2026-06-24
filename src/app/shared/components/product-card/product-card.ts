@@ -6,7 +6,6 @@ import { CopCurrencyPipe } from '../../pipes/cop-currency.pipe';
 import { Badge } from '../badge/badge';
 import { Icon } from '../icon/icon';
 import { ProductImage } from '../product-image/product-image';
-import { Rating } from '../rating/rating';
 
 /**
  * Reusable product card used across home rails, catalog grid and related
@@ -15,7 +14,7 @@ import { Rating } from '../rating/rating';
 @Component({
   selector: 'yc-product-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, CopCurrencyPipe, Badge, Icon, ProductImage, Rating],
+  imports: [RouterLink, CopCurrencyPipe, Badge, Icon, ProductImage],
   host: { class: 'group block h-full reveal' },
   template: `
     <article
@@ -76,9 +75,7 @@ import { Rating } from '../rating/rating';
           <span class="truncate text-2xs font-semibold uppercase tracking-wider text-accent-600">{{
             product().categoryName
           }}</span>
-          @if (product().rating) {
-            <span class="hidden sm:inline-flex"><yc-rating [value]="product().rating!" /></span>
-          }
+          <span class="shrink-0 font-mono text-2xs font-semibold tracking-wider text-content-subtle" title="Código del producto">{{ product().sku }}</span>
         </div>
 
         <h3 class="line-clamp-2 min-h-10 font-display text-sm font-semibold leading-snug text-content sm:min-h-11 sm:text-base">

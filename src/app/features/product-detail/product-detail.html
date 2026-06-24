@@ -243,7 +243,10 @@
             <yc-icon name="whatsapp" [size]="18" /> Hablar con un asesor
           </a>
           <dl class="mt-6 space-y-3 border-t border-white/10 pt-5 text-sm">
-            <div class="flex justify-between"><dt class="text-ink-400">SKU</dt><dd class="font-medium">{{ p.sku }}</dd></div>
+            <div class="flex items-center justify-between">
+              <dt class="text-ink-400">Código del producto</dt>
+              <dd class="rounded-md bg-white/10 px-2.5 py-1 font-mono text-base font-bold tracking-[0.2em] text-brand-300">{{ p.sku }}</dd>
+            </div>
             <div class="flex justify-between"><dt class="text-ink-400">Garantía</dt><dd class="font-medium">{{ p.warrantyMonths ?? 12 }} meses</dd></div>
             <div class="flex justify-between"><dt class="text-ink-400">Marca</dt><dd class="font-medium">{{ p.brandName }}</dd></div>
           </dl>
