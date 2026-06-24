@@ -16,7 +16,7 @@ import { Rating } from '../rating/rating';
   selector: 'yc-product-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, CopCurrencyPipe, Badge, Icon, ProductImage, Rating],
-  host: { class: 'group block reveal' },
+  host: { class: 'group block h-full reveal' },
   template: `
     <article
       class="shine relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface-raised
