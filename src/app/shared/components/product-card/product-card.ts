@@ -88,14 +88,14 @@ import { Rating } from '../rating/rating';
         </h3>
         <p class="mt-1 hidden line-clamp-2 text-sm text-content-muted sm:block sm:min-h-[2.5rem]">{{ product().tagline }}</p>
 
-        <!-- Price -->
-        <div class="mt-3 flex items-end justify-between gap-1.5 sm:mt-4 sm:gap-2">
+        <!-- Price (anchored to the bottom so every card lines up) -->
+        <div class="mt-auto flex items-end justify-between gap-1.5 pt-3 sm:gap-2 sm:pt-4">
           <div class="min-w-0">
-            @if (product().compareAtPrice) {
-              <span class="block truncate text-2xs text-content-subtle line-through sm:text-xs">{{
-                product().compareAtPrice | cop
-              }}</span>
-            }
+            <!-- Always render the strike-through line (placeholder when no promo)
+                 so discounted and non-discounted cards have the same height. -->
+            <span class="block truncate text-2xs text-content-subtle line-through sm:text-xs">
+              @if (product().compareAtPrice) { {{ product().compareAtPrice | cop }} } @else { &nbsp; }
+            </span>
             <span class="block truncate font-display text-sm font-bold tabular-nums text-content sm:text-xl">{{ product().price | cop }}</span>
             @if (product().availableForRent && product().rentalMonthlyPrice) {
               <span class="hidden text-xs text-content-muted sm:block"
