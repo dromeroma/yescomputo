@@ -7,7 +7,7 @@ import {
   inject,
 } from '@angular/core';
 import { provideRouter, withInMemoryScrolling, withViewTransitions } from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 
 import { routes } from './app.routes';
@@ -16,6 +16,8 @@ import { CatalogDataSource } from './core/data/catalog-data-source';
 import { LocalCatalogDataSource } from './core/data/local-catalog-data-source';
 import { ApiCatalogDataSource } from './core/data/api-catalog-data-source';
 import { FeaturesService } from './core/services/features.service';
+import { BrandingService } from './core/services/branding.service';
+import { tenantInterceptor } from './core/interceptors/tenant.interceptor';
 
 // Resolve the runtime config: in dev the FastAPI backend runs locally; in a
 // production build the deployed API URL from DEFAULT_APP_CONFIG is used.
@@ -37,7 +39,7 @@ export const appConfig: ApplicationConfig = {
       // Smooth, native cross-route animations.
       withViewTransitions(),
     ),
-    provideHttpClient(withFetch()),
+    provideHttpClient(withFetch(), withInterceptors([tenantInterceptor])),
     provideClientHydration(withEventReplay()),
 
     // --- Application configuration -----------------------------------------
@@ -47,6 +49,11 @@ export const appConfig: ApplicationConfig = {
     // Loads the site's enabled features before first render; premium UI gates
     // on FeaturesService.isOn(...). Fails safe to all-off.
     provideAppInitializer(() => inject(FeaturesService).load()),
+
+    // --- Branding (white-label: logo, colors, name, contacts per client) ---
+    // Applies the tenant's branding before first render; empty branding keeps
+    // the built-in defaults (Yes Computo unchanged).
+    provideAppInitializer(() => inject(BrandingService).load()),
 
     // --- Catalog data source ------------------------------------------------
     // Driven by AppConfig.dataSource: 'api' → FastAPI (HttpClient), 'local' →

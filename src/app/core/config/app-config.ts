@@ -24,6 +24,10 @@ export interface CompanyInfo {
   name: string;
   legalName: string;
   tagline: string;
+  /** Optional brand logo URL (per-tenant). Falls back to the built-in logo. */
+  logoUrl?: string;
+  /** Optional Open Graph share image (per-tenant). */
+  ogImage?: string;
   yearsInBusiness: number;
   foundedYear: number;
   phoneDisplay: string;

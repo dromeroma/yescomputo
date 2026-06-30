@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { APP_CONFIG } from '../../../core/config/app-config';
 
 /**
  * Yes Computo wordmark — the official brand artwork (flat two-colour SVG,
@@ -16,22 +17,29 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
   host: { class: 'inline-flex items-center' },
   template: `
     <img
-      src="/img/logo.svg"
-      alt="Yes Computo"
+      [src]="src()"
+      [alt]="alt()"
       class="block w-auto select-none"
       draggable="false"
-      [width]="width()"
+      [attr.width]="custom() ? null : width()"
       [height]="size()"
       [style.height.px]="size()"
     />
   `,
 })
 export class Logo {
+  private readonly config = inject(APP_CONFIG);
+
   /** Rendered height of the wordmark in px. */
   readonly size = input(26);
   /** Retained for API compatibility; the full-colour logo is used either way. */
   readonly tone = input<'dark' | 'light'>('dark');
 
-  /** Intrinsic aspect ratio of the logo artwork (tight viewBox 1929×880). */
+  /** Per-tenant logo when set, else the built-in Yes Computo wordmark. */
+  protected readonly src = computed(() => this.config.company.logoUrl || '/img/logo.svg');
+  protected readonly custom = computed(() => !!this.config.company.logoUrl);
+  protected readonly alt = computed(() => this.config.company.name);
+
+  /** Intrinsic aspect ratio of the built-in artwork (tight viewBox 1929×880). */
   protected readonly width = computed(() => Math.round(this.size() * (1929 / 880)));
 }
