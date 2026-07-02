@@ -1,7 +1,32 @@
-<!-- ============================ HERO CAROUSEL ============================ -->
-<yc-hero-carousel />
+<!-- ============================ HERO ============================ -->
+@if (isCustom()) {
+  <!-- Clean, brand-driven hero for white-label clients (uses their logo, name,
+       tagline and colors). No Yes-Computo-specific content. -->
+  <section class="relative overflow-hidden bg-ink-950 text-white">
+    <div class="absolute -left-24 -top-12 h-80 w-80 rounded-full bg-brand-500/30 blur-[120px]"></div>
+    <div class="absolute -right-16 bottom-0 h-80 w-80 rounded-full bg-accent-500/25 blur-[120px]"></div>
+    <div class="container-page relative flex min-h-[42vh] flex-col items-start justify-center py-16 md:py-24">
+      <yc-logo [size]="54" tone="light" />
+      <h1 class="mt-6 max-w-2xl font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+        {{ config.company.name }}
+      </h1>
+      @if (config.company.tagline) {
+        <p class="mt-4 max-w-xl text-lg text-ink-300">{{ config.company.tagline }}</p>
+      }
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a ycButton variant="primary" size="lg" routerLink="/catalogo">Ver catálogo <yc-icon name="arrow-right" [size]="18" /></a>
+        <a ycButton variant="whatsapp" size="lg" [href]="whatsappLink()" target="_blank" rel="noopener">
+          <yc-icon name="whatsapp" [size]="18" /> Escríbenos
+        </a>
+      </div>
+    </div>
+  </section>
+} @else {
+  <yc-hero-carousel />
+}
 
-<!-- Trust stats strip -->
+<!-- Trust stats strip (Yes Computo) -->
+@if (!isCustom()) {
 <section class="border-b border-line bg-surface">
   <div class="container-page">
     <dl class="grid grid-cols-2 gap-px overflow-hidden bg-line sm:grid-cols-4">
@@ -27,6 +52,7 @@
     </dl>
   </div>
 </section>
+}
 
 <!-- ============================ CATEGORIES (carrusel) ============================ -->
 <section class="py-7 md:py-9">
@@ -137,7 +163,8 @@
   </section>
 }
 
-<!-- ============================ TECNOLOGÍA CIRCULAR ============================ -->
+<!-- ============================ TECNOLOGÍA CIRCULAR (Yes Computo) ============================ -->
+@if (!isCustom()) {
 <section class="section relative overflow-hidden bg-ink-950 text-white">
   <div class="absolute -right-20 top-0 h-80 w-80 rounded-full bg-brand-500/20 blur-[120px]"></div>
   <div class="container-page relative grid gap-12 lg:grid-cols-2 lg:items-center">
@@ -173,11 +200,18 @@
   </div>
 </section>
 
+}
+
 <!-- ============================ PROMOTIONS ============================ -->
+@if (!isCustom() || promotions().length || campaign.campaign()) {
 <section class="section">
   <div class="container-page">
-    <yc-section-heading eyebrow="Aprovecha" title="Promociones y soluciones para tu negocio"
-      description="Beneficios pensados para que tu empresa crezca con la mejor tecnología." />
+    @if (isCustom()) {
+      <yc-section-heading eyebrow="Aprovecha" title="Promociones" />
+    } @else {
+      <yc-section-heading eyebrow="Aprovecha" title="Promociones y soluciones para tu negocio"
+        description="Beneficios pensados para que tu empresa crezca con la mejor tecnología." />
+    }
 
     <!-- Cohesive dark promo cards with per-promo accent glow -->
     <div class="mt-10 grid gap-4 sm:gap-5 md:grid-cols-2">
@@ -245,7 +279,10 @@
   </div>
 </section>
 
-<!-- ============================ RENTAL CTA ============================ -->
+}
+
+<!-- ============================ RENTAL CTA (Yes Computo) ============================ -->
+@if (!isCustom()) {
 <section class="section bg-surface-subtle">
   <div class="container-page">
     <div class="shine group relative overflow-hidden rounded-[2rem] border border-line bg-surface-raised p-8 shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-line-strong hover:shadow-card-hover md:p-12">
@@ -291,7 +328,10 @@
   </div>
 </section>
 
-<!-- ============================ BENEFITS ============================ -->
+}
+
+<!-- ============================ BENEFITS (Yes Computo) ============================ -->
+@if (!isCustom()) {
 <section class="section bg-surface-subtle">
   <div class="container-page">
     <yc-section-heading [centered]="true" eyebrow="Por qué Yes Computo"
@@ -326,6 +366,8 @@
   </div>
 </section>
 
+}
+
 <!-- ============================ FINAL CTA ============================ -->
 <section class="section">
   <div class="container-page">
@@ -338,30 +380,38 @@
       }
 
       <div class="relative mx-auto max-w-2xl">
-        <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-2xs font-bold uppercase tracking-[0.18em] text-brand-300 backdrop-blur">
-          <yc-icon name="sparkles" [size]="14" /> {{ config.company.yearsInBusiness }} años impulsando empresas
-        </span>
+        @if (!isCustom()) {
+          <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-2xs font-bold uppercase tracking-[0.18em] text-brand-300 backdrop-blur">
+            <yc-icon name="sparkles" [size]="14" /> {{ config.company.yearsInBusiness }} años impulsando empresas
+          </span>
+        }
 
         <div class="mt-7 flex justify-center"><yc-logo [size]="52" tone="light" /></div>
 
         <h2 class="mt-7 font-display text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl">
-          ¿Listo para potenciar tu tecnología?
+          {{ isCustom() ? '¿Te ayudamos a elegir?' : '¿Listo para potenciar tu tecnología?' }}
         </h2>
         <p class="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ink-300 sm:text-lg">
-          Conversemos sobre las necesidades de tu empresa. Te asesoramos para elegir los equipos
-          ideales, con la mejor relación calidad-precio.
+          @if (isCustom()) {
+            Escríbenos y con gusto te atendemos. Estamos para ayudarte a encontrar lo que buscas.
+          } @else {
+            Conversemos sobre las necesidades de tu empresa. Te asesoramos para elegir los equipos
+            ideales, con la mejor relación calidad-precio.
+          }
         </p>
 
         <div class="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
-          <a ycButton variant="whatsapp" size="lg" [href]="whatsappLink" target="_blank" rel="noopener">
+          <a ycButton variant="whatsapp" size="lg" [href]="whatsappLink()" target="_blank" rel="noopener">
             <yc-icon name="whatsapp" [size]="18" /> Escríbenos por WhatsApp
           </a>
           <a ycButton variant="primary" size="lg" routerLink="/contacto">Contáctanos</a>
         </div>
 
         <div class="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-white/10 pt-8 text-sm text-ink-400">
-          <span class="inline-flex items-center gap-2"><yc-icon name="shield-check" [size]="16" class="text-brand-400" /> Garantía incluida</span>
-          <span class="inline-flex items-center gap-2"><yc-icon name="wrench" [size]="16" class="text-brand-400" /> Servicio técnico propio</span>
+          @if (!isCustom()) {
+            <span class="inline-flex items-center gap-2"><yc-icon name="shield-check" [size]="16" class="text-brand-400" /> Garantía incluida</span>
+            <span class="inline-flex items-center gap-2"><yc-icon name="wrench" [size]="16" class="text-brand-400" /> Servicio técnico propio</span>
+          }
           <span class="inline-flex items-center gap-2"><yc-icon name="map-pin" [size]="16" class="text-brand-400" /> {{ config.company.address.city }}</span>
         </div>
       </div>

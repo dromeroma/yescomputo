@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { APP_CONFIG } from '../../core/config/app-config';
+import { BrandingService } from '../../core/services/branding.service';
 import { CatalogService } from '../../core/services/catalog.service';
 import { CartService } from '../../core/services/cart.service';
 import { ThemeService } from '../../core/services/theme.service';
@@ -27,6 +28,17 @@ export class Header {
   protected readonly config = inject(APP_CONFIG);
   protected readonly theme = inject(ThemeService);
   protected readonly campaign = inject(CampaignService);
+
+  /** White-label clients hide the Yes-Computo-specific top-bar bits. */
+  protected readonly isCustom = inject(BrandingService).custom;
+  /** Compact opening-hours line: from the client's branding, else the default. */
+  protected readonly hoursLine = computed(() => {
+    const h = this.config.company.hours;
+    if (this.isCustom() && h?.length) {
+      return h.map((x) => `${x.label}: ${x.value}`).join(' · ');
+    }
+    return 'Lun–Vie 8:00–18:00 · Sáb 9:00–18:00';
+  });
 
   protected readonly categories = toSignal(this.catalog.getCategories(), { initialValue: [] });
   protected readonly cartCount = this.cartService.count;

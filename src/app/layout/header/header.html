@@ -8,13 +8,15 @@
       </span>
       <span class="inline-flex items-center gap-1.5">
         <yc-icon name="clock" [size]="13" class="text-brand-400" />
-        Lun–Vie 8:00–18:00 · Sáb 9:00–18:00
+        {{ hoursLine() }}
       </span>
     </div>
     <div class="flex items-center gap-5">
-      <span class="inline-flex items-center gap-1.5 font-medium text-brand-400">
-        <yc-icon name="sparkles" [size]="13" />{{ config.company.yearsInBusiness }} años de experiencia
-      </span>
+      @if (!isCustom()) {
+        <span class="inline-flex items-center gap-1.5 font-medium text-brand-400">
+          <yc-icon name="sparkles" [size]="13" />{{ config.company.yearsInBusiness }} años de experiencia
+        </span>
+      }
       <a [href]="'tel:+57' + config.company.whatsappNumber.slice(2)"
         class="inline-flex items-center gap-1.5 transition-colors hover:text-white">
         <yc-icon name="phone" [size]="13" />{{ config.company.phoneDisplay }}

@@ -9,6 +9,7 @@ import { SeoService } from '../../core/services/seo.service';
 import { WhatsappService } from '../../core/services/whatsapp.service';
 import { CampaignService } from '../../core/services/campaign.service';
 import { FeaturesService } from '../../core/services/features.service';
+import { BrandingService } from '../../core/services/branding.service';
 import { Product } from '../../core/models';
 import { categoryIcon } from '../../shared/utils/category-icons';
 
@@ -41,6 +42,10 @@ export class Home implements OnInit {
   protected readonly config = inject(APP_CONFIG);
   protected readonly campaign = inject(CampaignService);
   private readonly features = inject(FeaturesService);
+
+  /** True for clients with their own brand → clean, generic, catalog-focused
+   * home (hides the Yes-Computo-specific marketing sections). */
+  protected readonly isCustom = inject(BrandingService).custom;
 
   /** Premium "Asesor de compra" entry point (gated by buy_advisor). */
   protected readonly advisorEnabled = this.features.flag('buy_advisor');
@@ -104,9 +109,13 @@ export class Home implements OnInit {
     ].slice(0, 8);
   });
 
-  protected readonly whatsappLink = this.whatsapp.link(
-    '¡Hola Yes Computo! 👋 Quiero asesoría para elegir los equipos ideales para mi empresa.',
-  );
+  protected readonly whatsappLink = computed(() => {
+    const name = this.config.company.name;
+    const msg = this.isCustom()
+      ? `¡Hola ${name}! 👋 Quisiera más información sobre sus productos.`
+      : `¡Hola ${name}! 👋 Quiero asesoría para elegir los equipos ideales para mi empresa.`;
+    return this.whatsapp.link(msg);
+  });
 
   protected readonly stats = [
     { value: '20+', label: 'Años de experiencia', icon: 'sparkles' },
@@ -141,11 +150,15 @@ export class Home implements OnInit {
   readonly catIcon = categoryIcon;
 
   ngOnInit(): void {
+    const c = this.config.company;
     this.seo.update({
-      title: 'Yes Computo · Tecnología Circular para empresas',
-      description:
-        '20 años liderando la Tecnología Circular en Cartagena. Equipos corporativos, portátiles, ' +
-        'workstations, alquiler de tecnología y servicio técnico especializado para empresas.',
+      title: this.isCustom()
+        ? `${c.name}${c.tagline ? ' · ' + c.tagline : ''}`
+        : 'Yes Computo · Tecnología Circular para empresas',
+      description: this.isCustom()
+        ? c.tagline || `Catálogo de ${c.name}. Conoce nuestros productos y escríbenos por WhatsApp.`
+        : '20 años liderando la Tecnología Circular en Cartagena. Equipos corporativos, portátiles, ' +
+          'workstations, alquiler de tecnología y servicio técnico especializado para empresas.',
       path: '/',
       jsonLd: {
         '@context': 'https://schema.org',

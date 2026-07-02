@@ -1,6 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { APP_CONFIG } from '../config/app-config';
@@ -45,6 +45,12 @@ export class BrandingService {
   private readonly doc = inject(DOCUMENT);
   private readonly config = inject(APP_CONFIG);
 
+  private readonly _custom = signal(false);
+  /** True when this client has its OWN brand identity (logo / colors / tagline).
+   * Used to swap the home's Yes-Computo-specific marketing for a clean, generic,
+   * catalog-focused layout. The default site (no branding) keeps everything. */
+  readonly custom = this._custom.asReadonly();
+
   /** Called by an app initializer before first render (SSR + client). */
   load(): Observable<unknown> {
     return this.http
@@ -56,6 +62,9 @@ export class BrandingService {
   }
 
   private apply(b: Branding): void {
+    // A client with its own logo, colors or tagline gets the generic layout.
+    this._custom.set(!!(b.logoUrl || b.colors?.brand || b.tagline));
+
     const c = this.config.company;
     if (b.name) c.name = b.name;
     if (b.legalName) c.legalName = b.legalName;
