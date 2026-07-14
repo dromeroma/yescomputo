@@ -54,18 +54,17 @@ export class Catalog {
   });
   private readonly params = toSignal(this.route.queryParamMap, { initialValue: null });
 
-  /** Special "reacondicionados" landing filters by condition, not category. */
-  private readonly isRefurbView = computed(() => this.slug() === 'reacondicionados');
-
-  /** The active query, derived entirely from the URL. */
+  /** The active query, derived entirely from the URL.
+   * Every `/categoria/:slug` filters by THAT category (no special cases): the
+   * "Reacondicionados" landing now lives at /catalogo?condition=reacondicionado. */
   protected readonly query = computed<ProductQuery>(() => {
     const p = this.params();
     const slug = this.slug();
     const csv = (key: string) => p?.get(key)?.split(',').filter(Boolean) ?? [];
     return {
       search: p?.get('search') ?? undefined,
-      categorySlug: this.isRefurbView() ? undefined : slug,
-      conditions: this.isRefurbView() ? ['reacondicionado'] : csv('condition'),
+      categorySlug: slug,
+      conditions: csv('condition'),
       brandSlugs: csv('brand'),
       rentableOnly: p?.get('rent') === '1',
       inStockOnly: p?.get('stock') === '1',
@@ -79,11 +78,7 @@ export class Catalog {
   protected readonly category = toSignal<Category | undefined>(
     this.route.paramMap.pipe(
       map((p) => p.get('slug') ?? undefined),
-      switchMap((slug) =>
-        slug && slug !== 'reacondicionados'
-          ? this.catalog.getCategoryBySlug(slug)
-          : [undefined],
-      ),
+      switchMap((slug) => (slug ? this.catalog.getCategoryBySlug(slug) : [undefined])),
     ),
     { initialValue: undefined },
   );
@@ -113,7 +108,7 @@ export class Catalog {
     const q = this.query();
     return (
       (q.brandSlugs?.length ?? 0) +
-      (this.isRefurbView() ? 0 : q.conditions?.length ?? 0) +
+      (q.conditions?.length ?? 0) +
       (q.rentableOnly ? 1 : 0) +
       (q.inStockOnly ? 1 : 0) +
       (q.search ? 1 : 0)
@@ -121,9 +116,11 @@ export class Catalog {
   });
 
   protected readonly heading = computed(() => {
-    if (this.isRefurbView()) return 'Equipos Reacondicionados';
     if (this.category()) return this.category()!.name;
     if (this.query().search) return `Resultados para "${this.query().search}"`;
+    // /catalogo?condition=reacondicionado → the "all refurbished" landing.
+    const conds = this.query().conditions ?? [];
+    if (conds.length === 1 && conds[0] === 'reacondicionado') return 'Equipos Reacondicionados';
     return 'Catálogo completo';
   });
 

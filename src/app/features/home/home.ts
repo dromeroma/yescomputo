@@ -163,6 +163,22 @@ export class Home implements OnInit {
     });
   }
 
+  /** Promo CTA links may carry filters (e.g. "/catalogo?condition=reacondicionado").
+      Split them so the router gets a clean path + queryParams. */
+  protected promoPath(cta: string): string {
+    return (cta || '/').split('#')[0].split('?')[0];
+  }
+  protected promoQuery(cta: string): Record<string, string> {
+    const qs = (cta || '').split('#')[0].split('?')[1];
+    if (!qs) return {};
+    const out: Record<string, string> = {};
+    for (const pair of qs.split('&')) {
+      const [k, v] = pair.split('=');
+      if (k) out[decodeURIComponent(k)] = decodeURIComponent(v ?? '');
+    }
+    return out;
+  }
+
   /** Per-promo accent colour (glow, icon, badge) — keeps the cards cohesive
       with the dark sections while staying distinguishable. */
   protected promoAccent(theme: string): string {

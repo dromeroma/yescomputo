@@ -150,7 +150,7 @@
         calidad garantizada a una fracción del costo.
       </p>
       <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-        <a ycButton variant="primary" routerLink="/categoria/reacondicionados">Ver reacondicionados</a>
+        <a ycButton variant="primary" routerLink="/catalogo" [queryParams]="{ condition: 'reacondicionado' }">Ver reacondicionados</a>
         @if (tradeinEnabled()) {
           <a ycButton variant="dark" routerLink="/recompra">Vende tu equipo <yc-icon name="arrow-right" [size]="16" /></a>
         } @else {
@@ -210,7 +210,7 @@
       }
 
       @for (promo of promotions(); track promo.id) {
-        <a [routerLink]="promo.ctaLink.split('#')[0]"
+        <a [routerLink]="promoPath(promo.ctaLink)" [queryParams]="promoQuery(promo.ctaLink)"
           class="shine group relative flex min-h-[15rem] flex-col justify-end overflow-hidden rounded-3xl border border-white/10 bg-ink-950 p-7 text-white shadow-ink transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:shadow-card-hover">
           <!-- texture + accent glow -->
           <div class="absolute inset-0 bg-grid opacity-25"></div>

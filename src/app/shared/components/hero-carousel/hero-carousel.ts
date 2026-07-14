@@ -25,6 +25,8 @@ interface HeroSlide {
   image: string;
   ctaLabel: string;
   ctaLink: string;
+  /** Optional query params for the CTA (e.g. the "all refurbished" filter). */
+  ctaQuery?: Record<string, string>;
   /** Override for the highlighted title gradient (e.g. campaign tricolor). */
   titleClass?: string;
   /** Vibrant gradient used for ambient glow accents. */
@@ -145,7 +147,9 @@ export class HeroCarousel implements OnInit, OnDestroy {
       icon: 'recycle',
       image: '/img/products/equipo-01.webp',
       ctaLabel: 'Ver oportunidades',
-      ctaLink: '/categoria/reacondicionados',
+      // ALL refurbished (any category), not just the "Portátiles Reacondicionados" one.
+      ctaLink: '/catalogo',
+      ctaQuery: { condition: 'reacondicionado' },
       aurora: 'linear-gradient(125deg, #84cc16 0%, #10b981 52%, #06b6d4 100%)',
       streakA: '#84cc16',
       streakB: '#10b981',

@@ -36,7 +36,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
             residuos, conservar recursos y ofrecer tecnología de calidad a un precio responsable.
           </p>
           <div class="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <a ycButton variant="primary" size="lg" routerLink="/categoria/reacondicionados">
+            <a ycButton variant="primary" size="lg" routerLink="/catalogo" [queryParams]="{ condition: 'reacondicionado' }">
               Ver reacondicionados <yc-icon name="arrow-right" [size]="18" />
             </a>
             <a ycButton variant="whatsapp" size="lg" [href]="whatsappLink" target="_blank" rel="noopener">
@@ -237,7 +237,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
             Tecnología de calidad, precio responsable y un planeta más sano.
           </p>
           <div class="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <a ycButton variant="primary" size="lg" routerLink="/categoria/reacondicionados">
+            <a ycButton variant="primary" size="lg" routerLink="/catalogo" [queryParams]="{ condition: 'reacondicionado' }">
               Ver reacondicionados <yc-icon name="arrow-right" [size]="18" />
             </a>
             <a ycButton variant="whatsapp" size="lg" [href]="whatsappLink" target="_blank" rel="noopener">

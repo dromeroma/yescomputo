@@ -56,6 +56,7 @@
             <div class="mt-6 flex flex-wrap items-center gap-3">
               <a
                 [routerLink]="slide.ctaLink"
+                [queryParams]="slide.ctaQuery ?? {}"
                 class="group inline-flex items-center gap-2 rounded-full bg-white py-2 pl-5 pr-2 text-sm font-bold text-ink-950 shadow-[0_10px_36px_-12px_rgba(255,255,255,0.5)] transition-transform hover:scale-[1.03] active:scale-100"
               >
                 {{ slide.ctaLabel }}

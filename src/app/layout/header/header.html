@@ -46,10 +46,11 @@
         <yc-icon name="chevron-down" [size]="15" class="transition-transform"
           [class.rotate-180]="megaOpen()" />
       </button>
-      @for (item of mainNav; track item.link) {
+      @for (item of mainNav; track item.label) {
         @if (item.link !== '/') {
           <a
             [routerLink]="item.link"
+            [queryParams]="item.query ?? {}"
             routerLinkActive="bg-surface-inset text-content"
             class="rounded-full px-3.5 py-2 text-sm font-semibold text-content-muted transition-colors hover:bg-surface-inset hover:text-content"
             >{{ item.label }}</a

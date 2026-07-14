@@ -39,10 +39,12 @@ export class Header {
   protected readonly megaOpen = signal(false);
   protected readonly scrolled = signal(false);
 
-  protected readonly mainNav = [
+  protected readonly mainNav: { label: string; link: string; query?: Record<string, string> }[] = [
     { label: 'Inicio', link: '/' },
     { label: 'Catálogo', link: '/catalogo' },
-    { label: 'Reacondicionados', link: '/categoria/reacondicionados' },
+    // "Reacondicionados" = ALL refurbished (any category) → condition filter.
+    // (/categoria/reacondicionados is the "Portátiles Reacondicionados" category.)
+    { label: 'Reacondicionados', link: '/catalogo', query: { condition: 'reacondicionado' } },
     { label: 'Servicios', link: '/servicios' },
     { label: 'Tecnología Circular', link: '/tecnologia-circular' },
     { label: 'Nosotros', link: '/nosotros' },

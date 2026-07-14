@@ -193,7 +193,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
               <a ycButton variant="primary" size="lg" routerLink="/tecnologia-circular">
                 Conoce la Tecnología Circular <yc-icon name="arrow-right" [size]="18" />
               </a>
-              <a ycButton variant="ghost" size="md" routerLink="/categoria/reacondicionados">
+              <a ycButton variant="ghost" size="md" routerLink="/catalogo" [queryParams]="{ condition: 'reacondicionado' }">
                 Ver reacondicionados <yc-icon name="recycle" [size]="18" />
               </a>
             </div>

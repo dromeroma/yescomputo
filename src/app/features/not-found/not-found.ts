@@ -41,6 +41,7 @@ import { Logo } from '../../shared/components/logo/logo';
           @for (link of quickLinks; track link.path) {
             <a
               [routerLink]="link.path"
+              [queryParams]="link.query ?? {}"
               class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white/80 backdrop-blur transition hover:border-white/30 hover:bg-white/10 hover:text-white"
             >
               <yc-icon [name]="link.icon" [size]="16" />{{ link.label }}
@@ -54,10 +55,16 @@ import { Logo } from '../../shared/components/logo/logo';
 export class NotFound implements OnInit {
   private readonly seo = inject(SeoService);
 
-  protected readonly quickLinks: { label: string; path: string; icon: string }[] = [
+  protected readonly quickLinks: {
+    label: string;
+    path: string;
+    icon: string;
+    query?: Record<string, string>;
+  }[] = [
     { label: 'Servicios', path: '/servicios', icon: 'wrench' },
     { label: 'Contacto', path: '/contacto', icon: 'phone' },
-    { label: 'Reacondicionados', path: '/categoria/reacondicionados', icon: 'recycle' },
+    // ALL refurbished (any category), not just the "Portátiles Reacondicionados" one.
+    { label: 'Reacondicionados', path: '/catalogo', icon: 'recycle', query: { condition: 'reacondicionado' } },
   ];
 
   ngOnInit(): void {

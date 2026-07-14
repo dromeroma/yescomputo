@@ -160,7 +160,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
               </p>
             </div>
             <div class="flex flex-col gap-3 lg:items-end">
-              <a ycButton variant="primary" size="lg" routerLink="/categoria/reacondicionados">
+              <a ycButton variant="primary" size="lg" routerLink="/catalogo" [queryParams]="{ condition: 'reacondicionado' }">
                 Ver reacondicionados <yc-icon name="recycle" [size]="18" />
               </a>
               <a ycButton variant="ghost" size="md" routerLink="/catalogo">

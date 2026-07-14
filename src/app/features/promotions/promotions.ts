@@ -70,6 +70,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
                   }
                   <a
                     [routerLink]="basePath(promo.ctaLink)"
+                    [queryParams]="queryOf(promo.ctaLink)"
                     class="mt-6 inline-flex items-center gap-2 rounded-full bg-white/15 px-5 py-2.5 text-sm font-semibold backdrop-blur transition hover:bg-white/25"
                   >
                     {{ promo.ctaLabel }} <yc-icon name="arrow-right" [size]="16" />
@@ -142,7 +143,7 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
               mientras cuidas el planeta: reutilizamos hoy para proteger mañana.
             </p>
             <div class="mt-8 flex flex-col gap-4 sm:flex-row">
-              <a ycButton variant="primary" size="lg" routerLink="/categoria/reacondicionados">
+              <a ycButton variant="primary" size="lg" routerLink="/catalogo" [queryParams]="{ condition: 'reacondicionado' }">
                 Ver reacondicionados <yc-icon name="recycle" [size]="18" />
               </a>
               <a ycButton variant="outline" size="lg" routerLink="/tecnologia-circular">
@@ -180,8 +181,19 @@ export class Promotions implements OnInit {
     { value: '20+', label: 'años de respaldo' },
   ];
 
+  /** CTA links may carry filters (e.g. "/catalogo?condition=reacondicionado"). */
   protected basePath(link: string): string {
-    return link.split('#')[0];
+    return (link || '/').split('#')[0].split('?')[0];
+  }
+  protected queryOf(link: string): Record<string, string> {
+    const qs = (link || '').split('#')[0].split('?')[1];
+    if (!qs) return {};
+    const out: Record<string, string> = {};
+    for (const pair of qs.split('&')) {
+      const [k, v] = pair.split('=');
+      if (k) out[decodeURIComponent(k)] = decodeURIComponent(v ?? '');
+    }
+    return out;
   }
 
   protected themeClass(theme: string): string {
