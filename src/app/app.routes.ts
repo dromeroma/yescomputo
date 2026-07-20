@@ -46,6 +46,11 @@ export const routes: Routes = [
     title: 'Servicios · Yes Computo',
   },
   {
+    path: 'soporte',
+    loadComponent: () => import('./features/support/support').then((m) => m.Support),
+    title: 'Seguimiento de servicio',
+  },
+  {
     path: 'tecnologia-circular',
     loadComponent: () =>
       import('./features/circular-tech/circular-tech').then((m) => m.CircularTech),

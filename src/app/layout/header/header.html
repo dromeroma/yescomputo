@@ -46,7 +46,7 @@
         <yc-icon name="chevron-down" [size]="15" class="transition-transform"
           [class.rotate-180]="megaOpen()" />
       </button>
-      @for (item of mainNav; track item.label) {
+      @for (item of mainNav(); track item.label) {
         @if (item.link !== '/') {
           <a
             [routerLink]="item.link"
@@ -202,9 +202,9 @@
         }
 
         <p class="px-3 pb-1 pt-4 text-2xs font-semibold uppercase tracking-wider text-content-subtle">Explorar</p>
-        @for (item of mainNav; track item.link) {
+        @for (item of mainNav(); track item.link) {
           @if (item.link !== '/') {
-            <a [routerLink]="item.link" (click)="closeAll()"
+            <a [routerLink]="item.link" [queryParams]="item.query ?? {}" (click)="closeAll()"
               class="block rounded-lg px-3 py-2.5 text-sm font-semibold text-content hover:bg-surface-inset">{{ item.label }}</a>
           }
         }

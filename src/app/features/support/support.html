@@ -1,0 +1,114 @@
+<!-- Hero / buscador -->
+<section class="relative overflow-hidden bg-ink-950 text-white">
+  <div class="absolute -left-24 -top-12 h-80 w-80 rounded-full bg-brand-500/25 blur-[120px]"></div>
+  <div class="absolute -right-16 bottom-0 h-72 w-72 rounded-full bg-accent-500/20 blur-[120px]"></div>
+  <div class="container-page relative py-16 md:py-20">
+    <div class="mx-auto max-w-xl text-center">
+      <span class="eyebrow justify-center text-brand-300"><span class="h-1 w-1 rounded-full bg-brand-400"></span>Seguimiento de servicio</span>
+      <h1 class="mt-3 font-display text-3xl font-extrabold sm:text-4xl">¿En qué va tu equipo?</h1>
+      <p class="mt-3 text-ink-300">Escribe tu número de guía y consulta el estado de tu servicio en tiempo real.</p>
+
+      <form (submit)="$event.preventDefault(); search()" class="mt-7 flex flex-col gap-2 sm:flex-row">
+        <input [value]="code()" (input)="onInput($event)" placeholder="Ej. SV-7K2M9P" autocomplete="off"
+          class="h-12 flex-1 rounded-full border border-white/10 bg-white/5 px-5 text-center font-mono text-lg tracking-widest text-white outline-none placeholder:text-ink-500 placeholder:tracking-normal placeholder:font-sans focus:border-brand-400 sm:text-left" />
+        <button type="submit" ycButton variant="primary" size="lg" [disabled]="loading() || !code().trim()">
+          {{ loading() ? 'Buscando…' : 'Consultar' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<div class="container-page py-10 md:py-14">
+  <div class="mx-auto max-w-2xl">
+    @if (notFound()) {
+      <div class="card p-8 text-center">
+        <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-rose-50 text-rose-500"><yc-icon name="search" [size]="26" /></span>
+        <h2 class="mt-4 font-display text-xl font-bold">No encontramos esa guía</h2>
+        <p class="mt-2 text-content-muted">Revisa que el código esté completo (ej. <span class="font-mono">SV-7K2M9P</span>). Si tienes dudas, escríbenos.</p>
+        <div class="mt-5 flex justify-center gap-2">
+          <button ycButton variant="outline" (click)="reset()">Intentar de nuevo</button>
+          <a ycButton variant="whatsapp" [href]="whatsappLink()" target="_blank" rel="noopener"><yc-icon name="whatsapp" [size]="18" /> Escríbenos</a>
+        </div>
+      </div>
+    } @else if (result(); as r) {
+      <!-- Estado actual -->
+      <div class="card overflow-hidden">
+        <div class="border-b border-line bg-surface-subtle p-6 text-center">
+          <p class="text-xs font-semibold uppercase tracking-wider text-content-subtle">Guía {{ r.code }}</p>
+          <h2 class="mt-2 font-display text-2xl font-bold text-content">{{ r.status.publicLabel }}</h2>
+          @if (r.status.key === 'ready' && r.estimatedReadyAt) {
+            <p class="mt-1 text-sm text-content-muted">Puedes recogerlo desde el <span class="font-semibold text-content">{{ r.estimatedReadyAt | date:'EEEE d \'de\' MMMM' }}</span></p>
+          } @else if (r.estimatedReadyAt) {
+            <p class="mt-1 text-sm text-content-muted">Entrega estimada: <span class="font-medium text-content">{{ r.estimatedReadyAt | date:'d \'de\' MMMM, h:mm a' }}</span></p>
+          }
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="flex items-center justify-between gap-1 px-6 py-6">
+          @for (s of steps(); track s.key; let last = $last) {
+            <div class="flex flex-1 flex-col items-center gap-2" [class.flex-none]="last">
+              <div class="flex w-full items-center">
+                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold"
+                  [class.bg-brand-500]="s.reached" [class.text-ink-950]="s.reached"
+                  [class.bg-surface-inset]="!s.reached" [class.text-content-subtle]="!s.reached"
+                  [class.ring-4]="s.current" [class.ring-brand-500]="s.current" [class.ring-brand-500\/25]="s.current">
+                  @if (s.reached && !s.current) { ✓ } @else { {{ $index + 1 }} }
+                </span>
+                @if (!last) { <span class="h-0.5 flex-1" [class.bg-brand-500]="s.reached" [class.bg-surface-inset]="!s.reached"></span> }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Datos del equipo / dueño -->
+        <div class="grid gap-4 border-t border-line p-6 sm:grid-cols-2">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-content-subtle">Dueño</p>
+            <p class="mt-1 font-medium">{{ r.customerName }}</p>
+            @if (r.customerPhoneMasked) { <p class="text-sm text-content-subtle">{{ r.customerPhoneMasked }}</p> }
+          </div>
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wider text-content-subtle">Equipo</p>
+            <p class="mt-1 font-medium">{{ r.device.type }} {{ r.device.brand }} {{ r.device.model }}</p>
+            @if (r.reportedIssue) { <p class="text-sm text-content-subtle">{{ r.reportedIssue }}</p> }
+          </div>
+          @if (r.pickupNotes) {
+            <div class="sm:col-span-2 rounded-lg bg-brand-50 p-3 text-sm text-brand-800 dark:bg-brand-500/10 dark:text-brand-200">
+              🕒 Horario de recogida: {{ r.pickupNotes }}
+            </div>
+          }
+        </div>
+
+        <!-- Línea de tiempo -->
+        <div class="border-t border-line p-6">
+          <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-content-subtle">Historial</p>
+          <ol class="space-y-4">
+            @for (e of r.timeline; track $index) {
+              <li class="flex gap-3">
+                <span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-brand-500"></span>
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-sm font-semibold text-content">{{ e.status.publicLabel }}</span>
+                    <span class="text-xs text-content-subtle">{{ e.at | date:'d MMM, h:mm a' }}</span>
+                  </div>
+                  @if (e.note) { <p class="text-sm text-content-muted">{{ e.note }}</p> }
+                </div>
+              </li>
+            }
+          </ol>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-2 border-t border-line p-5">
+          <button ycButton variant="outline" (click)="reset()">Consultar otra guía</button>
+          <a ycButton variant="whatsapp" [href]="whatsappLink()" target="_blank" rel="noopener"><yc-icon name="whatsapp" [size]="18" /> Escríbenos por WhatsApp</a>
+        </div>
+      </div>
+    } @else {
+      <!-- Ayuda inicial -->
+      <div class="card p-6 text-center text-sm text-content-muted">
+        <p>Tu número de guía te lo entregamos al dejar tu equipo. Tiene el formato <span class="font-mono text-content">SV-XXXXXX</span>.</p>
+      </div>
+    }
+  </div>
+</div>

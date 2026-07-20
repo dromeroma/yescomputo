@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { APP_CONFIG } from '../../core/config/app-config';
@@ -6,6 +6,7 @@ import { CatalogService } from '../../core/services/catalog.service';
 import { CartService } from '../../core/services/cart.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { CampaignService } from '../../core/services/campaign.service';
+import { FeaturesService } from '../../core/services/features.service';
 import { Logo } from '../../shared/components/logo/logo';
 import { Icon } from '../../shared/components/icon/icon';
 
@@ -27,6 +28,7 @@ export class Header {
   protected readonly config = inject(APP_CONFIG);
   protected readonly theme = inject(ThemeService);
   protected readonly campaign = inject(CampaignService);
+  private readonly features = inject(FeaturesService);
 
   protected readonly categories = toSignal(this.catalog.getCategories(), { initialValue: [] });
   protected readonly cartCount = this.cartService.count;
@@ -39,17 +41,28 @@ export class Header {
   protected readonly megaOpen = signal(false);
   protected readonly scrolled = signal(false);
 
-  protected readonly mainNav: { label: string; link: string; query?: Record<string, string> }[] = [
+  private readonly allNav: {
+    label: string;
+    link: string;
+    query?: Record<string, string>;
+    feature?: string;
+  }[] = [
     { label: 'Inicio', link: '/' },
     { label: 'Catálogo', link: '/catalogo' },
     // "Reacondicionados" = ALL refurbished (any category) → condition filter.
     // (/categoria/reacondicionados is the "Portátiles Reacondicionados" category.)
     { label: 'Reacondicionados', link: '/catalogo', query: { condition: 'reacondicionado' } },
     { label: 'Servicios', link: '/servicios' },
+    { label: 'Soporte', link: '/soporte', feature: 'service_tracking' },
     { label: 'Tecnología Circular', link: '/tecnologia-circular' },
     { label: 'Nosotros', link: '/nosotros' },
     { label: 'Contacto', link: '/contacto' },
   ];
+
+  /** Nav filtered by active features (e.g. "Soporte" only when service_tracking is on). */
+  protected readonly mainNav = computed(() =>
+    this.allNav.filter((i) => !i.feature || this.features.isOn(i.feature as never)),
+  );
 
   protected onScroll(): void {
     this.scrolled.set(window.scrollY > 8);

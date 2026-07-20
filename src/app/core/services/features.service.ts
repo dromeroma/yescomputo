@@ -10,7 +10,8 @@ export type FeatureKey =
   | 'equipment_passport'
   | 'buy_advisor'
   | 'tradein'
-  | 'whatsapp_bot';
+  | 'whatsapp_bot'
+  | 'service_tracking';
 
 interface SettingsResponse {
   features: Partial<Record<FeatureKey, boolean>>;
