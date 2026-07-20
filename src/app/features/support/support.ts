@@ -62,10 +62,11 @@ export class Support implements OnInit {
       description: 'Consulta el estado de tu equipo en servicio con tu número de guía.',
       path: '/soporte',
     });
+    // Prefill the guide from the share link, but let the customer press
+    // "Consultar" themselves (no auto-search).
     const guia = this.route.snapshot.queryParamMap.get('guia');
     if (guia) {
-      this.code.set(guia);
-      this.search();
+      this.code.set(guia.toUpperCase());
     }
   }
 
