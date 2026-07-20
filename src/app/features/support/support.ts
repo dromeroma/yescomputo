@@ -33,19 +33,51 @@ export class Support implements OnInit {
   protected readonly notFound = signal(false);
   protected readonly result = signal<TrackResult | null>(null);
 
-  /** The forward flow of statuses for the progress bar (excludes cancelled). */
-  private readonly FLOW = ['received', 'diagnosing', 'awaiting_approval', 'repairing', 'awaiting_parts', 'ready', 'delivered'];
+  /** The customer-facing flow shown in the stepper (short labels under each step). */
+  private readonly STEPS: { key: string; label: string }[] = [
+    { key: 'received', label: 'Recibido' },
+    { key: 'diagnosing', label: 'Diagnóstico' },
+    { key: 'awaiting_approval', label: 'Aprobación' },
+    { key: 'repairing', label: 'Reparación' },
+    { key: 'ready', label: 'Listo' },
+    { key: 'delivered', label: 'Entregado' },
+  ];
+
+  /** Real status → index in the visible stepper (awaiting_parts folds into repair). */
+  private readonly STEP_INDEX: Record<string, number> = {
+    received: 0,
+    diagnosing: 1,
+    awaiting_approval: 2,
+    repairing: 3,
+    awaiting_parts: 3,
+    ready: 4,
+    delivered: 5,
+  };
+
+  protected readonly isCancelled = computed(() => this.result()?.status.key === 'cancelled');
+
+  /** Index of the current step in the stepper (-1 when cancelled/unknown). */
+  private readonly currentIdx = computed(() => {
+    const r = this.result();
+    return r ? this.STEP_INDEX[r.status.key] ?? -1 : -1;
+  });
 
   protected readonly steps = computed(() => {
-    const r = this.result();
-    if (!r) return [];
-    const done = new Set(r.timeline.map((e) => e.status.key));
-    const currentIdx = this.FLOW.indexOf(r.status.key);
-    return this.FLOW.filter((k) => k !== 'awaiting_parts').map((key, i) => ({
-      key,
-      reached: done.has(key) || (currentIdx >= 0 && this.FLOW.indexOf(key) <= currentIdx),
-      current: key === r.status.key,
+    if (!this.result() || this.isCancelled()) return [];
+    const cur = this.currentIdx();
+    return this.STEPS.map((s, i) => ({
+      key: s.key,
+      label: s.label,
+      reached: cur >= 0 && i <= cur,
+      current: i === cur,
     }));
+  });
+
+  /** Progress 0–100 for the fill bar behind the steps. */
+  protected readonly progressPct = computed(() => {
+    const cur = this.currentIdx();
+    if (cur < 0) return 0;
+    return Math.round((cur / (this.STEPS.length - 1)) * 100);
   });
 
   protected readonly whatsappLink = computed(() => {

@@ -9,7 +9,7 @@
       <p class="mt-3 text-ink-300">Escribe tu número de guía y consulta el estado de tu servicio en tiempo real.</p>
 
       <form (submit)="$event.preventDefault(); search()" class="mt-7 flex flex-col gap-2 sm:flex-row">
-        <input [value]="code()" (input)="onInput($event)" placeholder="Ej. SV-7K2M9P" autocomplete="off"
+        <input [value]="code()" (input)="onInput($event)" placeholder="Ej. YC-7K2M9P" autocomplete="off"
           class="h-12 flex-1 rounded-full border border-white/10 bg-white/5 px-5 text-center font-mono text-lg tracking-widest text-white outline-none placeholder:text-ink-500 placeholder:tracking-normal placeholder:font-sans focus:border-brand-400 sm:text-left" />
         <button type="submit" ycButton variant="primary" size="lg" [disabled]="loading() || !code().trim()">
           {{ loading() ? 'Buscando…' : 'Consultar' }}
@@ -25,7 +25,7 @@
       <div class="card p-8 text-center">
         <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-rose-50 text-rose-500"><yc-icon name="search" [size]="26" /></span>
         <h2 class="mt-4 font-display text-xl font-bold">No encontramos esa guía</h2>
-        <p class="mt-2 text-content-muted">Revisa que el código esté completo (ej. <span class="font-mono">SV-7K2M9P</span>). Si tienes dudas, escríbenos.</p>
+        <p class="mt-2 text-content-muted">Revisa que el código esté completo (ej. <span class="font-mono">YC-7K2M9P</span>). Si tienes dudas, escríbenos.</p>
         <div class="mt-5 flex justify-center gap-2">
           <button ycButton variant="outline" (click)="reset()">Intentar de nuevo</button>
           <a ycButton variant="whatsapp" [href]="whatsappLink()" target="_blank" rel="noopener"><yc-icon name="whatsapp" [size]="18" /> Escríbenos</a>
@@ -34,32 +34,54 @@
     } @else if (result(); as r) {
       <!-- Estado actual -->
       <div class="card overflow-hidden">
-        <div class="border-b border-line bg-surface-subtle p-6 text-center">
-          <p class="text-xs font-semibold uppercase tracking-wider text-content-subtle">Guía {{ r.code }}</p>
-          <h2 class="mt-2 font-display text-2xl font-bold text-content">{{ r.status.publicLabel }}</h2>
+        <div class="border-b border-line bg-surface-subtle px-6 py-7 text-center">
+          <p class="text-xs font-semibold uppercase tracking-wider text-content-subtle">Guía <span class="font-mono text-content">{{ r.code }}</span></p>
+          <div class="mt-3 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-semibold"
+            [class]="isCancelled()
+              ? 'bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300'
+              : (r.status.key === 'ready' || r.status.key === 'delivered')
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300'
+                : 'bg-brand-100 text-brand-800 dark:bg-brand-500/15 dark:text-brand-200'">
+            <span class="h-2 w-2 rounded-full"
+              [class]="isCancelled() ? 'bg-rose-500' : (r.status.key === 'ready' || r.status.key === 'delivered') ? 'bg-emerald-500' : 'bg-brand-500 animate-pulse'"></span>
+            {{ r.status.publicLabel }}
+          </div>
           @if (r.status.key === 'ready' && r.estimatedReadyAt) {
-            <p class="mt-1 text-sm text-content-muted">Puedes recogerlo desde el <span class="font-semibold text-content">{{ r.estimatedReadyAt | date:'EEEE d \'de\' MMMM' }}</span></p>
-          } @else if (r.estimatedReadyAt) {
-            <p class="mt-1 text-sm text-content-muted">Entrega estimada: <span class="font-medium text-content">{{ r.estimatedReadyAt | date:'d \'de\' MMMM, h:mm a' }}</span></p>
+            <p class="mt-3 text-sm text-content-muted">Puedes recogerlo desde el <span class="font-semibold text-content">{{ r.estimatedReadyAt | date:'EEEE d \'de\' MMMM' }}</span></p>
+          } @else if (!isCancelled() && r.estimatedReadyAt) {
+            <p class="mt-3 text-sm text-content-muted">Entrega estimada: <span class="font-medium text-content">{{ r.estimatedReadyAt | date:'d \'de\' MMMM, h:mm a' }}</span></p>
           }
         </div>
 
-        <!-- Barra de progreso -->
-        <div class="flex items-center justify-between gap-1 px-6 py-6">
-          @for (s of steps(); track s.key; let last = $last) {
-            <div class="flex flex-1 flex-col items-center gap-2" [class.flex-none]="last">
-              <div class="flex w-full items-center">
-                <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold"
-                  [class.bg-brand-500]="s.reached" [class.text-ink-950]="s.reached"
-                  [class.bg-surface-inset]="!s.reached" [class.text-content-subtle]="!s.reached"
-                  [class.ring-4]="s.current" [class.ring-brand-500]="s.current" [class.ring-brand-500\/25]="s.current">
-                  @if (s.reached && !s.current) { ✓ } @else { {{ $index + 1 }} }
-                </span>
-                @if (!last) { <span class="h-0.5 flex-1" [class.bg-brand-500]="s.reached" [class.bg-surface-inset]="!s.reached"></span> }
-              </div>
+        @if (isCancelled()) {
+          <!-- Servicio cancelado -->
+          <div class="flex items-center gap-3 border-b border-line bg-rose-50/60 px-6 py-5 text-sm text-rose-700 dark:bg-rose-500/5 dark:text-rose-300">
+            <yc-icon name="close" [size]="20" />
+            <p>Este servicio fue cancelado. Si tienes dudas, escríbenos y con gusto te ayudamos.</p>
+          </div>
+        } @else {
+          <!-- Barra de progreso con etiquetas -->
+          <div class="px-4 pb-7 pt-8 sm:px-8">
+            <div class="relative flex justify-between">
+              <!-- track de fondo + relleno -->
+              <div class="absolute left-0 right-0 top-4 h-1 rounded-full bg-surface-inset"></div>
+              <div class="absolute left-0 top-4 h-1 rounded-full bg-brand-500 transition-all duration-500" [style.width.%]="progressPct()"></div>
+              @for (s of steps(); track s.key) {
+                <div class="relative z-10 flex flex-1 flex-col items-center gap-2 last:flex-none">
+                  <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold ring-4 ring-surface transition-colors"
+                    [class.bg-brand-500]="s.reached" [class.text-ink-950]="s.reached"
+                    [class.bg-surface-inset]="!s.reached" [class.text-content-subtle]="!s.reached">
+                    @if (s.reached && !s.current) { ✓ } @else if (s.current) {
+                      <span class="h-2.5 w-2.5 rounded-full bg-ink-950"></span>
+                    } @else { {{ $index + 1 }} }
+                  </span>
+                  <span class="text-center text-[11px] font-medium leading-tight"
+                    [class.text-content]="s.reached" [class.text-content-subtle]="!s.reached">{{ s.label }}</span>
+                </div>
+              }
             </div>
-          }
-        </div>
+          </div>
+        }
 
         <!-- Datos del equipo / dueño -->
         <div class="grid gap-4 border-t border-line p-6 sm:grid-cols-2">
