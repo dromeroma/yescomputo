@@ -22,6 +22,7 @@ export interface TrackResult {
   customerPhoneMasked: string | null;
   device: { type: string | null; brand: string | null; model: string | null };
   reportedIssue: string;
+  serviceType: 'service' | 'warranty';
   status: TrackStatus;
   estimatedReadyAt: string | null;
   pickupNotes: string | null;

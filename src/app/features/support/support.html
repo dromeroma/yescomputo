@@ -92,7 +92,15 @@
           </div>
           <div>
             <p class="text-xs font-semibold uppercase tracking-wider text-content-subtle">Equipo</p>
-            <p class="mt-1 font-medium">{{ r.device.type }} {{ r.device.brand }} {{ r.device.model }}</p>
+            <p class="mt-1 font-medium">
+              {{ r.device.type }} {{ r.device.brand }} {{ r.device.model }}
+              <span class="ml-1 inline-block rounded-full px-2 py-0.5 align-middle text-xs font-semibold"
+                [class]="r.serviceType === 'warranty'
+                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300'
+                  : 'bg-brand-100 text-brand-800 dark:bg-brand-500/15 dark:text-brand-200'">
+                {{ r.serviceType === 'warranty' ? 'Garantía' : 'Servicio' }}
+              </span>
+            </p>
             @if (r.reportedIssue) { <p class="text-sm text-content-subtle">{{ r.reportedIssue }}</p> }
           </div>
           @if (r.pickupNotes) {
