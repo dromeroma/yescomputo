@@ -37,7 +37,6 @@ export class Support implements OnInit {
   private readonly STEPS: { key: string; label: string }[] = [
     { key: 'received', label: 'Recibido' },
     { key: 'diagnosing', label: 'Diagnóstico' },
-    { key: 'awaiting_approval', label: 'Aprobación' },
     { key: 'repairing', label: 'Reparación' },
     { key: 'ready', label: 'Listo' },
     { key: 'delivered', label: 'Entregado' },
@@ -47,11 +46,10 @@ export class Support implements OnInit {
   private readonly STEP_INDEX: Record<string, number> = {
     received: 0,
     diagnosing: 1,
-    awaiting_approval: 2,
-    repairing: 3,
-    awaiting_parts: 3,
-    ready: 4,
-    delivered: 5,
+    repairing: 2,
+    awaiting_parts: 2,
+    ready: 3,
+    delivered: 4,
   };
 
   protected readonly isCancelled = computed(() => this.result()?.status.key === 'cancelled');
