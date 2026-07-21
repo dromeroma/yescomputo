@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, of, tap } from 'rxjs';
 
 import { APP_CONFIG } from '../config/app-config';
+import { AnalyticsConfig, AnalyticsService } from './analytics.service';
 
 /** Known premium feature keys (mirror of the backend registry). */
 export type FeatureKey =
@@ -11,10 +12,12 @@ export type FeatureKey =
   | 'buy_advisor'
   | 'tradein'
   | 'whatsapp_bot'
-  | 'service_tracking';
+  | 'service_tracking'
+  | 'web_analytics';
 
 interface SettingsResponse {
   features: Partial<Record<FeatureKey, boolean>>;
+  analytics?: AnalyticsConfig;
 }
 
 /**
@@ -28,6 +31,7 @@ interface SettingsResponse {
 export class FeaturesService {
   private readonly http = inject(HttpClient);
   private readonly config = inject(APP_CONFIG);
+  private readonly analytics = inject(AnalyticsService);
   private readonly flags = signal<Partial<Record<FeatureKey, boolean>>>({});
 
   /** Called by an app initializer before first render. */
@@ -35,7 +39,11 @@ export class FeaturesService {
     return this.http
       .get<SettingsResponse>(`${this.config.apiBaseUrl}/catalog/settings`)
       .pipe(
-        tap((res) => this.flags.set(res?.features ?? {})),
+        tap((res) => {
+          this.flags.set(res?.features ?? {});
+          // Marketing add-on: inject GA4 / Meta Pixel (browser-only, gated).
+          if (res?.features?.web_analytics) this.analytics.activate(res.analytics);
+        }),
         catchError(() => {
           this.flags.set({});
           return of(null);
