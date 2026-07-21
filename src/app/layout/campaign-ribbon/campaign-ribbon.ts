@@ -31,7 +31,7 @@ import { Icon } from '../../shared/components/icon/icon';
         <button
           type="button"
           (click)="campaign.setEnabled(false)"
-          class="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-ink-300 transition-colors hover:bg-white/10 hover:text-white"
+          class="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-ink-300 transition-colors hover:bg-white/10 hover:text-white"
           [attr.aria-label]="'Desactivar ' + c.label"
         >
           <yc-icon name="close" [size]="16" />

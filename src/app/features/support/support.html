@@ -60,9 +60,9 @@
             <p>Este servicio fue cancelado. Si tienes dudas, escríbenos y con gusto te ayudamos.</p>
           </div>
         } @else {
-          <!-- Barra de progreso con etiquetas -->
-          <div class="px-4 pb-7 pt-8 sm:px-8">
-            <div class="relative flex justify-between">
+          <!-- Barra de progreso con etiquetas (scroll horizontal en pantallas muy angostas) -->
+          <div class="overflow-x-auto px-4 pb-7 pt-8 sm:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div class="relative flex min-w-[340px] justify-between">
               <!-- track de fondo + relleno -->
               <div class="absolute left-0 right-0 top-4 h-1 rounded-full bg-surface-inset"></div>
               <div class="absolute left-0 top-4 h-1 rounded-full bg-brand-500 transition-all duration-500" [style.width.%]="progressPct()"></div>
@@ -75,7 +75,7 @@
                       <span class="h-2.5 w-2.5 rounded-full bg-ink-950"></span>
                     } @else { {{ $index + 1 }} }
                   </span>
-                  <span class="text-center text-[11px] font-medium leading-tight"
+                  <span class="whitespace-nowrap text-center text-[11px] font-medium leading-tight"
                     [class.text-content]="s.reached" [class.text-content-subtle]="!s.reached">{{ s.label }}</span>
                 </div>
               }

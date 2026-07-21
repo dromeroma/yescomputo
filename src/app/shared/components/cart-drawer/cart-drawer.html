@@ -68,8 +68,8 @@
                     </h3>
                   </div>
                   <button type="button" (click)="askRemove(item)"
-                    class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-content-subtle hover:bg-surface-inset hover:text-danger"
-                    aria-label="Quitar"><yc-icon name="trash" [size]="15" /></button>
+                    class="grid h-9 w-9 shrink-0 place-items-center rounded-full text-content-subtle hover:bg-surface-inset hover:text-danger"
+                    aria-label="Quitar"><yc-icon name="trash" [size]="16" /></button>
                 </div>
 
                 @if (item.mode === 'rent') {
@@ -79,10 +79,10 @@
                 <p class="mt-0.5 text-2xs text-content-subtle">{{ unitPrice(item) | cop }} c/u</p>
 
                 <div class="mt-auto flex items-center justify-between gap-2 pt-2">
-                  <div class="flex h-8 items-center rounded-full border border-line-strong">
-                    <button type="button" (click)="setQty(item, item.quantity - 1)" class="grid h-8 w-8 place-items-center text-content-muted hover:text-content" aria-label="Disminuir"><yc-icon name="minus" [size]="14" /></button>
+                  <div class="flex h-10 items-center rounded-full border border-line-strong">
+                    <button type="button" (click)="setQty(item, item.quantity - 1)" class="grid h-10 w-10 place-items-center text-content-muted hover:text-content" aria-label="Disminuir"><yc-icon name="minus" [size]="14" /></button>
                     <span class="w-6 text-center text-sm font-semibold">{{ item.quantity }}</span>
-                    <button type="button" (click)="setQty(item, item.quantity + 1)" class="grid h-8 w-8 place-items-center text-content-muted hover:text-content" aria-label="Aumentar"><yc-icon name="plus" [size]="14" /></button>
+                    <button type="button" (click)="setQty(item, item.quantity + 1)" class="grid h-10 w-10 place-items-center text-content-muted hover:text-content" aria-label="Aumentar"><yc-icon name="plus" [size]="14" /></button>
                   </div>
                   <span class="font-display text-sm font-bold text-content">{{ unitPrice(item) * item.quantity | cop }}</span>
                 </div>

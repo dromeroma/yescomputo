@@ -82,7 +82,7 @@
         <button
           type="button"
           (click)="campaign.toggle()"
-          class="relative grid h-9 w-9 place-items-center rounded-full sm:h-10 sm:w-10 transition-colors hover:bg-surface-inset"
+          class="relative grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-surface-inset"
           [class.text-content]="campaign.enabled()"
           [class.text-content-subtle]="!campaign.enabled()"
           [attr.aria-pressed]="campaign.enabled()"
@@ -100,7 +100,7 @@
       <button
         type="button"
         (click)="theme.toggle()"
-        class="grid h-9 w-9 place-items-center rounded-full sm:h-10 sm:w-10 text-content-muted transition-colors hover:bg-surface-inset"
+        class="grid h-10 w-10 place-items-center rounded-full text-content-muted transition-colors hover:bg-surface-inset"
         [attr.aria-label]="theme.mode() === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
       >
         <yc-icon [name]="theme.mode() === 'dark' ? 'sun' : 'moon'" [size]="20" />
@@ -109,7 +109,7 @@
       <button
         type="button"
         (click)="openCart()"
-        class="relative grid h-9 w-9 place-items-center rounded-full sm:h-10 sm:w-10 text-content-muted transition-colors hover:bg-surface-inset"
+        class="relative grid h-10 w-10 place-items-center rounded-full text-content-muted transition-colors hover:bg-surface-inset"
         aria-label="Abrir carrito"
       >
         <yc-icon name="cart" [size]="21" />
@@ -125,7 +125,7 @@
       <button
         type="button"
         (click)="mobileOpen.set(true)"
-        class="grid h-9 w-9 place-items-center rounded-full sm:h-10 sm:w-10 text-content-muted hover:bg-surface-inset lg:hidden"
+        class="grid h-10 w-10 place-items-center rounded-full text-content-muted hover:bg-surface-inset lg:hidden"
         aria-label="Abrir menú"
       >
         <yc-icon name="menu" [size]="22" />

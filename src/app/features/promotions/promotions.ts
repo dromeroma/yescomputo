@@ -151,10 +151,10 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
               </a>
             </div>
           </div>
-          <div class="grid grid-cols-3 gap-4">
+          <div class="grid grid-cols-3 gap-3 sm:gap-4">
             @for (s of circularStats; track s.label) {
-              <div class="rounded-2xl border border-white/10 bg-white/5 p-5 text-center backdrop-blur">
-                <p class="text-3xl font-bold text-brand-400">{{ s.value }}</p>
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-3 text-center backdrop-blur sm:p-5">
+                <p class="text-2xl font-bold text-brand-400 sm:text-3xl">{{ s.value }}</p>
                 <p class="mt-1 text-xs text-white/60">{{ s.label }}</p>
               </div>
             }
