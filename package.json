@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:static": "ng build --configuration=static",
+    "build:static": "ng build --configuration=static && node -e \"require('fs').copyFileSync('dist/yescomputo/browser/index.html','dist/yescomputo/browser/404.html')\"",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:yescomputo": "node dist/yescomputo/server/server.mjs",

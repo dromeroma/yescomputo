@@ -1,3 +1,0 @@
-# SPA fallback: toda ruta no encontrada sirve el index.html (Angular enruta en el cliente).
-# Usado por Cloudflare Pages / Netlify. Los archivos reales (js, css, img) se sirven directo.
-/*    /index.html   200
