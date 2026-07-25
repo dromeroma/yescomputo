@@ -1,9 +1,10 @@
-# Configuración de Cloudflare (Workers static assets) para servir la SPA.
-# `single-page-application` = cualquier ruta no encontrada sirve index.html con
-# estado 200, para que Angular enrute en el cliente (sin bucles de _redirects).
+# Cloudflare Worker que sirve la SPA de Angular (estáticos + fallback a index.html).
+# El fallback lo hace worker.js explícitamente, para no depender de opciones que
+# no siempre se aplican en workers de solo-assets.
 name = "yescomputo"
+main = "worker.js"
 compatibility_date = "2024-11-01"
 
 [assets]
 directory = "./dist/yescomputo/browser"
-not_found_handling = "single-page-application"
+binding = "ASSETS"
