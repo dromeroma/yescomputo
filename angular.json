@@ -53,6 +53,25 @@
               ],
               "outputHashing": "all"
             },
+            "static": {
+              "ssr": false,
+              "server": false,
+              "outputMode": "static",
+              "prerender": false,
+              "outputHashing": "all",
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1.5MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,

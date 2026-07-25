@@ -1,0 +1,68 @@
+name: Deploy a cPanel (FTP)
+
+# Despliega automáticamente el sitio (SPA estático) a tu hosting cPanel en cada
+# push a main. Requiere 3 secretos en el repo (Settings → Secrets → Actions):
+#   FTP_SERVER    -> host FTP de tu cPanel (ej. ftp.yescomputo.com o la IP)
+#   FTP_USERNAME  -> usuario FTP
+#   FTP_PASSWORD  -> contraseña FTP
+# Mientras no estén configurados, el job se salta solo (no falla).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ¿FTP configurado?
+        id: gate
+        run: |
+          if [ -n "${{ secrets.FTP_SERVER }}" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::FTP_SERVER no configurado — se omite el despliegue a cPanel."
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.ready == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.ready == 'true'
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        if: steps.gate.outputs.ready == 'true'
+        run: npm ci
+
+      - name: Compilar (SPA estático)
+        if: steps.gate.outputs.ready == 'true'
+        run: npm run build:static
+
+      - name: Crear .htaccess (fallback SPA para Apache/cPanel)
+        if: steps.gate.outputs.ready == 'true'
+        run: |
+          cat > dist/yescomputo/browser/.htaccess <<'HT'
+          <IfModule mod_rewrite.c>
+            RewriteEngine On
+            RewriteBase /
+            RewriteRule ^index\.html$ - [L]
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteCond %{REQUEST_FILENAME} !-d
+            RewriteRule . /index.html [L]
+          </IfModule>
+          HT
+
+      - name: Subir a cPanel por FTP
+        if: steps.gate.outputs.ready == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/yescomputo/browser/
+          server-dir: ./public_html/
