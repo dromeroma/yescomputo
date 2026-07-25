@@ -64,6 +64,9 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          # El servidor exige TLS (rechaza FTP en texto plano) → FTP sobre TLS explícito.
+          protocol: ftps
+          port: 21
           local-dir: ./dist/yescomputo/browser/
           # La cuenta FTP debe estar limitada a la carpeta public_html (ver pasos),
           # así el raíz FTP ya ES public_html y subimos a "./".
