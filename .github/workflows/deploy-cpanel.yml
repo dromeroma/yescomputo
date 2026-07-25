@@ -65,4 +65,6 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/yescomputo/browser/
-          server-dir: ./public_html/
+          # La cuenta FTP debe estar limitada a la carpeta public_html (ver pasos),
+          # así el raíz FTP ya ES public_html y subimos a "./".
+          server-dir: ./
