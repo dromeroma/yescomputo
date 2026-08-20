@@ -60,8 +60,8 @@
           if (localStorage.getItem('yc.theme') === 'dark') {
             document.documentElement.classList.add('dark');
           }
-          // Keep 'mundial' in sync with SEASONAL_CAMPAIGN in campaigns.ts.
-          var season = 'mundial';
+          // Keep in sync with SEASONAL_CAMPAIGN in campaigns.ts (null = off).
+          var season = null;
           if (season && localStorage.getItem('yc.campaign') !== 'off') {
             document.documentElement.setAttribute('data-campaign', season);
           }

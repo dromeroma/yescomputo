@@ -110,4 +110,4 @@ export const CAMPAIGNS: Partial<Record<CampaignId, CampaignDef>> = {
  * The campaign currently "in season". Set to `null` to disable the whole
  * feature (the toggle hides and no campaign styling exists).
  */
-export const SEASONAL_CAMPAIGN: CampaignId | null = 'mundial';
+export const SEASONAL_CAMPAIGN: CampaignId | null = null;
