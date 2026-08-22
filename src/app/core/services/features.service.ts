@@ -15,9 +15,22 @@ export type FeatureKey =
   | 'service_tracking'
   | 'web_analytics';
 
+/** A hero/portada slide as configured from the admin panel. */
+export interface HeroSlideDTO {
+  id: string;
+  eyebrow: string;
+  titleTop: string;
+  titleMain: string;
+  subtitle: string;
+  image: string;
+  ctaLabel: string;
+  ctaLink: string;
+}
+
 interface SettingsResponse {
   features: Partial<Record<FeatureKey, boolean>>;
   analytics?: AnalyticsConfig;
+  hero?: HeroSlideDTO[];
 }
 
 /**
@@ -33,6 +46,10 @@ export class FeaturesService {
   private readonly config = inject(APP_CONFIG);
   private readonly analytics = inject(AnalyticsService);
   private readonly flags = signal<Partial<Record<FeatureKey, boolean>>>({});
+  private readonly heroSlides = signal<HeroSlideDTO[]>([]);
+
+  /** Admin-configured hero slides (empty → the site uses its built-in hero). */
+  readonly hero = this.heroSlides.asReadonly();
 
   /** Called by an app initializer before first render. */
   load(): Observable<unknown> {
@@ -41,11 +58,13 @@ export class FeaturesService {
       .pipe(
         tap((res) => {
           this.flags.set(res?.features ?? {});
+          this.heroSlides.set(Array.isArray(res?.hero) ? res!.hero! : []);
           // Marketing add-on: inject GA4 / Meta Pixel (browser-only, gated).
           if (res?.features?.web_analytics) this.analytics.activate(res.analytics);
         }),
         catchError(() => {
           this.flags.set({});
+          this.heroSlides.set([]);
           return of(null);
         }),
       );

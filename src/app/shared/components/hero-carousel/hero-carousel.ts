@@ -14,6 +14,7 @@ import { RouterLink } from '@angular/router';
 import { Icon } from '../icon/icon';
 import { CampaignService } from '../../../core/services/campaign.service';
 import { CampaignDef } from '../../../core/config/campaigns';
+import { FeaturesService, HeroSlideDTO } from '../../../core/services/features.service';
 
 interface HeroSlide {
   eyebrow: string;
@@ -64,8 +65,19 @@ export class HeroCarousel implements OnInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly campaignService = inject(CampaignService);
+  private readonly featuresService = inject(FeaturesService);
   private timer?: ReturnType<typeof setInterval>;
   private readonly intervalMs = 6000;
+
+  /** Vibrant color sets cycled across admin-configured slides so they keep the
+   * same aurora/streak look without the admin having to pick colors. */
+  private readonly PALETTE = [
+    { aurora: 'linear-gradient(125deg, #22d3ee 0%, #a3e635 48%, #fde047 100%)', streakA: '#a3e635', streakB: '#22d3ee' },
+    { aurora: 'linear-gradient(125deg, #818cf8 0%, #22d3ee 50%, #34d399 100%)', streakA: '#818cf8', streakB: '#22d3ee' },
+    { aurora: 'linear-gradient(125deg, #a3e635 0%, #22d3ee 55%, #38bdf8 100%)', streakA: '#a3e635', streakB: '#38bdf8' },
+    { aurora: 'linear-gradient(125deg, #2dd4bf 0%, #22d3ee 50%, #818cf8 100%)', streakA: '#2dd4bf', streakB: '#818cf8' },
+    { aurora: 'linear-gradient(125deg, #84cc16 0%, #10b981 52%, #06b6d4 100%)', streakA: '#84cc16', streakB: '#10b981' },
+  ];
 
   protected readonly index = signal(0);
   protected readonly paused = signal(false);
@@ -160,11 +172,48 @@ export class HeroCarousel implements OnInit, OnDestroy {
     },
   ];
 
-  /** Active slides — a seasonal campaign slide is prepended when on. */
+  /** Admin-configured slides (from the panel) if any, else the built-in ones.
+   * A seasonal campaign slide is prepended when active. */
   protected readonly slides = computed<HeroSlide[]>(() => {
+    const configured = this.featuresService.hero();
+    const base = configured.length
+      ? configured.map((s, i) => this.fromConfig(s, i))
+      : this.baseSlides;
     const c = this.campaignService.campaign();
-    return c ? [this.campaignSlide(c), ...this.baseSlides] : this.baseSlides;
+    return c ? [this.campaignSlide(c), ...base] : base;
   });
+
+  /** Map an admin slide to the full internal slide (auto colors, link parsing). */
+  private fromConfig(dto: HeroSlideDTO, i: number): HeroSlide {
+    const p = this.PALETTE[i % this.PALETTE.length];
+    let ctaLink = (dto.ctaLink || '/catalogo').trim();
+    let ctaQuery: Record<string, string> | undefined;
+    const q = ctaLink.indexOf('?');
+    if (q >= 0) {
+      const qs = ctaLink.slice(q + 1);
+      ctaLink = ctaLink.slice(0, q) || '/catalogo';
+      ctaQuery = {};
+      for (const pair of qs.split('&')) {
+        const [k, v] = pair.split('=');
+        if (k) ctaQuery[decodeURIComponent(k)] = decodeURIComponent(v ?? '');
+      }
+    }
+    return {
+      eyebrow: dto.eyebrow || '',
+      titleTop: dto.titleTop || '',
+      titleMain: dto.titleMain || '',
+      subtitle: dto.subtitle || '',
+      icon: 'sparkles',
+      image: dto.image || '/img/hero/laptop.jpg',
+      ctaLabel: dto.ctaLabel || 'Ver catálogo',
+      ctaLink,
+      ctaQuery,
+      aurora: p.aurora,
+      streakA: p.streakA,
+      streakB: p.streakB,
+      chips: [],
+    };
+  }
 
   constructor() {
     // Keep the index valid when the slide set changes (campaign on/off).
