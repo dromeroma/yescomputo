@@ -27,10 +27,17 @@ export interface HeroSlideDTO {
   ctaLink: string;
 }
 
+/** An extra header menu entry configured from the admin (only active ones sent). */
+export interface NavLinkDTO {
+  label: string;
+  link: string;
+}
+
 interface SettingsResponse {
   features: Partial<Record<FeatureKey, boolean>>;
   analytics?: AnalyticsConfig;
   hero?: HeroSlideDTO[];
+  nav?: NavLinkDTO[];
 }
 
 /**
@@ -47,9 +54,12 @@ export class FeaturesService {
   private readonly analytics = inject(AnalyticsService);
   private readonly flags = signal<Partial<Record<FeatureKey, boolean>>>({});
   private readonly heroSlides = signal<HeroSlideDTO[]>([]);
+  private readonly navLinks = signal<NavLinkDTO[]>([]);
 
   /** Admin-configured hero slides (empty → the site uses its built-in hero). */
   readonly hero = this.heroSlides.asReadonly();
+  /** Extra header menu entries the admin marked visible. */
+  readonly nav = this.navLinks.asReadonly();
 
   /** Called by an app initializer before first render. */
   load(): Observable<unknown> {
@@ -59,12 +69,14 @@ export class FeaturesService {
         tap((res) => {
           this.flags.set(res?.features ?? {});
           this.heroSlides.set(Array.isArray(res?.hero) ? res!.hero! : []);
+          this.navLinks.set(Array.isArray(res?.nav) ? res!.nav! : []);
           // Marketing add-on: inject GA4 / Meta Pixel (browser-only, gated).
           if (res?.features?.web_analytics) this.analytics.activate(res.analytics);
         }),
         catchError(() => {
           this.flags.set({});
           this.heroSlides.set([]);
+          this.navLinks.set([]);
           return of(null);
         }),
       );

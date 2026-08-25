@@ -42,27 +42,45 @@ export class Header {
   protected readonly scrolled = signal(false);
 
   private readonly allNav: {
+    id: string;
     label: string;
     link: string;
     query?: Record<string, string>;
     feature?: string;
   }[] = [
-    { label: 'Inicio', link: '/' },
-    { label: 'Catálogo', link: '/catalogo' },
+    { id: 'inicio', label: 'Inicio', link: '/' },
+    { id: 'catalogo', label: 'Catálogo', link: '/catalogo' },
     // "Reacondicionados" = ALL refurbished (any category) → condition filter.
     // (/categoria/reacondicionados is the "Portátiles Reacondicionados" category.)
-    { label: 'Reacondicionados', link: '/catalogo', query: { condition: 'reacondicionado' } },
-    { label: 'Servicios', link: '/servicios' },
-    { label: 'Soporte', link: '/soporte', feature: 'service_tracking' },
-    { label: 'Tecnología Circular', link: '/tecnologia-circular' },
-    { label: 'Nosotros', link: '/nosotros' },
-    { label: 'Contacto', link: '/contacto' },
+    { id: 'reacond', label: 'Reacondicionados', link: '/catalogo', query: { condition: 'reacondicionado' } },
+    { id: 'servicios', label: 'Servicios', link: '/servicios' },
+    { id: 'soporte', label: 'Soporte', link: '/soporte', feature: 'service_tracking' },
+    { id: 'circular', label: 'Tecnología Circular', link: '/tecnologia-circular' },
+    { id: 'nosotros', label: 'Nosotros', link: '/nosotros' },
+    { id: 'contacto', label: 'Contacto', link: '/contacto' },
   ];
 
-  /** Nav filtered by active features (e.g. "Soporte" only when service_tracking is on). */
-  protected readonly mainNav = computed(() =>
-    this.allNav.filter((i) => !i.feature || this.features.isOn(i.feature as never)),
-  );
+  /** Built-in nav (feature-filtered) + admin-managed entries (marked visible).
+   * Admin links may include query params (e.g. /catalogo?promo=1). */
+  protected readonly mainNav = computed(() => {
+    const base = this.allNav.filter((i) => !i.feature || this.features.isOn(i.feature as never));
+    const extra = this.features.nav().map((n, idx) => {
+      let link = (n.link || '/').trim();
+      let query: Record<string, string> | undefined;
+      const q = link.indexOf('?');
+      if (q >= 0) {
+        const qs = link.slice(q + 1);
+        link = link.slice(0, q) || '/';
+        query = {};
+        for (const pair of qs.split('&')) {
+          const [k, v] = pair.split('=');
+          if (k) query[decodeURIComponent(k)] = decodeURIComponent(v ?? '');
+        }
+      }
+      return { id: `x-${idx}`, label: n.label, link, query };
+    });
+    return [...base, ...extra];
+  });
 
   protected onScroll(): void {
     this.scrolled.set(window.scrollY > 8);
