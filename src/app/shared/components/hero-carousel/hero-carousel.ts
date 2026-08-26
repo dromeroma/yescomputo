@@ -12,9 +12,11 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../icon/icon';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CampaignService } from '../../../core/services/campaign.service';
 import { CampaignDef } from '../../../core/config/campaigns';
 import { FeaturesService, HeroSlideDTO } from '../../../core/services/features.service';
+import { CatalogService } from '../../../core/services/catalog.service';
 
 interface HeroSlide {
   eyebrow: string;
@@ -66,6 +68,9 @@ export class HeroCarousel implements OnInit, OnDestroy {
   private readonly isBrowser = isPlatformBrowser(this.platformId);
   private readonly campaignService = inject(CampaignService);
   private readonly featuresService = inject(FeaturesService);
+  private readonly catalog = inject(CatalogService);
+  /** Promotions, to resolve a slide linked to one (id → its own ctaLink). */
+  private readonly promotions = toSignal(this.catalog.getPromotions(), { initialValue: [] });
   private timer?: ReturnType<typeof setInterval>;
   private readonly intervalMs = 6000;
 
@@ -186,7 +191,14 @@ export class HeroCarousel implements OnInit, OnDestroy {
   /** Map an admin slide to the full internal slide (auto colors, link parsing). */
   private fromConfig(dto: HeroSlideDTO, i: number): HeroSlide {
     const p = this.PALETTE[i % this.PALETTE.length];
+    // Resolve the link: a linked promotion wins over the manual ctaLink.
     let ctaLink = (dto.ctaLink || '/catalogo').trim();
+    if (dto.promotionId === '__all__') {
+      ctaLink = '/promociones';
+    } else if (dto.promotionId) {
+      const promo = this.promotions().find((pr) => pr.id === dto.promotionId);
+      ctaLink = (promo?.ctaLink || '/promociones').trim();
+    }
     let ctaQuery: Record<string, string> | undefined;
     const q = ctaLink.indexOf('?');
     if (q >= 0) {

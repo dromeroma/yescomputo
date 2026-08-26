@@ -25,6 +25,8 @@ export interface HeroSlideDTO {
   image: string;
   ctaLabel: string;
   ctaLink: string;
+  /** "" = use ctaLink; "__all__" = /promociones; else a promotion id. */
+  promotionId?: string;
 }
 
 /** An extra header menu entry configured from the admin (only active ones sent). */
