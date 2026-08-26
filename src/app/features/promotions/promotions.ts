@@ -49,50 +49,74 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
               <div class="absolute -left-24 bottom-0 h-[24rem] w-[24rem] rounded-full blur-[130px]"
                 [style.background]="glowB(promo.theme)" [style.opacity]="0.28"></div>
 
-              <!-- Badge gigante de marca de agua -->
-              @if (promo.badge) {
-                <span class="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 select-none font-display font-black leading-none text-white/[0.05] lg:block lg:text-[13rem] xl:text-[16rem]">{{ promo.badge }}</span>
-              }
-
-              <!-- Contenido -->
-              <div class="container-page relative flex min-h-[30rem] flex-col items-center justify-center py-16 text-center lg:min-h-[34rem]">
-                <span class="eyebrow justify-center" [style.color]="accent(promo.theme)">
-                  <span class="h-1 w-1 rounded-full" [style.background]="accent(promo.theme)"></span>Oferta destacada
-                </span>
-
-                @if (promo.badge) {
-                  <span class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-extrabold uppercase tracking-wider backdrop-blur"
-                    [style.color]="accent(promo.theme)">
-                    <yc-icon name="sparkles" [size]="15" />{{ promo.badge }}
-                  </span>
-                }
-
-                <h1 class="mt-5 max-w-4xl font-display text-4xl font-extrabold leading-[1.03] tracking-tight sm:text-5xl lg:text-6xl">
-                  {{ promo.title }}
-                </h1>
-
-                @if (promo.subtitle) {
-                  <p class="mt-4 text-lg font-semibold text-white/85 sm:text-xl">{{ promo.subtitle }}</p>
-                }
-                @if (promo.description) {
-                  <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/60 sm:text-base">{{ promo.description }}</p>
-                }
-                @if (endsInLabel(promo.endsAt); as lbl) {
-                  <p class="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-medium text-white/85 backdrop-blur">
-                    <yc-icon name="clock" [size]="15" [style.color]="accent(promo.theme)" />{{ lbl }}
-                  </p>
-                }
-
-                <div class="mt-8">
-                  <a [routerLink]="basePath(promo.ctaLink)" [queryParams]="queryOf(promo.ctaLink)"
-                    class="group inline-flex items-center gap-2 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-base font-bold text-ink-950 shadow-[0_12px_44px_-14px_rgba(255,255,255,0.55)] transition-transform hover:scale-[1.03] active:scale-100">
-                    {{ promo.ctaLabel }}
-                    <span class="grid h-9 w-9 place-items-center rounded-full bg-ink-950 text-white transition-transform group-hover:translate-x-0.5">
-                      <yc-icon name="arrow-right" [size]="17" />
+              @if (promo.image) {
+                <!-- CON imagen: texto a la izquierda, imagen a la derecha -->
+                <div class="container-page relative grid min-h-[30rem] items-center gap-8 py-16 lg:min-h-[34rem] lg:grid-cols-[54fr_46fr]">
+                  <div class="z-10 text-center lg:text-left">
+                    <span class="eyebrow justify-center lg:justify-start" [style.color]="accent(promo.theme)">
+                      <span class="h-1 w-1 rounded-full" [style.background]="accent(promo.theme)"></span>Oferta destacada
                     </span>
-                  </a>
+                    @if (promo.badge) {
+                      <span class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-extrabold uppercase tracking-wider backdrop-blur" [style.color]="accent(promo.theme)">
+                        <yc-icon name="sparkles" [size]="15" />{{ promo.badge }}
+                      </span>
+                    }
+                    <h1 class="mt-5 font-display text-4xl font-extrabold leading-[1.03] tracking-tight sm:text-5xl lg:text-6xl">{{ promo.title }}</h1>
+                    @if (promo.subtitle) { <p class="mt-4 text-lg font-semibold text-white/85 sm:text-xl">{{ promo.subtitle }}</p> }
+                    @if (promo.description) { <p class="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/60 sm:text-base lg:mx-0">{{ promo.description }}</p> }
+                    @if (endsInLabel(promo.endsAt); as lbl) {
+                      <p class="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-medium text-white/85 backdrop-blur">
+                        <yc-icon name="clock" [size]="15" [style.color]="accent(promo.theme)" />{{ lbl }}
+                      </p>
+                    }
+                    <div class="mt-8">
+                      <a [routerLink]="basePath(promo.ctaLink)" [queryParams]="queryOf(promo.ctaLink)"
+                        class="group inline-flex items-center gap-2 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-base font-bold text-ink-950 shadow-[0_12px_44px_-14px_rgba(255,255,255,0.55)] transition-transform hover:scale-[1.03] active:scale-100">
+                        {{ promo.ctaLabel }}
+                        <span class="grid h-9 w-9 place-items-center rounded-full bg-ink-950 text-white transition-transform group-hover:translate-x-0.5"><yc-icon name="arrow-right" [size]="17" /></span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="relative">
+                    <div class="absolute -inset-4 rounded-[2rem] blur-3xl" [style.background]="glowA(promo.theme)" [style.opacity]="0.32"></div>
+                    <a [routerLink]="basePath(promo.ctaLink)" [queryParams]="queryOf(promo.ctaLink)" [attr.aria-label]="promo.ctaLabel"
+                      class="group relative block aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-white/15 bg-ink-900 shadow-[0_50px_120px_-30px_rgba(0,0,0,0.9)] transition-transform duration-300 hover:scale-[1.01]">
+                      <img [src]="promo.image" [alt]="promo.title" class="h-full w-full object-cover" loading="lazy" decoding="async" />
+                      <div class="absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-white/10"></div>
+                    </a>
+                  </div>
                 </div>
-              </div>
+              } @else {
+                <!-- SIN imagen: centrado con la marca de agua elegante -->
+                @if (promo.badge) {
+                  <span class="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 select-none font-display font-black leading-none text-white/[0.05] lg:block lg:text-[13rem] xl:text-[16rem]">{{ promo.badge }}</span>
+                }
+                <div class="container-page relative flex min-h-[30rem] flex-col items-center justify-center py-16 text-center lg:min-h-[34rem]">
+                  <span class="eyebrow justify-center" [style.color]="accent(promo.theme)">
+                    <span class="h-1 w-1 rounded-full" [style.background]="accent(promo.theme)"></span>Oferta destacada
+                  </span>
+                  @if (promo.badge) {
+                    <span class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-extrabold uppercase tracking-wider backdrop-blur" [style.color]="accent(promo.theme)">
+                      <yc-icon name="sparkles" [size]="15" />{{ promo.badge }}
+                    </span>
+                  }
+                  <h1 class="mt-5 max-w-4xl font-display text-4xl font-extrabold leading-[1.03] tracking-tight sm:text-5xl lg:text-6xl">{{ promo.title }}</h1>
+                  @if (promo.subtitle) { <p class="mt-4 text-lg font-semibold text-white/85 sm:text-xl">{{ promo.subtitle }}</p> }
+                  @if (promo.description) { <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/60 sm:text-base">{{ promo.description }}</p> }
+                  @if (endsInLabel(promo.endsAt); as lbl) {
+                    <p class="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-medium text-white/85 backdrop-blur">
+                      <yc-icon name="clock" [size]="15" [style.color]="accent(promo.theme)" />{{ lbl }}
+                    </p>
+                  }
+                  <div class="mt-8">
+                    <a [routerLink]="basePath(promo.ctaLink)" [queryParams]="queryOf(promo.ctaLink)"
+                      class="group inline-flex items-center gap-2 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-base font-bold text-ink-950 shadow-[0_12px_44px_-14px_rgba(255,255,255,0.55)] transition-transform hover:scale-[1.03] active:scale-100">
+                      {{ promo.ctaLabel }}
+                      <span class="grid h-9 w-9 place-items-center rounded-full bg-ink-950 text-white transition-transform group-hover:translate-x-0.5"><yc-icon name="arrow-right" [size]="17" /></span>
+                    </a>
+                  </div>
+                </div>
+              }
             </div>
           }
 
