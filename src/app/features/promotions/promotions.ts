@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
@@ -15,25 +25,109 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, Button, Icon, SectionHeading],
   template: `
-    <!-- 1 · HERO (dark, compact) -->
-    <section class="relative overflow-hidden bg-ink-950 text-white">
-      <div class="bg-grid absolute inset-0 opacity-40"></div>
-      <div class="absolute -right-20 top-0 h-72 w-72 rounded-full bg-brand-500/20 blur-[120px]"></div>
-      <div class="absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-accent-500/20 blur-[120px]"></div>
-      <div class="container-page relative py-16 lg:py-20">
-        <div class="mx-auto max-w-3xl text-center">
-          <span class="eyebrow mb-4 justify-center">
-            <span class="h-1 w-1 rounded-full bg-brand-400"></span>Ofertas
-          </span>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl">
-            Promociones y soluciones para tu <span class="text-gradient-brand">empresa</span>
-          </h1>
-          <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/70">
-            Equipos corporativos, reacondicionados certificados y planes de alquiler con descuentos
-            reales. Aprovecha nuestras campañas vigentes y equipa tu negocio con confianza.
-          </p>
+    <!-- 1 · HERO dinámico — rota las promociones vigentes -->
+    <section
+      class="relative isolate overflow-hidden bg-ink-950 text-white"
+      (mouseenter)="pause()"
+      (mouseleave)="resume()"
+    >
+      <div class="bg-grid absolute inset-0 opacity-30"></div>
+
+      @if (promotions().length) {
+        <div class="relative min-h-[30rem] lg:min-h-[34rem]">
+          @for (promo of promotions(); track promo.id; let i = $index) {
+            <div
+              class="absolute inset-0 transition-opacity duration-[900ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+              [class.opacity-100]="i === promoIndex()"
+              [class.opacity-0]="i !== promoIndex()"
+              [class.pointer-events-none]="i !== promoIndex()"
+              [attr.aria-hidden]="i !== promoIndex()"
+            >
+              <!-- Auras de color por tema -->
+              <div class="absolute -right-24 -top-16 h-[26rem] w-[26rem] rounded-full blur-[130px] transition-opacity duration-1000"
+                [style.background]="glowA(promo.theme)" [style.opacity]="i === promoIndex() ? 0.4 : 0"></div>
+              <div class="absolute -left-24 bottom-0 h-[24rem] w-[24rem] rounded-full blur-[130px]"
+                [style.background]="glowB(promo.theme)" [style.opacity]="0.28"></div>
+
+              <!-- Badge gigante de marca de agua -->
+              @if (promo.badge) {
+                <span class="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 select-none font-display font-black leading-none text-white/[0.05] lg:block lg:text-[13rem] xl:text-[16rem]">{{ promo.badge }}</span>
+              }
+
+              <!-- Contenido -->
+              <div class="container-page relative flex min-h-[30rem] flex-col items-center justify-center py-16 text-center lg:min-h-[34rem]">
+                <span class="eyebrow justify-center" [style.color]="accent(promo.theme)">
+                  <span class="h-1 w-1 rounded-full" [style.background]="accent(promo.theme)"></span>Oferta destacada
+                </span>
+
+                @if (promo.badge) {
+                  <span class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-sm font-extrabold uppercase tracking-wider backdrop-blur"
+                    [style.color]="accent(promo.theme)">
+                    <yc-icon name="sparkles" [size]="15" />{{ promo.badge }}
+                  </span>
+                }
+
+                <h1 class="mt-5 max-w-4xl font-display text-4xl font-extrabold leading-[1.03] tracking-tight sm:text-5xl lg:text-6xl">
+                  {{ promo.title }}
+                </h1>
+
+                @if (promo.subtitle) {
+                  <p class="mt-4 text-lg font-semibold text-white/85 sm:text-xl">{{ promo.subtitle }}</p>
+                }
+                @if (promo.description) {
+                  <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/60 sm:text-base">{{ promo.description }}</p>
+                }
+                @if (endsInLabel(promo.endsAt); as lbl) {
+                  <p class="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-sm font-medium text-white/85 backdrop-blur">
+                    <yc-icon name="clock" [size]="15" [style.color]="accent(promo.theme)" />{{ lbl }}
+                  </p>
+                }
+
+                <div class="mt-8">
+                  <a [routerLink]="basePath(promo.ctaLink)" [queryParams]="queryOf(promo.ctaLink)"
+                    class="group inline-flex items-center gap-2 rounded-full bg-white py-2.5 pl-6 pr-2.5 text-base font-bold text-ink-950 shadow-[0_12px_44px_-14px_rgba(255,255,255,0.55)] transition-transform hover:scale-[1.03] active:scale-100">
+                    {{ promo.ctaLabel }}
+                    <span class="grid h-9 w-9 place-items-center rounded-full bg-ink-950 text-white transition-transform group-hover:translate-x-0.5">
+                      <yc-icon name="arrow-right" [size]="17" />
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- Flechas + puntos (si hay más de una) -->
+          @if (promotions().length > 1) {
+            <button type="button" (click)="prevPromo()" aria-label="Anterior"
+              class="absolute left-3 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition-colors hover:bg-white/15 md:grid md:left-5">
+              <yc-icon name="chevron-left" [size]="22" />
+            </button>
+            <button type="button" (click)="nextPromo()" aria-label="Siguiente"
+              class="absolute right-3 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/5 text-white backdrop-blur transition-colors hover:bg-white/15 md:grid md:right-5">
+              <yc-icon name="chevron-right" [size]="22" />
+            </button>
+            <div class="absolute bottom-6 left-0 right-0 z-20 flex items-center justify-center gap-2.5">
+              @for (p of promotions(); track p.id; let i = $index) {
+                <button type="button" (click)="goPromo(i)" [attr.aria-label]="'Ir a la promoción ' + (i + 1)"
+                  class="h-1.5 rounded-full transition-all duration-500"
+                  [class.w-10]="i === promoIndex()" [class.w-5]="i !== promoIndex()"
+                  [class.bg-white]="i === promoIndex()" [class.bg-ink-600]="i !== promoIndex()"></button>
+              }
+            </div>
+          }
         </div>
-      </div>
+      } @else {
+        <!-- Respaldo estático si no hay promociones -->
+        <div class="container-page relative py-16 lg:py-20">
+          <div class="mx-auto max-w-3xl text-center">
+            <span class="eyebrow mb-4 justify-center"><span class="h-1 w-1 rounded-full bg-brand-400"></span>Ofertas</span>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl">Promociones y soluciones para tu <span class="text-gradient-brand">empresa</span></h1>
+            <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/70">
+              Equipos corporativos, reacondicionados certificados y planes de alquiler con descuentos reales. Aprovecha nuestras campañas vigentes y equipa tu negocio con confianza.
+            </p>
+          </div>
+        </div>
+      }
     </section>
 
     <!-- 2 · FEATURED PROMO CARDS -->
@@ -164,12 +258,93 @@ import { SectionHeading } from '../../shared/components/section-heading/section-
     </section>
   `,
 })
-export class Promotions implements OnInit {
+export class Promotions implements OnInit, OnDestroy {
   private readonly catalog = inject(CatalogService);
   private readonly seo = inject(SeoService);
   private readonly whatsapp = inject(WhatsappService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private timer?: ReturnType<typeof setInterval>;
 
   protected readonly promotions = toSignal(this.catalog.getPromotions(), { initialValue: [] });
+
+  // --- Hero carousel state ------------------------------------------------
+  protected readonly promoIndex = signal(0);
+  protected readonly paused = signal(false);
+
+  constructor() {
+    // Keep the index valid as promotions load / change.
+    effect(() => {
+      if (this.promoIndex() >= this.promotions().length) this.promoIndex.set(0);
+    });
+  }
+
+  protected goPromo(i: number): void {
+    const len = this.promotions().length || 1;
+    this.promoIndex.set(((i % len) + len) % len);
+    this.restart();
+  }
+  protected nextPromo(): void {
+    this.goPromo(this.promoIndex() + 1);
+  }
+  protected prevPromo(): void {
+    this.goPromo(this.promoIndex() - 1);
+  }
+  protected pause(): void {
+    this.paused.set(true);
+  }
+  protected resume(): void {
+    this.paused.set(false);
+  }
+  private start(): void {
+    if (!this.isBrowser) return;
+    this.timer = setInterval(() => {
+      const len = this.promotions().length;
+      if (!this.paused() && len > 1) this.promoIndex.update((i) => (i + 1) % len);
+    }, 6500);
+  }
+  private stop(): void {
+    if (this.timer) clearInterval(this.timer);
+  }
+  private restart(): void {
+    this.stop();
+    this.start();
+  }
+
+  /** Accent + glow colours per promo theme (keeps the hero vibrant). */
+  private colors(theme: string): { accent: string; a: string; b: string } {
+    switch (theme) {
+      case 'sustainability':
+        return { accent: '#34d399', a: '#10b981', b: '#22d3ee' };
+      case 'accent':
+        return { accent: '#38bdf8', a: '#38bdf8', b: '#818cf8' };
+      case 'ink':
+        return { accent: '#a3e635', a: '#64748b', b: '#22d3ee' };
+      default: // brand
+        return { accent: '#a3e635', a: '#a3e635', b: '#22d3ee' };
+    }
+  }
+  protected accent(theme: string): string {
+    return this.colors(theme).accent;
+  }
+  protected glowA(theme: string): string {
+    return this.colors(theme).a;
+  }
+  protected glowB(theme: string): string {
+    return this.colors(theme).b;
+  }
+
+  /** Urgency label from an end date, e.g. "Termina hoy" / "Termina en 5 días". */
+  protected endsInLabel(endsAt?: string): string | null {
+    if (!endsAt) return null;
+    const end = new Date(endsAt).getTime();
+    if (isNaN(end)) return null;
+    const days = Math.ceil((end - Date.now()) / 86_400_000);
+    if (days < 0) return null;
+    if (days === 0) return 'Termina hoy';
+    if (days === 1) return 'Último día';
+    if (days <= 30) return `Termina en ${days} días`;
+    return null;
+  }
 
   protected readonly whatsappLink = this.whatsapp.link(
     '¡Hola Yes Computo! 👋 Vi sus promociones y quiero asesoría para equipar mi empresa.',
@@ -216,5 +391,10 @@ export class Promotions implements OnInit {
         'Promociones y soluciones tecnológicas para tu empresa en Cartagena: equipos corporativos, reacondicionados certificados hasta -60% y planes de alquiler con descuentos reales en Yes Computo.',
       path: '/promociones',
     });
+    this.start();
+  }
+
+  ngOnDestroy(): void {
+    this.stop();
   }
 }
