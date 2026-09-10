@@ -18,11 +18,15 @@ export type FeatureKey =
 /** A hero/portada slide as configured from the admin panel. */
 export interface HeroSlideDTO {
   id: string;
+  /** "text" = classic slide | "image" = full-bleed banner. Missing → "text". */
+  type?: 'text' | 'image';
   eyebrow: string;
   titleTop: string;
   titleMain: string;
   subtitle: string;
   image: string;
+  /** Full-bleed banner only: portrait image shown on phones. */
+  imageMobile?: string;
   ctaLabel: string;
   ctaLink: string;
   /** "" = use ctaLink; "__all__" = /promociones; else a promotion id. */

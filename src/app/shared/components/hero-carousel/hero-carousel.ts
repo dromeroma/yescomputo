@@ -19,13 +19,18 @@ import { FeaturesService, HeroSlideDTO } from '../../../core/services/features.s
 import { CatalogService } from '../../../core/services/catalog.service';
 
 interface HeroSlide {
+  /** "text" = classic layout | "image" = full-bleed clickable banner.
+   * Undefined behaves as "text" (the built-in slides). */
+  type?: 'text' | 'image';
   eyebrow: string;
   titleTop: string;
   titleMain: string;
   subtitle: string;
   icon: string;
-  /** Real product image shown in the hero showcase. */
+  /** Real product image shown in the hero showcase (desktop for banners). */
   image: string;
+  /** Full-bleed banner only: portrait image for phones (falls back to image). */
+  imageMobile?: string;
   ctaLabel: string;
   ctaLink: string;
   /** Optional query params for the CTA (e.g. the "all refurbished" filter). */
@@ -211,12 +216,14 @@ export class HeroCarousel implements OnInit, OnDestroy {
       }
     }
     return {
+      type: dto.type === 'image' ? 'image' : 'text',
       eyebrow: dto.eyebrow || '',
       titleTop: dto.titleTop || '',
       titleMain: dto.titleMain || '',
       subtitle: dto.subtitle || '',
       icon: 'sparkles',
       image: dto.image || '/img/hero/laptop.jpg',
+      imageMobile: dto.imageMobile || '',
       ctaLabel: dto.ctaLabel || 'Ver catálogo',
       ctaLink,
       ctaQuery,
