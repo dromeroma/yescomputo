@@ -108,13 +108,6 @@ export class Home implements OnInit {
     '¡Hola Yes Computo! 👋 Quiero asesoría para elegir los equipos ideales para mi empresa.',
   );
 
-  protected readonly stats = [
-    { value: '20+', label: 'Años de experiencia', icon: 'sparkles' },
-    { value: '5.000+', label: 'Equipos entregados', icon: 'truck' },
-    { value: '12', label: 'Categorías de producto', icon: 'grid' },
-    { value: '100%', label: 'Garantía y soporte', icon: 'shield-check' },
-  ];
-
   protected readonly circularSteps = [
     { icon: 'wrench', title: 'Reparar', text: 'Damos una segunda oportunidad a los equipos.' },
     { icon: 'refresh', title: 'Renovar', text: 'Mejoramos y actualizamos para mayor rendimiento.' },

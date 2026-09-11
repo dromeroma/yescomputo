@@ -1,54 +1,25 @@
 <!-- ============================ HERO CAROUSEL ============================ -->
 <yc-hero-carousel />
 
-<!-- Trust stats strip -->
-<section class="border-b border-line bg-surface">
-  <div class="container-page">
-    <dl class="grid grid-cols-2 gap-px overflow-hidden bg-line sm:grid-cols-4">
-      @for (s of stats; track s.label) {
-        <div
-          class="group flex flex-col items-center gap-3 bg-surface px-4 py-8 text-center transition-colors hover:bg-surface-subtle sm:flex-row sm:gap-4 sm:text-left"
-        >
-          <span
-            class="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-surface-raised text-accent-600 shadow-card ring-1 ring-line transition-transform duration-300 group-hover:-translate-y-0.5 dark:text-accent-300"
-          >
-            <yc-icon [name]="s.icon" [size]="22" />
-          </span>
-          <div>
-            <dt class="font-display text-3xl font-extrabold tracking-tight text-content sm:text-4xl">
-              {{ s.value }}
-            </dt>
-            <dd class="mt-0.5 text-2xs font-semibold uppercase tracking-[0.14em] text-content-subtle">
-              {{ s.label }}
-            </dd>
-          </div>
-        </div>
-      }
-    </dl>
-  </div>
-</section>
-
-<!-- ============================ CATEGORIES (carrusel) ============================ -->
-<section class="py-7 md:py-9">
-  <div class="container-page">
-    <div class="mb-4 flex items-center justify-between gap-4">
-      <h2 class="font-display text-xl font-bold text-content sm:text-2xl">Explora por categoría</h2>
-      <a ycButton variant="ghost" routerLink="/categorias" class="shrink-0">
-        Ver todas <yc-icon name="arrow-right" [size]="16" />
-      </a>
-    </div>
+<!-- ============================ CATEGORIES (tira compacta) ============================ -->
+<section class="border-b border-line py-4 md:py-5">
+  <div class="container-page mb-2.5 flex items-center justify-between gap-4">
+    <h2 class="font-display text-base font-bold text-content sm:text-lg">Explora por categoría</h2>
+    <a ycButton variant="ghost" routerLink="/categorias" class="shrink-0 text-sm">
+      Ver todas <yc-icon name="arrow-right" [size]="15" />
+    </a>
   </div>
 
-  <!-- Marquee a todo el ancho para que el peek se vea natural -->
+  <!-- Marquee compacto (chips tipo pill) -->
   <div class="container-page">
     <yc-marquee-row [items]="categories()" itemClass="w-auto">
       <ng-template let-cat>
         <a [routerLink]="['/categoria', cat.slug]"
-          class="group flex h-full items-center gap-3 rounded-2xl border border-line bg-surface-raised py-3.5 pl-3.5 pr-6 shadow-card transition-colors hover:border-line-strong">
-          <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-100 text-brand-700 transition-colors group-hover:bg-brand-500 group-hover:text-ink-950">
-            <yc-icon [name]="cat.icon" [size]="22" />
+          class="group flex h-full items-center gap-2.5 rounded-full border border-line bg-surface-raised py-1.5 pl-1.5 pr-5 shadow-card transition-colors hover:border-line-strong">
+          <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-100 text-brand-700 transition-colors group-hover:bg-brand-500 group-hover:text-ink-950">
+            <yc-icon [name]="cat.icon" [size]="18" />
           </span>
-          <span class="whitespace-nowrap font-display font-semibold text-content">{{ cat.name }}</span>
+          <span class="whitespace-nowrap font-display text-sm font-semibold text-content">{{ cat.name }}</span>
         </a>
       </ng-template>
     </yc-marquee-row>
@@ -56,16 +27,15 @@
 </section>
 
 <!-- ============================ FEATURED PRODUCTS ============================ -->
-<section class="section bg-surface-subtle">
+<section class="bg-surface-subtle pb-16 pt-8 md:pb-20 md:pt-10">
   <div class="container-page">
     <yc-section-heading
-      eyebrow="Selección destacada"
-      title="Equipos recomendados por nuestros expertos"
-      description="Lo mejor de cada categoría, seleccionado para ti. Explora una muestra y entra al catálogo para verlo todo.">
+      eyebrow="Nuestros productos"
+      title="Equipos recomendados por nuestros expertos">
       <a ycButton variant="outline" routerLink="/catalogo">Ver catálogo <yc-icon name="arrow-right" [size]="16" /></a>
     </yc-section-heading>
 
-    <div class="mt-12 space-y-12">
+    <div class="mt-8 space-y-12">
       @for (row of featuredRows(); track row.title; let i = $index) {
         <div>
           <!-- Row header -->
