@@ -12,6 +12,8 @@ export interface AppConfig {
   dataSource: 'local' | 'api';
   /** Base URL for the future FastAPI backend. */
   apiBaseUrl: string;
+  /** Slug del cliente en Savvy Sites (analítica y pedidos). */
+  tenantSlug?: string;
   /** Path (or URL) to the local JSON fixtures used while `dataSource === 'local'`. */
   localDataPath: string;
   /** Application version shown in the footer. Keep in sync with package.json. */
@@ -51,8 +53,9 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
   dataSource: 'api',
   // Backend (FastAPI) on Render. Public catalog endpoints live under /v1.
   apiBaseUrl: 'https://yescomputo-admin.onrender.com/v1',
+  tenantSlug: 'yes-computo',
   localDataPath: 'data',
-  appVersion: '0.0.1',
+  appVersion: '0.0.2',
   company: {
     name: 'Yes Computo',
     legalName: 'Yes Computo S.A.S.',

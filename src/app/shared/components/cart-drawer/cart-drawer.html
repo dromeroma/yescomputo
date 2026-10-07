@@ -100,11 +100,11 @@
         </div>
         <p class="mb-3 text-2xs text-content-subtle">Impuestos y envío se confirman en la cotización.</p>
         @if (checkoutEnabled()) {
-          <a ycButton variant="whatsapp" [block]="true" [href]="checkoutLink()" target="_blank" rel="noopener" (click)="close()">
+          <a ycButton variant="whatsapp" [block]="true" [href]="checkoutLink()" target="_blank" rel="noopener" (click)="sendOrder(); close()">
             <yc-icon name="whatsapp" [size]="18" /> Finalizar pedido por WhatsApp
           </a>
         } @else {
-          <a ycButton variant="whatsapp" [block]="true" [href]="quoteLink()" target="_blank" rel="noopener" (click)="close()">
+          <a ycButton variant="whatsapp" [block]="true" [href]="quoteLink()" target="_blank" rel="noopener" (click)="sendOrder(); close()">
             <yc-icon name="whatsapp" [size]="18" /> Cotizar por WhatsApp
           </a>
         }

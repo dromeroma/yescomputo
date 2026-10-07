@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/app-config';
 import { CartItem, CartSummary, Product } from '../models';
+import { InsightsService } from './insights.service';
 
 /**
  * Builds deep-links to WhatsApp Business — the primary conversion channel for
@@ -10,6 +11,7 @@ import { CartItem, CartSummary, Product } from '../models';
 @Injectable({ providedIn: 'root' })
 export class WhatsappService {
   private readonly config = inject(APP_CONFIG);
+  private readonly insights = inject(InsightsService);
 
   /** Generic chat link with an optional prefilled message. */
   link(message?: string): string {
@@ -65,6 +67,7 @@ export class WhatsappService {
       '',
       `Subtotal: ${this.cop(summary.subtotal)}`,
       `Total estimado: ${this.cop(summary.total)} (IVA incl.)`,
+      `Pedido: ${this.insights.orderCode()}`,
     ];
     if (opts.name?.trim()) parts.push('', `Cliente: ${opts.name.trim()}`);
     if (opts.note?.trim()) parts.push(`Nota: ${opts.note.trim()}`);
@@ -87,8 +90,13 @@ export class WhatsappService {
       )
       .join('\n');
     const msg =
-      `¡Hola Yes Computo! 👋 Quiero cotizar los siguientes equipos:\n\n${lines}\n\n` +
+      `¡Hola Yes Computo! 👋 Quiero cotizar los siguientes equipos:\n\n${lines}\n\nPedido: ${this.insights.orderCode()}\n\n` +
       `¿Me ayudan con la cotización?`;
     return this.link(msg);
+  }
+
+  /** Registra el pedido en el panel (Pedidos) al abrir WhatsApp desde el carrito. */
+  registerOrder(items: CartItem[]): void {
+    this.insights.order(items, () => false);
   }
 }

@@ -44,6 +44,11 @@ export class Cart implements OnInit {
     }),
   );
 
+  /** Registra el pedido en el panel (con el mismo código del mensaje). */
+  protected sendOrder(): void {
+    this.whatsapp.registerOrder(this.items());
+  }
+
   /** Key of the line item pending removal confirmation (null = none). */
   protected readonly confirmingKey = signal<string | null>(null);
 

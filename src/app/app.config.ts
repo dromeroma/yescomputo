@@ -16,6 +16,7 @@ import { CatalogDataSource } from './core/data/catalog-data-source';
 import { LocalCatalogDataSource } from './core/data/local-catalog-data-source';
 import { ApiCatalogDataSource } from './core/data/api-catalog-data-source';
 import { FeaturesService } from './core/services/features.service';
+import { InsightsService } from './core/services/insights.service';
 
 // Resolve the runtime config: in dev the FastAPI backend runs locally; in a
 // production build the deployed API URL from DEFAULT_APP_CONFIG is used.
@@ -47,6 +48,9 @@ export const appConfig: ApplicationConfig = {
     // Loads the site's enabled features before first render; premium UI gates
     // on FeaturesService.isOn(...). Fails safe to all-off.
     provideAppInitializer(() => inject(FeaturesService).load()),
+
+    // --- Analítica propia (Resultados del panel) — solo en el navegador -----
+    provideAppInitializer(() => inject(InsightsService).start()),
 
     // --- Catalog data source ------------------------------------------------
     // Driven by AppConfig.dataSource: 'api' → FastAPI (HttpClient), 'local' →
