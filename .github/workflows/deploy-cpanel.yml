@@ -51,6 +51,9 @@ jobs:
             RewriteEngine On
             RewriteBase /
             RewriteRule ^index\.html$ - [L]
+            # Tarjeta digital: los robots de redes reciben la vista previa (Open Graph)
+            RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|facebot|whatsapp|twitterbot|linkedinbot|slackbot|telegrambot|discordbot|pinterest|skypeuripreview|applebot|googlebot|bingbot|embedly|iframely) [NC]
+            RewriteRule ^tarjeta/([a-z0-9-]+)/?$ /tarjeta-og.php?c=$1 [L,QSA]
             RewriteCond %{REQUEST_FILENAME} !-f
             RewriteCond %{REQUEST_FILENAME} !-d
             RewriteRule . /index.html [L]

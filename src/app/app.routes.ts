@@ -92,6 +92,11 @@ export const routes: Routes = [
     title: 'Política de Privacidad · Yes Computo',
   },
   {
+    path: 'tarjeta/:slug',
+    loadComponent: () => import('./features/business-card/business-card').then((m) => m.BusinessCardPage),
+    title: 'Tarjeta digital',
+  },
+  {
     path: '**',
     loadComponent: () => import('./features/not-found/not-found').then((m) => m.NotFound),
     title: 'Página no encontrada · Yes Computo',
