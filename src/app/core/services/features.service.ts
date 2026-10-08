@@ -76,6 +76,13 @@ export class FeaturesService {
           this.flags.set(res?.features ?? {});
           this.heroSlides.set(Array.isArray(res?.hero) ? res!.hero! : []);
           this.navLinks.set(Array.isArray(res?.nav) ? res!.nav! : []);
+          // Redes sociales editables desde el panel (Marca). Sin datos → las del código.
+          const socials = (res as { branding?: { socials?: { platform?: string; url?: string }[] } } | null)?.branding?.socials;
+          if (Array.isArray(socials) && socials.some((s) => s?.url)) {
+            this.config.company.socials = socials
+              .filter((s) => s?.url)
+              .map((s) => ({ platform: String(s.platform ?? 'web').toLowerCase(), url: String(s.url) }));
+          }
           // Marketing add-on: inject GA4 / Meta Pixel (browser-only, gated).
           if (res?.features?.web_analytics) this.analytics.activate(res.analytics);
         }),

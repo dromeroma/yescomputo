@@ -163,6 +163,24 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
           <rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="3.5" />
           <circle cx="17" cy="7" r="1" fill="currentColor" stroke="none" />
         }
+        @case ('tiktok') {
+          <path d="M16 3a5 5 0 0 0 5 5v3a8 8 0 0 1-5-1.7V16a6 6 0 1 1-6-6v3a3 3 0 1 0 3 3V3z" />
+        }
+        @case ('linkedin') {
+          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z" /><circle cx="4" cy="4" r="2" />
+        }
+        @case ('youtube') {
+          <path d="M22.5 6.4a2.8 2.8 0 0 0-2-2C18.9 4 12 4 12 4s-6.9 0-8.5.4a2.8 2.8 0 0 0-2 2A29 29 0 0 0 1 12a29 29 0 0 0 .5 5.6 2.8 2.8 0 0 0 2 2c1.6.4 8.5.4 8.5.4s6.9 0 8.5-.4a2.8 2.8 0 0 0 2-2A29 29 0 0 0 23 12a29 29 0 0 0-.5-5.6z" /><path d="m10 15 5-3-5-3z" />
+        }
+        @case ('x') {
+          <path d="M4 4l16 16M20 4 4 20" />
+        }
+        @case ('threads') {
+          <path d="M16.5 11.2c-.3-2.6-2-3.9-4.4-3.9-2.3 0-3.9 1.2-4.3 3M12 21c-5 0-8-3.4-8-9s3-9 8-9c3.9 0 6.6 2 7.6 5.6" /><path d="M8.5 15c0 1.8 1.6 2.9 3.6 2.8 2.6-.1 4.2-2 4.2-5.4 0-.5 0-1-.1-1.4-1-.4-2.2-.6-3.5-.6-2.6 0-4.2 1.1-4.2 2.6z" />
+        }
+        @case ('pinterest') {
+          <circle cx="12" cy="12" r="10" /><path d="M11 8.5c-2.6.6-3.3 3.5-1.8 5M12 7.5c2.8 0 4.5 1.8 4.2 4.2-.3 2.4-2 3.8-3.8 3.4M11.3 11 9 21" />
+        }
         @case ('users') {
           <path d="M16 20v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="8" r="4" />
           <path d="M22 20v-2a4 4 0 0 0-3-3.9M16 4.1A4 4 0 0 1 16 12" />

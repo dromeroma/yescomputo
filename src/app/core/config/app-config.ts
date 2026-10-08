@@ -40,7 +40,7 @@ export interface CompanyInfo {
     country: string;
   };
   hours: { label: string; value: string }[];
-  socials: { platform: 'facebook' | 'instagram' | 'whatsapp' | 'tiktok'; url: string }[];
+  socials: { platform: string; url: string }[];
   /** Default localisation. */
   currency: 'COP';
   locale: 'es-CO';
@@ -55,7 +55,7 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
   apiBaseUrl: 'https://yescomputo-admin.onrender.com/v1',
   tenantSlug: 'yes-computo',
   localDataPath: 'data',
-  appVersion: '0.0.3',
+  appVersion: '0.0.4',
   company: {
     name: 'Yes Computo',
     legalName: 'Yes Computo S.A.S.',
