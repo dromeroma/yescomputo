@@ -47,6 +47,21 @@ jobs:
         if: steps.gate.outputs.ready == 'true'
         run: |
           cat > dist/yescomputo/browser/.htaccess <<'HT'
+          # Caché: el HTML SIEMPRE se revalida (si no, el navegador guarda un
+          # index.html viejo que apunta a JS/CSS ya borrados → página en blanco).
+          # Los archivos con hash en el nombre son inmutables → caché de 1 año.
+          <IfModule mod_headers.c>
+            <FilesMatch "\.(html|php)$">
+              Header set Cache-Control "no-cache, no-store, must-revalidate"
+              Header set Pragma "no-cache"
+              Header unset Last-Modified
+              Header unset ETag
+            </FilesMatch>
+            <FilesMatch "-[A-Z0-9]{8}\.(js|css)$">
+              Header set Cache-Control "public, max-age=31536000, immutable"
+            </FilesMatch>
+          </IfModule>
+          FileETag None
           <IfModule mod_rewrite.c>
             RewriteEngine On
             RewriteBase /
@@ -54,8 +69,11 @@ jobs:
             # Tarjeta digital: los robots de redes reciben la vista previa (Open Graph)
             RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|facebot|whatsapp|twitterbot|linkedinbot|slackbot|telegrambot|discordbot|pinterest|skypeuripreview|applebot|googlebot|bingbot|embedly|iframely) [NC]
             RewriteRule ^tarjeta/([a-z0-9-]+)/?$ /tarjeta-og.php?c=$1 [L,QSA]
+            # Un JS/CSS/imagen que no existe da 404 real (no el index.html, que
+            # el navegador intentaría ejecutar como script).
             RewriteCond %{REQUEST_FILENAME} !-f
             RewriteCond %{REQUEST_FILENAME} !-d
+            RewriteCond %{REQUEST_URI} !\.(js|css|map|png|jpe?g|webp|svg|ico|woff2?)$ [NC]
             RewriteRule . /index.html [L]
           </IfModule>
           HT

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CampaignService } from '../../core/services/campaign.service';
+import { XMAS_BULBS } from '../../core/config/campaigns';
 import { Icon } from '../../shared/components/icon/icon';
 
 /**
@@ -63,9 +64,5 @@ import { Icon } from '../../shared/components/icon/icon';
 export class CampaignRibbon {
   protected readonly campaign = inject(CampaignService);
 
-  /** Garland bulbs: gold / crimson / emerald / warm white, staggered twinkle. */
-  protected readonly bulbs = Array.from({ length: 64 }, (_, i) => ({
-    color: ['#F2CF63', '#E0284A', '#2FBF71', '#FFF4D6'][i % 4],
-    delay: ((i * 37) % 23) / 10,
-  }));
+  protected readonly bulbs = XMAS_BULBS;
 }

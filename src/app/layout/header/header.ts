@@ -6,6 +6,7 @@ import { CatalogService } from '../../core/services/catalog.service';
 import { CartService } from '../../core/services/cart.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { CampaignService } from '../../core/services/campaign.service';
+import { XMAS_BULBS } from '../../core/config/campaigns';
 import { FeaturesService } from '../../core/services/features.service';
 import { Logo } from '../../shared/components/logo/logo';
 import { Icon } from '../../shared/components/icon/icon';
@@ -28,6 +29,7 @@ export class Header {
   protected readonly config = inject(APP_CONFIG);
   protected readonly theme = inject(ThemeService);
   protected readonly campaign = inject(CampaignService);
+  protected readonly xmasBulbs = XMAS_BULBS;
   private readonly features = inject(FeaturesService);
 
   protected readonly categories = toSignal(this.catalog.getCategories(), { initialValue: [] });

@@ -179,3 +179,10 @@ export const CAMPAIGNS: Partial<Record<CampaignId, CampaignDef>> = {
  * them on. Keep in sync with the pre-paint script in `index.html`.
  */
 export const SEASONAL_CAMPAIGNS: CampaignId[] = ['navidad'];
+
+/** Christmas light-string bulbs (gold / crimson / emerald / warm white),
+ * with staggered twinkle delays. Shared by the ribbon and header garland. */
+export const XMAS_BULBS = Array.from({ length: 64 }, (_, i) => ({
+  color: ['#F2CF63', '#E0284A', '#2FBF71', '#FFF4D6'][i % 4],
+  delay: ((i * 37) % 23) / 10,
+}));

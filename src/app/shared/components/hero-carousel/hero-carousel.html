@@ -29,12 +29,20 @@
         <!-- Cinematic background: deep base + light rays + grid + vignette -->
         <div class="absolute inset-0 bg-[#04070e]"></div>
         <!-- Mobile product image (hidden ≥lg, where the framed showcase shows instead) -->
+        @if (slide.decor === 'xmas') {
+          <!-- Christmas: deep pine night instead of the photo -->
+          <div class="xmas-hero-bg absolute inset-0" aria-hidden="true"></div>
+          <div class="pointer-events-none absolute -right-6 bottom-6 h-[78%] w-[62%] opacity-70 sm:right-2 sm:w-[46%] sm:opacity-80 lg:hidden" aria-hidden="true">
+            <yc-xmas-tree class="h-full" />
+          </div>
+        } @else {
         <div class="absolute inset-0 lg:hidden">
           <img [src]="slide.image" alt="" class="h-full w-full object-cover object-center opacity-45"
             [attr.loading]="i === 0 ? 'eager' : 'lazy'" decoding="async" />
           <div class="absolute inset-0 bg-gradient-to-r from-[#04070e] via-[#04070e]/88 to-[#04070e]/45"></div>
           <div class="absolute inset-0 bg-gradient-to-t from-[#04070e] via-transparent to-transparent"></div>
         </div>
+        }
         <div class="absolute inset-0 overflow-hidden">
           <div class="absolute -top-1/3 left-[12%] h-[180%] w-48 rotate-[18deg] blur-[90px]"
             [style.background]="'linear-gradient(180deg,' + slide.streakA + ',transparent)'" [style.opacity]="0.35"></div>
@@ -47,7 +55,8 @@
         <div
           class="absolute right-0 top-1/2 h-[34rem] w-[34rem] -translate-y-1/2 translate-x-1/4 rounded-full blur-[130px] transition-opacity duration-1000"
           [style.background]="slide.streakA" [style.opacity]="i === index() ? 0.26 : 0"></div>
-        <div class="absolute inset-0 bg-gradient-to-r from-[#04070e] via-[#04070e]/70 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#04070e] via-[#04070e]/70 to-transparent"
+          [class.opacity-60]="slide.decor === 'xmas'"></div>
 
         @if (slide.decor === 'xmas') {
           <!-- Christmas: warm floor glow, two-depth snowfall, hanging ornaments -->
@@ -94,6 +103,24 @@
             </div>
           </div>
 
+          @if (slide.decor === 'xmas') {
+            <!-- Christmas showcase: illustrated tree with gifts + floating chips -->
+            <div class="relative hidden h-full items-end justify-center pb-6 lg:flex">
+              <div class="relative h-[96%] w-full max-w-[26rem] transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+                [class.opacity-100]="i === index()" [class.opacity-0]="i !== index()"
+                [style.transform]="i === index() ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.96)'">
+                <yc-xmas-tree class="h-full" />
+                <div class="glass-dark absolute top-[18%] -left-2 flex animate-[float_7s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
+                  <span class="grid h-6 w-6 place-items-center rounded-full bg-[#E8C670]/20 text-[#F2CF63]"><yc-icon name="sparkles" [size]="13" /></span>
+                  <span class="whitespace-nowrap text-2xs font-semibold text-white">{{ slide.chips[1]?.label || 'Precios de temporada' }}</span>
+                </div>
+                <div class="glass-dark absolute bottom-[16%] -right-4 flex animate-[float_8s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
+                  <span class="grid h-6 w-6 place-items-center rounded-full bg-[#C8203F]/25 text-[#ff8da1]"><yc-icon name="gift" [size]="13" /></span>
+                  <span class="whitespace-nowrap text-2xs font-semibold text-white">{{ slide.chips[0]?.label || 'Regalos con garantía' }}</span>
+                </div>
+              </div>
+            </div>
+          } @else {
           <!-- Product showcase -->
           <div class="relative hidden h-full items-center justify-center lg:flex"
             style="perspective: 1600px">
@@ -110,17 +137,11 @@
 
               <!-- Framed real image (clickable → same target as the CTA button) -->
               <a [routerLink]="slide.ctaLink" [queryParams]="slide.ctaQuery ?? {}" [attr.aria-label]="slide.ctaLabel"
-                class="relative block aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-white/15 bg-ink-900 shadow-[0_50px_120px_-30px_rgba(0,0,0,0.9)] transition-transform duration-300 hover:scale-[1.01]"
-                [class.xmas-frame]="slide.decor === 'xmas'">
+                class="relative block aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-white/15 bg-ink-900 shadow-[0_50px_120px_-30px_rgba(0,0,0,0.9)] transition-transform duration-300 hover:scale-[1.01]">
                 <img [src]="slide.image" [alt]="slide.titleTop + ' ' + slide.titleMain"
                   class="h-full w-full object-cover" loading="eager" decoding="async" />
                 <!-- subtle top sheen + bottom gradient for text legibility on chips -->
                 <div class="absolute inset-0 bg-gradient-to-t from-ink-950/40 via-transparent to-white/10"></div>
-                @if (slide.decor === 'xmas') {
-                  <!-- warm gold bokeh + light snow over the photo -->
-                  <div class="xmas-bokeh absolute inset-0" aria-hidden="true"></div>
-                  <div class="xmas-snow xmas-snow--fine opacity-70" aria-hidden="true"></div>
-                }
                 <div class="absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-white/10"></div>
                 <!-- Colombia flag pin — football mode only (pure CSS) -->
                 <span class="camp-flag pointer-events-none absolute bottom-3.5 right-3.5 z-10">
@@ -134,19 +155,13 @@
                 <span class="grid h-6 w-6 place-items-center rounded-full" [style.background]="slide.streakA + '33'" [style.color]="slide.streakA"><yc-icon name="sparkles" [size]="13" /></span>
                 <span class="whitespace-nowrap text-2xs font-semibold text-white">Calidad premium</span>
               </div>
-              @if (slide.decor === 'xmas') {
-                <div class="glass-dark absolute -bottom-3 left-4 flex animate-[float_8s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
-                  <span class="grid h-6 w-6 place-items-center rounded-full bg-[#C8203F]/25 text-[#ff8da1]"><yc-icon name="gift" [size]="13" /></span>
-                  <span class="whitespace-nowrap text-2xs font-semibold text-white">{{ slide.chips[0]?.label || 'Regalos con garantía' }}</span>
-                </div>
-              } @else {
-                <div class="glass-dark absolute -bottom-3 left-4 flex animate-[float_8s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
-                  <span class="grid h-6 w-6 place-items-center rounded-full bg-brand-500/20 text-brand-300"><yc-icon name="shield-check" [size]="13" /></span>
-                  <span class="whitespace-nowrap text-2xs font-semibold text-white">Garantía incluida</span>
-                </div>
-              }
+              <div class="glass-dark absolute -bottom-3 left-4 flex animate-[float_8s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
+                <span class="grid h-6 w-6 place-items-center rounded-full bg-brand-500/20 text-brand-300"><yc-icon name="shield-check" [size]="13" /></span>
+                <span class="whitespace-nowrap text-2xs font-semibold text-white">Garantía incluida</span>
+              </div>
             </div>
           </div>
+          }
         </div>
 
         <!-- Disclaimer -->

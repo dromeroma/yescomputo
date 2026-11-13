@@ -3,6 +3,7 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
   PLATFORM_ID,
@@ -38,6 +39,24 @@ interface Piece {
   selector: 'yc-campaign-confetti',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    <!-- Persistent snowfall while Christmas mode is on (compositor-only transforms) -->
+    @if (snowing()) {
+      <div class="xmas-snowfall" aria-hidden="true">
+        @for (f of flakes; track $index) {
+          <span
+            class="xf"
+            [class.xf-glyph]="f.kind === 'glyph'"
+            [class.xf-gold]="f.kind === 'glitter'"
+            [style.left.%]="f.left"
+            [style.--s]="f.w + 'px'"
+            [style.--o]="f.opacity"
+            [style.--sway]="f.drift + 'px'"
+            [style.--dur]="f.dur + 's'"
+            [style.animationDelay]="-f.delay + 's'"
+          >{{ f.kind === 'glyph' ? '❄' : '' }}</span>
+        }
+      </div>
+    }
     @if (pieces().length) {
       <div class="pointer-events-none fixed inset-0 z-[70] overflow-hidden" aria-hidden="true">
         @for (p of pieces(); track $index) {
@@ -93,6 +112,27 @@ export class CampaignConfetti {
   private timer?: ReturnType<typeof setTimeout>;
 
   protected readonly pieces = signal<Piece[]>([]);
+
+  /** Christmas keeps a gentle snowfall running the whole time it is on. */
+  protected readonly snowing = computed(
+    () => this.isBrowser && this.campaign.campaign()?.celebration.kind === 'snow',
+  );
+
+  /** Fixed set of looping flakes (negative delays → already falling on load). */
+  protected readonly flakes: Piece[] = Array.from({ length: 46 }, (_, i) => {
+    const kind: Piece['kind'] = i % 7 === 0 ? 'glyph' : i % 9 === 4 ? 'glitter' : 'flake';
+    return {
+      kind,
+      left: (i * 37.3) % 100,
+      color: '#fff',
+      drift: ((i * 53) % 90) - 45,
+      dur: 11 + ((i * 29) % 13),
+      delay: (i * 17) % 24,
+      w: kind === 'glyph' ? 12 + (i % 4) * 3 : kind === 'glitter' ? 3 : 2.5 + (i % 4) * 1.4,
+      h: 0,
+      opacity: kind === 'glyph' ? 0.7 : 0.55 + ((i * 13) % 40) / 100,
+    };
+  });
 
   constructor() {
     // Celebrate on first paint (after hydration) if a mode is on.
