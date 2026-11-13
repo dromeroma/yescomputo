@@ -923,54 +923,45 @@
 
 /* --- Christmas card hover ----------------------------------------------
    Every .shine card, on hover:
-   • ::before → a string of chasing Christmas lights runs around its border
-     (gold / crimson / emerald bulbs with a soft halo), replacing the generic
-     travelling colour band;
+   • ::before → a fine champagne-gold hairline border with a soft beam of
+     light gliding around it (monochrome gold — elegant, not festive bulbs);
    • ::after  → three glass baubles drop in from the top on gold threads, and
-     snow with gold glitter falls inside the card. */
+     a light dusting of snow with gold glitter falls inside the card. */
 [data-campaign='navidad'] .shine::before {
-  inset: 2px;
-  padding: 0;
-  -webkit-mask: none;
-  mask: none;
-  /* 24px tiles hold one gold, one crimson and one emerald bulb */
-  background-image:
-    radial-gradient(circle at 4px 4px, #fffaf0 0 0.9px, #f2cf63 1.4px 2.3px, rgba(242, 207, 99, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 12px 4px, #ffd0d8 0 0.9px, #e0284a 1.4px 2.3px, rgba(224, 40, 74, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 20px 4px, #c9f7da 0 0.9px, #2fbf71 1.4px 2.3px, rgba(47, 191, 113, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 4px 4px, #fffaf0 0 0.9px, #f2cf63 1.4px 2.3px, rgba(242, 207, 99, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 12px 4px, #ffd0d8 0 0.9px, #e0284a 1.4px 2.3px, rgba(224, 40, 74, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 20px 4px, #c9f7da 0 0.9px, #2fbf71 1.4px 2.3px, rgba(47, 191, 113, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 4px 4px, #fffaf0 0 0.9px, #f2cf63 1.4px 2.3px, rgba(242, 207, 99, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 4px 12px, #ffd0d8 0 0.9px, #e0284a 1.4px 2.3px, rgba(224, 40, 74, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 4px 20px, #c9f7da 0 0.9px, #2fbf71 1.4px 2.3px, rgba(47, 191, 113, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 4px 4px, #fffaf0 0 0.9px, #f2cf63 1.4px 2.3px, rgba(242, 207, 99, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 4px 12px, #ffd0d8 0 0.9px, #e0284a 1.4px 2.3px, rgba(224, 40, 74, 0.4) 3px, transparent 4px),
-    radial-gradient(circle at 4px 20px, #c9f7da 0 0.9px, #2fbf71 1.4px 2.3px, rgba(47, 191, 113, 0.4) 3px, transparent 4px);
-  background-size:
-    24px 8px, 24px 8px, 24px 8px, 24px 8px, 24px 8px, 24px 8px,
-    8px 24px, 8px 24px, 8px 24px, 8px 24px, 8px 24px, 8px 24px;
-  background-repeat:
-    repeat-x, repeat-x, repeat-x, repeat-x, repeat-x, repeat-x,
-    repeat-y, repeat-y, repeat-y, repeat-y, repeat-y, repeat-y;
-  background-position:
-    0 0, 0 0, 0 0, 0 100%, 0 100%, 0 100%,
-    0 0, 0 0, 0 0, 100% 0, 100% 0, 100% 0;
+  padding: 1.5px; /* hairline */
+  background:
+    conic-gradient(
+      from var(--yc-bd),
+      transparent 0deg,
+      rgba(232, 198, 112, 0) 200deg,
+      rgba(246, 227, 161, 0.95) 262deg,
+      #fffaf0 278deg,
+      rgba(246, 227, 161, 0.95) 294deg,
+      rgba(232, 198, 112, 0) 350deg
+    ),
+    linear-gradient(rgba(232, 198, 112, 0.55), rgba(232, 198, 112, 0.55));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
   opacity: 0;
-  transition: opacity 0.35s ease;
+  transition: opacity 0.45s ease;
 }
 [data-campaign='navidad'] .group:hover .shine::before,
 [data-campaign='navidad'] .shine:hover::before {
   opacity: 1;
-  animation: xmas-chase 0.9s steps(3) infinite;
+  animation: yc-border-travel 3.6s linear infinite;
 }
-/* "Chasing" lights: one bulb-step (8px) per beat, clockwise around the card. */
-@keyframes xmas-chase {
-  to {
-    background-position:
-      24px 0, 24px 0, 24px 0, -24px 100%, -24px 100%, -24px 100%,
-      0 -24px, 0 -24px, 0 -24px, 100% 24px, 100% 24px, 100% 24px;
-  }
+/* A warm gold lift under the hovered card. */
+[data-campaign='navidad'] .group:hover .shine,
+[data-campaign='navidad'] .shine:hover {
+  box-shadow:
+    0 18px 40px -18px rgba(138, 100, 33, 0.45),
+    0 0 0 1px rgba(232, 198, 112, 0.25);
 }
 
 [data-campaign='navidad'] .shine::after {
