@@ -55,7 +55,7 @@ export const DEFAULT_APP_CONFIG: AppConfig = {
   apiBaseUrl: 'https://yescomputo-admin.onrender.com/v1',
   tenantSlug: 'yes-computo',
   localDataPath: 'data',
-  appVersion: '0.0.7',
+  appVersion: '0.0.8',
   company: {
     name: 'Yes Computo',
     legalName: 'Yes Computo S.A.S.',

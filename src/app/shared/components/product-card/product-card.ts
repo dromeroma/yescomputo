@@ -15,7 +15,7 @@ import { ProductImage } from '../product-image/product-image';
   selector: 'yc-product-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, CopCurrencyPipe, Badge, Icon, ProductImage],
-  host: { class: 'group block h-full reveal' },
+  host: { class: 'group relative block h-full reveal' },
   template: `
     <article
       (mouseenter)="onEnter()"
@@ -135,6 +135,8 @@ import { ProductImage } from '../product-image/product-image';
         </div>
       </div>
     </article>
+    <!-- Santa hat perched on the card corner — Christmas mode, on hover -->
+    <span class="camp-card-hat" aria-hidden="true"></span>
   `,
 })
 export class ProductCard implements OnDestroy {

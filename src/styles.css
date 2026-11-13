@@ -415,6 +415,8 @@
   --camp-g3: #e7142e;
 }
 [data-campaign='navidad'] {
+  /* Santa hat artwork (same as the logo's), reused by card hovers */
+  --yc-hat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 54'%3E%3Cdefs%3E%3ClinearGradient id='r' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff4d6a'/%3E%3Cstop offset='.55' stop-color='%23d11a3b'/%3E%3Cstop offset='1' stop-color='%237a0f22'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M8 42 C10 20 22 6 40 5 C52 4 59 13 57 27 C52 19 45 17 39 21 C32 26 31 34 32 42 Z' fill='url%28%23r%29'/%3E%3Cpath d='M14 30 C20 18 30 12 40 11' fill='none' stroke='%23fff' stroke-opacity='.35' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='3' y='38' width='36' height='12' rx='6' fill='%23fff'/%3E%3Crect x='3' y='38' width='36' height='12' rx='6' fill='none' stroke='%23dfe8f3' stroke-width='1.2'/%3E%3Ccircle cx='56' cy='29' r='6.5' fill='%23fff' stroke='%23dfe8f3' stroke-width='1.2'/%3E%3C/svg%3E");
   --camp-1: #e8c670; /* champagne gold */
   --camp-2: #c8203f; /* crimson */
   --camp-3: #1f8a55; /* pine emerald */
@@ -953,7 +955,7 @@
   border-radius: 0;
   -webkit-mask: none;
   mask: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 54'%3E%3Cdefs%3E%3ClinearGradient id='r' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff4d6a'/%3E%3Cstop offset='.55' stop-color='%23d11a3b'/%3E%3Cstop offset='1' stop-color='%237a0f22'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M8 42 C10 20 22 6 40 5 C52 4 59 13 57 27 C52 19 45 17 39 21 C32 26 31 34 32 42 Z' fill='url%28%23r%29'/%3E%3Cpath d='M14 30 C20 18 30 12 40 11' fill='none' stroke='%23fff' stroke-opacity='.35' stroke-width='2.5' stroke-linecap='round'/%3E%3Crect x='3' y='38' width='36' height='12' rx='6' fill='%23fff'/%3E%3Crect x='3' y='38' width='36' height='12' rx='6' fill='none' stroke='%23dfe8f3' stroke-width='1.2'/%3E%3Ccircle cx='56' cy='29' r='6.5' fill='%23fff' stroke='%23dfe8f3' stroke-width='1.2'/%3E%3C/svg%3E") no-repeat center / contain;
+  background: var(--yc-hat) no-repeat center / contain;
   z-index: 9;
   opacity: 0;
   transform: translate(-10px, -26px) rotate(-48deg) scale(0.7);
@@ -970,12 +972,44 @@
   transform: translate(0, 0) rotate(-22deg) scale(1);
   animation: none;
 }
-/* Make room for the hat: corner flags glide down while hovered. */
+/* Product cards: the hat sits ON the card's corner (outside the rounded
+   edge, like on the logo) instead of inside it — rendered by a sibling
+   element so the card's overflow clipping doesn't cut it. */
+[data-campaign='navidad'] yc-product-card .shine::before {
+  display: none;
+}
+.camp-card-hat {
+  display: none;
+}
+[data-campaign='navidad'] .camp-card-hat {
+  display: block;
+  position: absolute;
+  left: -13px;
+  top: -19px;
+  z-index: 12;
+  width: 58px;
+  height: 49px;
+  pointer-events: none;
+  background: var(--yc-hat) no-repeat center / contain;
+  filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.25));
+  transform-origin: 30% 85%;
+  opacity: 0;
+  transform: translate(-6px, -22px) rotate(-50deg) scale(0.6);
+  transition:
+    opacity 0.22s ease,
+    transform 0.65s var(--ease-spring);
+}
+[data-campaign='navidad'] yc-product-card:hover .camp-card-hat {
+  opacity: 1;
+  /* -6px follows the card's own hover lift */
+  transform: translate(0, -6px) rotate(-24deg) scale(1);
+}
+/* Corner flags glide down a little so the brim never covers them. */
 [data-campaign='navidad'] .camp-flags {
   transition: translate 0.5s var(--ease-spring);
 }
-[data-campaign='navidad'] .group:hover .camp-flags {
-  translate: 0 40px;
+[data-campaign='navidad'] yc-product-card:hover .camp-flags {
+  translate: 0 22px;
 }
 /* A warm lift under the hovered card. */
 [data-campaign='navidad'] .group:hover .shine,

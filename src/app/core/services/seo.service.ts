@@ -29,7 +29,9 @@ export class SeoService {
   private readonly config = inject(APP_CONFIG);
 
   /** Default social share card (1200×630), used when a page has no own image. */
-  private static readonly DEFAULT_IMAGE = '/img/og-cover.png';
+  /** Share card. Season: Christmas card — revert to '/img/og-cover.png' (image/png) after Navidad, also in index.html. */
+  private static readonly DEFAULT_IMAGE = '/img/og-navidad.jpg';
+  private static readonly DEFAULT_IMAGE_TYPE = 'image/jpeg';
 
   update(data: SeoData): void {
     const brand = this.config.company.name;
@@ -56,7 +58,7 @@ export class SeoService {
     this.setTag('property', 'og:image:alt', `${brand} · ${this.config.company.tagline}`);
     // The default card has known dimensions; per-page images may differ.
     if (usingDefaultImage) {
-      this.setTag('property', 'og:image:type', 'image/png');
+      this.setTag('property', 'og:image:type', SeoService.DEFAULT_IMAGE_TYPE);
       this.setTag('property', 'og:image:width', '1200');
       this.setTag('property', 'og:image:height', '630');
     } else {
