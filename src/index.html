@@ -60,11 +60,18 @@
           if (localStorage.getItem('yc.theme') === 'dark') {
             document.documentElement.classList.add('dark');
           }
-          // Keep in sync with SEASONAL_CAMPAIGN in campaigns.ts (null = off).
-          var season = null;
-          if (season && localStorage.getItem('yc.campaign') !== 'off') {
-            document.documentElement.setAttribute('data-campaign', season);
+          // Keep in sync with SEASONAL_CAMPAIGNS in campaigns.ts ([] = off).
+          // Same rule as CampaignService: an explicit 'on' wins, else the
+          // first in-season campaign is on unless the user turned it off.
+          var seasons = ['navidad'];
+          var active = null;
+          for (var i = 0; i < seasons.length; i++) {
+            if (localStorage.getItem('yc.campaign.' + seasons[i]) === 'on') { active = seasons[i]; break; }
           }
+          if (!active && seasons.length && localStorage.getItem('yc.campaign.' + seasons[0]) !== 'off') {
+            active = seasons[0];
+          }
+          if (active) document.documentElement.setAttribute('data-campaign', active);
         } catch (e) {}
       })();
     </script>

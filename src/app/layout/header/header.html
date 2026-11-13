@@ -77,20 +77,23 @@
 
     <!-- Actions -->
     <div class="ml-auto flex items-center gap-0.5 sm:gap-1 md:ml-0">
-      <!-- Seasonal campaign toggle (Modo Fútbol) -->
-      @if (campaign.available) {
+      <!-- Seasonal campaign toggles — one independent button per in-season
+           campaign (Modo Fútbol ⚽, Modo Navidad 🎄, …) -->
+      @for (c of campaign.seasonals; track c.id) {
         <button
           type="button"
-          (click)="campaign.toggle()"
-          class="relative grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-surface-inset"
-          [class.text-content]="campaign.enabled()"
-          [class.text-content-subtle]="!campaign.enabled()"
-          [attr.aria-pressed]="campaign.enabled()"
-          [attr.aria-label]="(campaign.enabled() ? 'Desactivar ' : 'Activar ') + (campaign.seasonal?.label || 'modo temporada')"
-          [title]="campaign.seasonal?.label"
+          (click)="campaign.toggle(c.id)"
+          class="camp-toggle relative grid h-10 w-10 place-items-center rounded-full transition-colors hover:bg-surface-inset"
+          [attr.data-camp]="c.id"
+          [class.is-on]="campaign.isEnabled(c.id)"
+          [class.text-content]="campaign.isEnabled(c.id)"
+          [class.text-content-subtle]="!campaign.isEnabled(c.id)"
+          [attr.aria-pressed]="campaign.isEnabled(c.id)"
+          [attr.aria-label]="(campaign.isEnabled(c.id) ? 'Desactivar ' : 'Activar ') + c.label"
+          [title]="c.label"
         >
-          <yc-icon name="soccer" [size]="20" />
-          @if (campaign.enabled()) {
+          <yc-icon [name]="c.icon" [size]="20" />
+          @if (campaign.isEnabled(c.id)) {
             <span class="flag-flow absolute bottom-1.5 h-[3px] w-4 rounded-full"></span>
           }
         </button>

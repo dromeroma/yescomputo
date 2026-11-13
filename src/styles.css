@@ -400,11 +400,27 @@
    SEASONAL CAMPAIGNS — decorative layer scoped under [data-campaign].
    Disabling the campaign removes the attribute → none of this applies, base
    site untouched.
+
+   Each campaign only defines its palette; the shared effects (card shine,
+   travelling border, WhatsApp ring, flowing line) read these variables:
+     --camp-1/2/3   flowing line / flag colours
+     --camp-g1/2/3  bright "glow" variants for shine streaks and rings
    ========================================================================== */
 [data-campaign='mundial'] {
   --camp-1: #fcd116; /* Colombia yellow */
   --camp-2: #003893; /* Colombia blue */
   --camp-3: #ce1126; /* Colombia red */
+  --camp-g1: #fcd116;
+  --camp-g2: #0a4fd6;
+  --camp-g3: #e7142e;
+}
+[data-campaign='navidad'] {
+  --camp-1: #e8c670; /* champagne gold */
+  --camp-2: #c8203f; /* crimson */
+  --camp-3: #1f8a55; /* pine emerald */
+  --camp-g1: #f2cf63;
+  --camp-g2: #e0284a;
+  --camp-g3: #2fbf71;
 }
 
 /* Colombia flag stripes (vertical bar) — pure CSS, no copyright. */
@@ -455,29 +471,24 @@
   }
 }
 
-/* --- Tricolor card shine -------------------------------------------------
-   In football mode the hover effect is a SOFT, continuously FLOWING Colombia
-   tricolor band (right → left) instead of a single quick sweep — so the
-   yellow/blue/red are clearly identifiable. It only appears over the hovered
-   card. */
-[data-campaign='mundial'] .shine::after {
-  /* Three soft, feathered flag bands — each colour fades in/out (difuminado),
-     with transparent gaps so blue+red never blend into purple. */
+/* --- Seasonal card shine -------------------------------------------------
+   With a campaign on, the hover effect is a SOFT streak of the campaign's
+   three colours (tricolor in football, gold/crimson/pine at Christmas). It
+   only appears over the hovered card. */
+[data-campaign] .shine::after {
+  /* Three soft, feathered bands — each colour fades in/out (difuminado),
+     with transparent gaps so neighbouring colours never blend. */
   background: linear-gradient(
     110deg,
-    transparent 41%,
-    rgba(252, 209, 22, 0) 44%,
-    rgba(252, 209, 22, 0.9) 47%,
-    rgba(252, 209, 22, 0) 50%,
-    /* yellow */ transparent 50.5%,
-    rgba(10, 79, 214, 0) 51%,
-    rgba(10, 79, 214, 0.9) 54%,
-    rgba(10, 79, 214, 0) 57%,
-    /* blue */ transparent 57.5%,
-    rgba(231, 20, 46, 0) 58%,
-    rgba(231, 20, 46, 0.9) 61%,
-    rgba(231, 20, 46, 0) 64%,
-    /* red */ transparent 67%
+    transparent 44%,
+    color-mix(in srgb, var(--camp-g1) 90%, transparent) 47%,
+    transparent 50%,
+    transparent 51%,
+    color-mix(in srgb, var(--camp-g2) 90%, transparent) 54%,
+    transparent 57%,
+    transparent 58%,
+    color-mix(in srgb, var(--camp-g3) 90%, transparent) 61%,
+    transparent 64%
   );
   background-size: auto;
   background-position: center;
@@ -487,10 +498,10 @@
   transition: opacity 0.2s ease;
   animation: none;
 }
-/* On hover: a soft tricolor streak sweeps across ONCE, slower (does not repeat
-   while the cursor stays inside; plays again only on a fresh hover/enter). */
-[data-campaign='mundial'] .group:hover .shine::after,
-[data-campaign='mundial'] .shine:hover::after {
+/* On hover: the streak sweeps across ONCE, slower (does not repeat while the
+   cursor stays inside; plays again only on a fresh hover/enter). */
+[data-campaign] .group:hover .shine::after,
+[data-campaign] .shine:hover::after {
   opacity: 1;
   animation: flag-streak 1.6s var(--ease-out-expo);
 }
@@ -503,10 +514,10 @@
   }
 }
 
-/* Football: EVERY card (.shine) gets a Colombia tricolor light that travels
-   AROUND its border, looping while hovered; plus a subtle grow. The product
-   card's own green→teal top line is hidden to avoid doubling. */
-[data-campaign='mundial'] .card-accent {
+/* EVERY card (.shine) gets a campaign-coloured light that travels AROUND its
+   border, looping while hovered; plus a subtle grow. The product card's own
+   green→teal top line is hidden to avoid doubling. */
+[data-campaign] .card-accent {
   display: none;
 }
 
@@ -516,7 +527,7 @@
   initial-value: 0deg;
 }
 
-[data-campaign='mundial'] .shine::before {
+[data-campaign] .shine::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -528,10 +539,10 @@
     from var(--yc-bd),
     transparent 0deg,
     transparent 165deg,
-    #fcd116 200deg,
-    /* yellow */ #0a4fd6 255deg,
-    /* blue */ #e7142e 310deg,
-    /* red */ transparent 350deg
+    var(--camp-g1) 200deg,
+    var(--camp-g2) 255deg,
+    var(--camp-g3) 310deg,
+    transparent 350deg
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -544,8 +555,8 @@
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-[data-campaign='mundial'] .group:hover .shine::before,
-[data-campaign='mundial'] .shine:hover::before {
+[data-campaign] .group:hover .shine::before,
+[data-campaign] .shine:hover::before {
   opacity: 1;
   animation: yc-border-travel 2.2s linear infinite;
 }
@@ -555,9 +566,9 @@
   }
 }
 
-/* Football: every WhatsApp button (.yc-wa) gets a rotating Colombia tricolor
-   ring at its edge — continuous, matching the floating WhatsApp button. */
-[data-campaign='mundial'] .yc-wa::after {
+/* Every WhatsApp button (.yc-wa) gets a rotating campaign-coloured ring at its
+   edge — continuous, matching the floating WhatsApp button. */
+[data-campaign] .yc-wa::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -566,10 +577,10 @@
   padding: 2.5px;
   background: conic-gradient(
     from var(--yc-bd),
-    #fcd116,
-    #0a4fd6,
-    #e7142e,
-    #fcd116
+    var(--camp-g1),
+    var(--camp-g2),
+    var(--camp-g3),
+    var(--camp-g1)
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -584,13 +595,13 @@
 }
 
 /* Subtle grow on hover (animated; composes with the card's lift). */
-[data-campaign='mundial'] .shine {
+[data-campaign] .shine {
   transition-property: transform, translate, scale, box-shadow, border-color, opacity;
   transition-duration: 0.5s;
   transition-timing-function: var(--ease-out-expo);
 }
-[data-campaign='mundial'] .group:hover .shine,
-[data-campaign='mundial'] .shine:hover {
+[data-campaign] .group:hover .shine,
+[data-campaign] .shine:hover {
   scale: 1.03;
 }
 
@@ -613,6 +624,26 @@
   background-size: 200% 100%;
   animation: flag-flow 4.5s linear infinite;
 }
+/* Christmas: a gold-led line — champagne gold dominant, with crimson and pine
+   passing through like ribbon threads. */
+[data-campaign='navidad'] .flag-flow {
+  background-image: linear-gradient(
+    90deg,
+    #b8862b,
+    #f6e3a1 14%,
+    #e8c670 24%,
+    #c8203f 34%,
+    #e8c670 44%,
+    #fff4d6 50%,
+    #e8c670 58%,
+    #1f8a55 68%,
+    #e8c670 78%,
+    #f6e3a1 88%,
+    #b8862b
+  );
+  background-size: 200% 100%;
+  animation-duration: 7s;
+}
 
 /* Animated tricolor text gradient (campaign hero title). White accents keep
    it legible on the dark hero. */
@@ -630,6 +661,317 @@
   background-clip: text;
   color: transparent;
   animation: flag-flow 6s linear infinite;
+}
+
+/* =============================================================================
+   CHRISTMAS (data-campaign='navidad') — premium festive layer.
+   Champagne-gold foil, deep pine, crimson accents, gentle snowfall.
+   ========================================================================== */
+
+/* Gold-foil hero title: a warm metallic sheen slowly gliding across. */
+.text-gradient-xmas {
+  background-image: linear-gradient(
+    100deg,
+    #c9973a 0%,
+    #f6e3a1 18%,
+    #fffaf0 30%,
+    #e8c670 42%,
+    #b8862b 54%,
+    #f6e3a1 70%,
+    #fffaf0 80%,
+    #d4a640 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 4px 22px rgba(232, 198, 112, 0.28));
+  animation: flag-flow 8s linear infinite;
+}
+
+/* Ribbon: deep pine velvet instead of plain ink. */
+.xmas-ribbon {
+  background:
+    radial-gradient(120% 180% at 50% -40%, rgba(232, 198, 112, 0.16), transparent 60%),
+    linear-gradient(90deg, #06140e, #0b2a1c 50%, #06140e);
+}
+.xmas-ribbon-text {
+  color: #fff8e6;
+  letter-spacing: 0.01em;
+}
+
+/* String of lights along the ribbon's bottom edge: a scalloped wire with
+   bulbs hanging at each dip, softly twinkling out of phase. */
+.xmas-lights {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 12px;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(14px 8px at 50% 0, transparent 92%, rgba(232, 198, 112, 0.35) 94%, transparent 100%)
+      center top / 28px 9px repeat-x;
+}
+.xmas-bulb {
+  position: relative;
+  flex: 0 0 28px;
+  height: 100%;
+}
+.xmas-bulb::before {
+  /* socket */
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  width: 3px;
+  height: 2px;
+  translate: -50% 0;
+  border-radius: 1px;
+  background: #3b4a42;
+}
+.xmas-bulb::after {
+  /* glass bulb */
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 5.5px;
+  width: 5px;
+  height: 6.5px;
+  translate: -50% 0;
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  background: radial-gradient(circle at 40% 30%, #fff 0 18%, var(--bulb) 45%);
+  box-shadow:
+    0 0 4px 1px var(--bulb),
+    0 0 12px 2px color-mix(in srgb, var(--bulb) 55%, transparent);
+  animation: xmas-twinkle 2.4s ease-in-out infinite;
+  animation-delay: inherit;
+}
+@keyframes xmas-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+    filter: brightness(1.1);
+  }
+  50% {
+    opacity: 0.45;
+    filter: brightness(0.75);
+  }
+}
+
+/* CSS-only snowfall: tiled flakes drifting down. Two depths (fine + soft) for
+   parallax. Each tile scrolls exactly one tile height → seamless loop. */
+.xmas-snow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.xmas-snow--fine {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.95) 0 1.2px, transparent 2px),
+    radial-gradient(circle at 38% 62%, rgba(255, 255, 255, 0.75) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 71% 34%, rgba(255, 255, 255, 0.9) 0 1.4px, transparent 2.2px),
+    radial-gradient(circle at 86% 80%, rgba(255, 255, 255, 0.65) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 54% 8%, rgba(255, 255, 255, 0.8) 0 0.9px, transparent 1.6px),
+    radial-gradient(circle at 24% 88%, rgba(246, 227, 161, 0.85) 0 1px, transparent 1.8px);
+  background-size: 220px 220px;
+  animation: xmas-snow-fine 14s linear infinite;
+}
+.xmas-snow--soft {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.55) 0 2.6px, transparent 4px),
+    radial-gradient(circle at 64% 72%, rgba(255, 255, 255, 0.45) 0 3px, transparent 4.6px),
+    radial-gradient(circle at 88% 14%, rgba(255, 255, 255, 0.5) 0 2.2px, transparent 3.6px);
+  background-size: 420px 420px;
+  filter: blur(1px);
+  animation: xmas-snow-soft 22s linear infinite;
+}
+@keyframes xmas-snow-fine {
+  to {
+    background-position: 40px 220px;
+  }
+}
+@keyframes xmas-snow-soft {
+  to {
+    background-position: -60px 420px;
+  }
+}
+
+/* Hero: warm candle-light glow rising from the floor + crimson halo. */
+.xmas-hero-glow {
+  background:
+    radial-gradient(60% 55% at 78% 105%, rgba(232, 198, 112, 0.22), transparent 70%),
+    radial-gradient(40% 50% at 92% 40%, rgba(200, 32, 63, 0.16), transparent 70%),
+    radial-gradient(50% 60% at 5% 110%, rgba(31, 138, 85, 0.18), transparent 70%);
+}
+
+/* Hero frame: a fine champagne-gold edge + warm halo. */
+.xmas-frame {
+  border-color: rgba(232, 198, 112, 0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(232, 198, 112, 0.18),
+    0 0 70px -12px rgba(232, 198, 112, 0.45),
+    0 50px 120px -30px rgba(0, 0, 0, 0.9) !important;
+}
+/* Warm gold bokeh lights over the photo. */
+.xmas-bokeh {
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(circle at 14% 22%, rgba(246, 210, 120, 0.5) 0 14px, transparent 30px),
+    radial-gradient(circle at 82% 16%, rgba(255, 190, 120, 0.4) 0 20px, transparent 42px),
+    radial-gradient(circle at 70% 78%, rgba(246, 210, 120, 0.35) 0 12px, transparent 26px),
+    radial-gradient(circle at 30% 70%, rgba(224, 40, 74, 0.25) 0 16px, transparent 34px),
+    radial-gradient(circle at 92% 58%, rgba(255, 244, 214, 0.35) 0 8px, transparent 20px),
+    linear-gradient(180deg, rgba(232, 198, 112, 0.1), transparent 40%, rgba(200, 32, 63, 0.12));
+  filter: blur(2px);
+  animation: xmas-bokeh 6s ease-in-out infinite alternate;
+}
+@keyframes xmas-bokeh {
+  from {
+    opacity: 0.75;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Hanging glass bauble: thread + gold cap + glossy sphere, gently swaying.
+   Configure with --o (colour), --len (thread length), --size (sphere). */
+.xmas-ornament {
+  --o: #e8c670;
+  --len: 60px;
+  --size: 32px;
+  position: absolute;
+  top: 0;
+  width: var(--size);
+  height: calc(var(--len) + var(--size) + 6px);
+  transform-origin: 50% 0;
+  animation: xmas-sway 5.5s ease-in-out infinite;
+  animation-delay: var(--sway-delay, 0s);
+  pointer-events: none;
+}
+.xmas-ornament::before {
+  /* thread + cap */
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: calc(var(--size) * 0.3);
+  height: calc(var(--len) + 6px);
+  translate: -50% 0;
+  background:
+    linear-gradient(rgba(246, 227, 161, 0.75), rgba(246, 227, 161, 0.75)) center top / 1px var(--len) no-repeat,
+    linear-gradient(90deg, #8a6421, #f6e3a1 45%, #b8862b) center bottom / 100% 6px no-repeat;
+  border-radius: 0 0 2px 2px;
+}
+.xmas-ornament::after {
+  /* glossy sphere */
+  content: '';
+  position: absolute;
+  left: 0;
+  top: calc(var(--len) + 5px);
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.9) 0 7%, rgba(255, 255, 255, 0.25) 16%, transparent 32%),
+    radial-gradient(circle at 70% 78%, color-mix(in srgb, var(--o) 40%, #000) 0, transparent 55%),
+    radial-gradient(circle at 45% 45%, color-mix(in srgb, var(--o) 85%, #fff) 0, var(--o) 45%, color-mix(in srgb, var(--o) 55%, #000) 100%);
+  box-shadow:
+    0 10px 24px -6px color-mix(in srgb, var(--o) 60%, transparent),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.25);
+}
+@keyframes xmas-sway {
+  0%,
+  100% {
+    transform: rotate(-3.5deg);
+  }
+  50% {
+    transform: rotate(3.5deg);
+  }
+}
+
+/* Mini bauble hanging on product images — Christmas mode only. */
+.camp-ornament {
+  display: none;
+}
+[data-campaign='navidad'] .camp-ornament {
+  display: block;
+  width: 16px;
+  height: 40px;
+}
+
+/* Header toggle: a soft gold halo while Christmas mode is on. */
+.camp-toggle[data-camp='navidad'].is-on {
+  color: #c9973a;
+}
+.dark .camp-toggle[data-camp='navidad'].is-on {
+  color: #f2cf63;
+}
+.camp-toggle[data-camp='navidad'].is-on::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(232, 198, 112, 0.28), transparent 70%);
+  pointer-events: none;
+}
+
+/* --- Snowfall celebration (Christmas counterpart of the confetti) -------- */
+@keyframes snow-fall {
+  0% {
+    transform: translate3d(0, -8vh, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--o, 1);
+  }
+  50% {
+    transform: translate3d(calc(var(--drift, 0px) * 0.5 + 18px), 50vh, 0);
+  }
+  85% {
+    opacity: var(--o, 1);
+  }
+  100% {
+    transform: translate3d(var(--drift, 0px), 108vh, 0);
+    opacity: 0;
+  }
+}
+.snow-piece {
+  position: absolute;
+  top: 0;
+  border-radius: 9999px;
+  opacity: 0;
+  filter: blur(0.4px);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+  will-change: transform, opacity;
+  animation: snow-fall var(--dur, 7s) cubic-bezier(0.37, 0, 0.63, 1) forwards;
+}
+.snow-glyph {
+  border-radius: 0;
+  box-shadow: none;
+  line-height: 1;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.8));
+}
+/* Light theme: white snow needs a soft silver edge to read on white pages. */
+:root:not(.dark) .snow-piece:not(.snow-glitter):not(.snow-glyph) {
+  box-shadow:
+    0 0 0 0.6px rgba(110, 130, 160, 0.35),
+    0 1px 5px rgba(60, 80, 110, 0.28);
+}
+:root:not(.dark) .snow-glyph {
+  color: #dfe8f3 !important;
+  filter: drop-shadow(0 0 1px rgba(70, 95, 130, 0.55)) drop-shadow(0 2px 4px rgba(60, 80, 110, 0.25));
+}
+.snow-glitter {
+  filter: none;
+  box-shadow:
+    0 0 6px 1px rgba(242, 207, 99, 0.9),
+    0 0 14px 3px rgba(242, 207, 99, 0.35);
 }
 
 /* --- Celebration confetti ------------------------------------------------- */

@@ -79,6 +79,10 @@ import { ProductImage } from '../product-image/product-image';
         <span class="camp-flag pointer-events-none absolute bottom-2.5 right-2.5 z-[6]">
           <span class="flag-co block h-4 w-6 rounded-[3px] shadow-md ring-1 ring-white/70"></span>
         </span>
+        <!-- Gold Christmas bauble — shown only in Christmas mode (pure CSS) -->
+        <span class="camp-ornament pointer-events-none absolute right-3 top-0 z-[6]">
+          <span class="xmas-ornament" style="--o: #E8C670; --len: 18px; --size: 16px"></span>
+        </span>
       </a>
 
       <!-- Body -->

@@ -37,6 +37,8 @@ interface HeroSlide {
   ctaQuery?: Record<string, string>;
   /** Override for the highlighted title gradient (e.g. campaign tricolor). */
   titleClass?: string;
+  /** Seasonal décor layered on the slide (snow, hanging ornaments, gold frame). */
+  decor?: 'xmas';
   /** Vibrant gradient used for ambient glow accents. */
   aurora: string;
   /** Two accent hues for the background light rays. */
@@ -256,7 +258,8 @@ export class HeroCarousel implements OnInit, OnDestroy {
       streakA: a.primary,
       streakB: a.secondary,
       chips: c.hero.chips,
-      titleClass: 'text-gradient-co',
+      titleClass: c.titleClass,
+      decor: c.id === 'navidad' ? 'xmas' : undefined,
     };
   }
 

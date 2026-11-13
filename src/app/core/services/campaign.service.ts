@@ -1,19 +1,23 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { computed, effect, inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
-import { CAMPAIGNS, CampaignDef, SEASONAL_CAMPAIGN } from '../config/campaigns';
+import { CAMPAIGNS, CampaignDef, CampaignId, SEASONAL_CAMPAIGNS } from '../config/campaigns';
 
-const STORAGE_KEY = 'yc.campaign';
+/** Per-campaign persisted preference: `yc.campaign.<id>` = 'on' | 'off'. */
+const storageKey = (id: CampaignId) => `yc.campaign.${id}`;
 
 /**
- * Controls the seasonal campaign overlay (e.g. "Modo Fútbol").
+ * Controls the seasonal campaign overlays (e.g. "Modo Fútbol", "Modo Navidad").
  *
- * - When `SEASONAL_CAMPAIGN` is set, the campaign is **on by default** (per
- *   product decision) but the user can toggle it off; the choice persists.
+ * - Every campaign listed in `SEASONAL_CAMPAIGNS` gets its own toggle and its
+ *   own persisted on/off state. Only one skin is painted at a time: turning
+ *   one on switches the others off.
+ * - The first in-season campaign is **on by default** (per product decision);
+ *   the user can turn it off and the choice persists.
  * - Reflects state as `data-campaign="<id>"` on <html> (mirrored by a pre-paint
  *   script in index.html to avoid a flash), and exposes the active definition
  *   as a signal so components can render festive UI behind `@if (campaign())`.
- * - Fully reversible: toggling off (or `SEASONAL_CAMPAIGN = null`) removes the
- *   attribute and the base site is untouched.
+ * - Fully reversible: toggling off (or emptying `SEASONAL_CAMPAIGNS`) removes
+ *   the attribute and the base site is untouched.
  */
 @Injectable({ providedIn: 'root' })
 export class CampaignService {
@@ -21,26 +25,23 @@ export class CampaignService {
   private readonly doc = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
 
-  /** The campaign configured for this season (null = feature disabled). */
-  readonly seasonal: CampaignDef | null = SEASONAL_CAMPAIGN
-    ? CAMPAIGNS[SEASONAL_CAMPAIGN] ?? null
-    : null;
+  /** Campaigns configured for this season, each with its own toggle. */
+  readonly seasonals: CampaignDef[] = SEASONAL_CAMPAIGNS.map((id) => CAMPAIGNS[id]).filter(
+    (c): c is CampaignDef => !!c,
+  );
 
-  /** Whether a toggle should be offered at all. */
-  readonly available = this.seasonal !== null;
+  /** Whether any toggle should be offered at all. */
+  readonly available = this.seasonals.length > 0;
 
-  private readonly _enabled = signal<boolean>(this.initialEnabled());
+  private readonly activeId = signal<CampaignId | null>(this.initialActive());
 
-  /** User on/off preference. */
-  readonly enabled = this._enabled.asReadonly();
-
-  /** Increments each time the user *activates* the mode → triggers confetti. */
+  /** Increments each time the user *activates* a mode → triggers celebration. */
   private readonly _burst = signal(0);
   readonly burst = this._burst.asReadonly();
 
-  /** The active campaign definition, or null when off / unavailable. */
-  readonly campaign = computed<CampaignDef | null>(() =>
-    this.seasonal && this._enabled() ? this.seasonal : null,
+  /** The active campaign definition, or null when all are off / unavailable. */
+  readonly campaign = computed<CampaignDef | null>(
+    () => this.seasonals.find((c) => c.id === this.activeId()) ?? null,
   );
 
   constructor() {
@@ -54,33 +55,45 @@ export class CampaignService {
     });
   }
 
-  toggle(): void {
-    this.setEnabled(!this._enabled());
+  isEnabled(id: CampaignId): boolean {
+    return this.activeId() === id;
   }
 
-  setEnabled(on: boolean): void {
-    const wasOn = this._enabled();
-    this._enabled.set(on);
-    // Celebrate only when the user actively turns it ON.
+  toggle(id: CampaignId): void {
+    this.setEnabled(id, !this.isEnabled(id));
+  }
+
+  setEnabled(id: CampaignId, on: boolean): void {
+    if (!this.seasonals.some((c) => c.id === id)) return;
+    const wasOn = this.isEnabled(id);
+    if (on) this.activeId.set(id);
+    else if (wasOn) this.activeId.set(null);
+    // Celebrate only when the user actively turns a mode ON.
     if (on && !wasOn && this.isBrowser) this._burst.update((n) => n + 1);
     if (!this.isBrowser) return;
     try {
-      localStorage.setItem(STORAGE_KEY, on ? 'on' : 'off');
+      localStorage.setItem(storageKey(id), on ? 'on' : 'off');
+      // One skin at a time: switching one on turns the other ones off.
+      if (on) {
+        for (const c of this.seasonals) {
+          if (c.id !== id) localStorage.setItem(storageKey(c.id), 'off');
+        }
+      }
     } catch {
       /* storage unavailable */
     }
   }
 
-  private initialEnabled(): boolean {
-    if (!this.seasonal) return false;
-    if (!this.isBrowser) return false; // off during SSR; the FOUC script + effect set it client-side
+  /** Mirrors the pre-paint script in index.html — keep both in sync. */
+  private initialActive(): CampaignId | null {
+    if (!this.available || !this.isBrowser) return null; // SSR: the FOUC script + effect set it client-side
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === 'off') return false;
-      if (stored === 'on') return true;
+      const explicit = this.seasonals.find((c) => localStorage.getItem(storageKey(c.id)) === 'on');
+      if (explicit) return explicit.id;
+      const first = this.seasonals[0];
+      return localStorage.getItem(storageKey(first.id)) === 'off' ? null : first.id;
     } catch {
-      /* ignore */
+      return this.seasonals[0].id; // default ON in season
     }
-    return true; // default ON in season
   }
 }

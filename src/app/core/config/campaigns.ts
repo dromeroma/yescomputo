@@ -2,21 +2,27 @@
  * Seasonal "campaign" theming engine.
  *
  * A campaign is a switchable visual layer (like light/dark) that dresses the
- * site for an occasion — the World Cup, Mother's/Father's Day, etc. It is
+ * site for an occasion — the World Cup, Christmas, Mother's Day, etc. It is
  * orthogonal to light/dark: it sets `data-campaign="<id>"` on <html>, scoping
  * decorative CSS and conditional UI, and adds an accent palette + a hero slide,
  * ribbon and promo.
  *
+ * Several campaigns can be "in season" at once (`SEASONAL_CAMPAIGNS`): each one
+ * gets its OWN header button and its OWN persisted on/off state. Only one skin
+ * is painted at a time — activating one switches the others off.
+ *
  * Turning it off is trivial and safe:
- *   • set `SEASONAL_CAMPAIGN = null`  → no campaign exists anywhere, or
- *   • the user toggles "Modo Fútbol" off in the header.
+ *   • remove the id from `SEASONAL_CAMPAIGNS` → that campaign (and its button)
+ *     no longer exists anywhere, or
+ *   • the user toggles its header button off.
  * Either way the attribute/blocks disappear and the base site is untouched.
  *
- * Adding a new occasion = add one entry to `CAMPAIGNS` and point
- * `SEASONAL_CAMPAIGN` at it. The same toggle adapts automatically.
+ * Adding a new occasion = add one entry to `CAMPAIGNS` (+ its CSS palette under
+ * `[data-campaign='<id>']` in styles.css) and list it in `SEASONAL_CAMPAIGNS`.
+ * Remember to mirror the list in the pre-paint script of `index.html`.
  */
 
-export type CampaignId = 'mundial' | 'madres' | 'padres' | 'profesor' | 'ingeniero';
+export type CampaignId = 'mundial' | 'navidad' | 'madres' | 'padres' | 'profesor' | 'ingeniero';
 
 export interface CampaignAccent {
   /** Primary festive accent (hex). */
@@ -49,6 +55,13 @@ export interface CampaignPromo {
   icon: string;
 }
 
+/** Celebration played on load / navigation / activation. */
+export interface CampaignCelebration {
+  /** `confetti` = flag-coloured paper | `snow` = soft snowfall + gold glitter. */
+  kind: 'confetti' | 'snow';
+  colors: string[];
+}
+
 export interface CampaignDef {
   id: CampaignId;
   /** Name shown on the header toggle / tooltip. */
@@ -58,6 +71,9 @@ export interface CampaignDef {
   /** Small flourish used in copy. */
   emoji: string;
   accent: CampaignAccent;
+  /** Class for the highlighted hero title (animated gradient, see styles.css). */
+  titleClass: string;
+  celebration: CampaignCelebration;
   /** Top festive ribbon. */
   ribbon: { text: string; cta: { label: string; link: string } };
   hero: CampaignHero;
@@ -74,6 +90,11 @@ export const CAMPAIGNS: Partial<Record<CampaignId, CampaignDef>> = {
       primary: '#FCD116', // Colombia yellow
       secondary: '#003893', // Colombia blue
       tertiary: '#CE1126', // Colombia red
+    },
+    titleClass: 'text-gradient-co',
+    celebration: {
+      kind: 'confetti',
+      colors: ['#FCD116', '#1e63d6', '#e23b4e', '#ffffff', '#FCD116', '#1e63d6'],
     },
     ribbon: {
       text: '¡Vamos, Colombia! Vive el Mundial con la mejor tecnología.',
@@ -104,10 +125,57 @@ export const CAMPAIGNS: Partial<Record<CampaignId, CampaignDef>> = {
       icon: 'soccer',
     },
   },
+
+  navidad: {
+    id: 'navidad',
+    label: 'Modo Navidad',
+    icon: 'tree',
+    emoji: '🎄',
+    accent: {
+      primary: '#E8C670', // champagne gold
+      secondary: '#C8203F', // crimson
+      tertiary: '#1F8A55', // pine emerald
+    },
+    titleClass: 'text-gradient-xmas',
+    celebration: {
+      kind: 'snow',
+      colors: ['#ffffff', '#ffffff', '#f4f7fb', '#E8C670', '#f6e3a1'],
+    },
+    ribbon: {
+      text: 'Feliz Navidad — regala tecnología que se usa todo el año.',
+      cta: { label: 'Ideas de regalo', link: '/catalogo' },
+    },
+    hero: {
+      eyebrow: 'Edición Navidad',
+      titleTop: 'Esta Navidad,',
+      titleMain: 'regala tecnología',
+      subtitle:
+        'Portátiles, monitores y accesorios con garantía para sorprender en casa o premiar a tu equipo de trabajo. Celebra con lo mejor de Yes Computo.',
+      image: '/img/hero/workspace.jpg',
+      ctaLabel: 'Ver ideas de regalo',
+      ctaLink: '/catalogo',
+      chips: [
+        { icon: 'gift', label: 'Regalos con garantía' },
+        { icon: 'sparkles', label: 'Precios de temporada' },
+      ],
+    },
+    promo: {
+      badge: 'Temporada navideña',
+      subtitle: 'Regalos corporativos y para el hogar',
+      title: 'Una Navidad con tecnología que dura',
+      description:
+        'Equipos listos para regalar: portátiles, monitores y accesorios con garantía. Cotiza regalos para tu equipo de trabajo y recibe asesoría personalizada.',
+      ctaLabel: 'Explorar regalos',
+      ctaLink: '/catalogo',
+      icon: 'gift',
+    },
+  },
 };
 
 /**
- * The campaign currently "in season". Set to `null` to disable the whole
- * feature (the toggle hides and no campaign styling exists).
+ * Campaigns currently "in season", in priority order. Each one shows its own
+ * header button. Empty array = feature disabled (no toggles, no styling).
+ * The FIRST one is on by default; the rest start off until the user turns
+ * them on. Keep in sync with the pre-paint script in `index.html`.
  */
-export const SEASONAL_CAMPAIGN: CampaignId | null = null;
+export const SEASONAL_CAMPAIGNS: CampaignId[] = ['navidad'];

@@ -160,6 +160,14 @@
           <div class="absolute -right-16 -top-16 h-56 w-56 rounded-full blur-[90px] transition-opacity duration-500 group-hover:opacity-80"
             [style.background]="c.accent.primary" [style.opacity]="0.4"></div>
           <div class="absolute -left-10 top-1/3 h-40 w-40 rounded-full blur-[90px]" [style.background]="c.accent.secondary" [style.opacity]="0.25"></div>
+          @if (c.id === 'navidad') {
+            <div class="xmas-snow xmas-snow--fine opacity-60" aria-hidden="true"></div>
+            <div class="pointer-events-none absolute inset-x-0 top-0 hidden md:block" aria-hidden="true">
+              <span class="xmas-ornament right-[30%]" style="--o: #C8203F; --len: 44px; --size: 28px; --sway-delay: -0.8s"></span>
+              <span class="xmas-ornament right-[24%]" style="--o: #E8C670; --len: 78px; --size: 36px; --sway-delay: -2s"></span>
+              <span class="xmas-ornament right-[19%]" style="--o: #1F8A55; --len: 30px; --size: 22px; --sway-delay: -1.4s"></span>
+            </div>
+          }
 
           <div class="absolute inset-x-7 top-7 flex items-start justify-between">
             <span class="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-white/5 backdrop-blur transition-transform duration-300 group-hover:scale-110"

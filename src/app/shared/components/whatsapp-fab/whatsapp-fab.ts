@@ -24,7 +24,7 @@ import { Icon } from '../icon/icon';
       @if (footy()) {
         <span
           class="absolute -inset-[3px] rounded-full opacity-90 animate-[spin_5s_linear_infinite]"
-          style="background: conic-gradient(from 0deg, #FCD116, #1e63d6, #e23b4e, #FCD116)"
+          style="background: conic-gradient(from 0deg, var(--camp-g1), var(--camp-g2), var(--camp-g3), var(--camp-g1))"
         ></span>
       }
 
@@ -51,6 +51,6 @@ export class WhatsappFab {
     '¡Hola Yes Computo! 👋 Quiero más información sobre sus productos y servicios.',
   );
 
-  /** True while the football/season campaign is active. */
+  /** True while any seasonal campaign is active (ring/pulse use its palette). */
   protected readonly footy = computed(() => !!this.campaign.campaign());
 }
