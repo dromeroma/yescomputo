@@ -31,6 +31,13 @@ import { Icon } from '../../shared/components/icon/icon';
           <span class="font-medium text-ink-100">
             <span class="font-bold" [class.text-white]="!xmas" [class.xmas-ribbon-text]="xmas">{{ c.ribbon.text }}</span>
           </span>
+          @if (xmas && daysToXmas !== null) {
+            <span class="xmas-countdown hidden shrink-0 md:inline-flex">
+              @if (daysToXmas === 0) { ¡Hoy es Navidad! } @else {
+                <b>{{ daysToXmas }}</b> {{ daysToXmas === 1 ? 'día' : 'días' }} para Navidad
+              }
+            </span>
+          }
           <a
             [routerLink]="c.ribbon.cta.link"
             class="hidden shrink-0 items-center gap-1 rounded-full border px-3 py-0.5 text-xs font-semibold backdrop-blur transition-colors sm:inline-flex"
@@ -65,4 +72,13 @@ export class CampaignRibbon {
   protected readonly campaign = inject(CampaignService);
 
   protected readonly bulbs = XMAS_BULBS;
+
+  /** Days left until 25 Dec (null after Christmas or > 60 days away). */
+  protected readonly daysToXmas: number | null = (() => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const xmas = new Date(now.getFullYear(), 11, 25);
+    const days = Math.round((xmas.getTime() - today.getTime()) / 86_400_000);
+    return days >= 0 && days <= 60 ? days : null;
+  })();
 }

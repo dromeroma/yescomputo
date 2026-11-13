@@ -56,7 +56,7 @@ import { ProductImage } from '../product-image/product-image';
         }
 
         <!-- Flags -->
-        <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">
+        <div class="camp-flags absolute left-3 top-3 flex flex-col items-start gap-1.5">
           @if (discount() > 0) {
             <yc-badge tone="brand">-{{ discount() }}%</yc-badge>
           }
