@@ -26,23 +26,35 @@
             </picture>
           </a>
         } @else {
+        @if (slide.decor === 'xmas') {
+          <!-- Christmas: full-bleed editorial photo (real hands, real gift),
+               warm grade, gold bokeh and gentle snow -->
+          <div class="absolute inset-0 bg-[#07090c]"></div>
+          <img [src]="slide.image" alt="" class="xmas-hero-photo absolute inset-y-0 right-0 h-full w-full object-cover lg:w-[74%]"
+            [attr.loading]="i === 0 ? 'eager' : 'lazy'" decoding="async" />
+          <!-- seamless blend where the photo starts (desktop) -->
+          <div class="pointer-events-none absolute inset-y-0 left-[25%] hidden w-[24%] bg-gradient-to-r from-[#07090c] via-[#07090c]/70 to-transparent lg:block"></div>
+          <div class="absolute inset-0 bg-gradient-to-r from-[#07090c] via-[#07090c]/80 to-[#07090c]/20 lg:via-[#07090c]/45 lg:to-transparent"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#07090c]/85 via-transparent to-[#07090c]/35"></div>
+          <div class="xmas-hero-glow pointer-events-none absolute inset-0" aria-hidden="true"></div>
+          <div class="xmas-bokeh pointer-events-none absolute inset-y-0 right-0 w-full lg:w-[74%]" aria-hidden="true"></div>
+          <div class="xmas-snow xmas-snow--fine" aria-hidden="true"></div>
+          <div class="xmas-snow xmas-snow--soft" aria-hidden="true"></div>
+          <div class="pointer-events-none absolute inset-x-0 top-0 z-[5] hidden md:block" aria-hidden="true">
+            <span class="xmas-ornament right-[13%]" style="--o: #C8203F; --len: 46px; --size: 26px; --sway-delay: -1.2s"></span>
+            <span class="xmas-ornament right-[8%]" style="--o: #E8C670; --len: 92px; --size: 34px; --sway-delay: -0.4s"></span>
+            <span class="xmas-ornament right-[4%]" style="--o: #1F8A55; --len: 30px; --size: 20px; --sway-delay: -2.1s"></span>
+          </div>
+        } @else {
         <!-- Cinematic background: deep base + light rays + grid + vignette -->
         <div class="absolute inset-0 bg-[#04070e]"></div>
         <!-- Mobile product image (hidden ≥lg, where the framed showcase shows instead) -->
-        @if (slide.decor === 'xmas') {
-          <!-- Christmas: deep pine night instead of the photo -->
-          <div class="xmas-hero-bg absolute inset-0" aria-hidden="true"></div>
-          <div class="pointer-events-none absolute -right-6 bottom-6 h-[78%] w-[62%] opacity-70 sm:right-2 sm:w-[46%] sm:opacity-80 lg:hidden" aria-hidden="true">
-            <yc-xmas-tree class="h-full" />
-          </div>
-        } @else {
         <div class="absolute inset-0 lg:hidden">
           <img [src]="slide.image" alt="" class="h-full w-full object-cover object-center opacity-45"
             [attr.loading]="i === 0 ? 'eager' : 'lazy'" decoding="async" />
           <div class="absolute inset-0 bg-gradient-to-r from-[#04070e] via-[#04070e]/88 to-[#04070e]/45"></div>
           <div class="absolute inset-0 bg-gradient-to-t from-[#04070e] via-transparent to-transparent"></div>
         </div>
-        }
         <div class="absolute inset-0 overflow-hidden">
           <div class="absolute -top-1/3 left-[12%] h-[180%] w-48 rotate-[18deg] blur-[90px]"
             [style.background]="'linear-gradient(180deg,' + slide.streakA + ',transparent)'" [style.opacity]="0.35"></div>
@@ -55,20 +67,8 @@
         <div
           class="absolute right-0 top-1/2 h-[34rem] w-[34rem] -translate-y-1/2 translate-x-1/4 rounded-full blur-[130px] transition-opacity duration-1000"
           [style.background]="slide.streakA" [style.opacity]="i === index() ? 0.26 : 0"></div>
-        <div class="absolute inset-0 bg-gradient-to-r from-[#04070e] via-[#04070e]/70 to-transparent"
-          [class.opacity-60]="slide.decor === 'xmas'"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#04070e] via-[#04070e]/70 to-transparent"></div>
 
-        @if (slide.decor === 'xmas') {
-          <!-- Christmas: warm floor glow, two-depth snowfall, hanging ornaments -->
-          <div class="xmas-hero-glow pointer-events-none absolute inset-0" aria-hidden="true"></div>
-          <div class="xmas-snow xmas-snow--fine" aria-hidden="true"></div>
-          <div class="xmas-snow xmas-snow--soft" aria-hidden="true"></div>
-          <div class="pointer-events-none absolute inset-x-0 top-0 z-[5] hidden sm:block" aria-hidden="true">
-            <span class="xmas-ornament left-[49%]" style="--o: #C8203F; --len: 56px; --size: 30px; --sway-delay: -1.2s"></span>
-            <span class="xmas-ornament left-[57%]" style="--o: #E8C670; --len: 104px; --size: 40px; --sway-delay: -0.4s"></span>
-            <span class="xmas-ornament right-[7%]" style="--o: #1F8A55; --len: 38px; --size: 26px; --sway-delay: -2.1s"></span>
-            <span class="xmas-ornament right-[3%]" style="--o: #E8C670; --len: 82px; --size: 22px; --sway-delay: -3s"></span>
-          </div>
         }
 
         <!-- Content -->
@@ -104,20 +104,15 @@
           </div>
 
           @if (slide.decor === 'xmas') {
-            <!-- Christmas showcase: illustrated tree with gifts + floating chips -->
-            <div class="relative hidden h-full items-end justify-center pb-6 lg:flex">
-              <div class="relative h-[96%] w-full max-w-[26rem] transition-all duration-[1100ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-                [class.opacity-100]="i === index()" [class.opacity-0]="i !== index()"
-                [style.transform]="i === index() ? 'translateY(0) scale(1)' : 'translateY(24px) scale(0.96)'">
-                <yc-xmas-tree class="h-full" />
-                <div class="glass-dark absolute top-[18%] -left-2 flex animate-[float_7s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
-                  <span class="grid h-6 w-6 place-items-center rounded-full bg-[#E8C670]/20 text-[#F2CF63]"><yc-icon name="sparkles" [size]="13" /></span>
-                  <span class="whitespace-nowrap text-2xs font-semibold text-white">{{ slide.chips[1]?.label || 'Precios de temporada' }}</span>
-                </div>
-                <div class="glass-dark absolute bottom-[16%] -right-4 flex animate-[float_8s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
-                  <span class="grid h-6 w-6 place-items-center rounded-full bg-[#C8203F]/25 text-[#ff8da1]"><yc-icon name="gift" [size]="13" /></span>
-                  <span class="whitespace-nowrap text-2xs font-semibold text-white">{{ slide.chips[0]?.label || 'Regalos con garantía' }}</span>
-                </div>
+            <!-- Christmas: the photo is the showcase — two glass chips frame the gift -->
+            <div class="relative hidden h-full lg:block" aria-hidden="true">
+              <div class="glass-dark absolute top-[44%] right-[2%] flex animate-[float_7s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
+                <span class="grid h-6 w-6 place-items-center rounded-full bg-[#E8C670]/20 text-[#F2CF63]"><yc-icon name="sparkles" [size]="13" /></span>
+                <span class="whitespace-nowrap text-2xs font-semibold text-white">{{ slide.chips[1]?.label || 'Precios de temporada' }}</span>
+              </div>
+              <div class="glass-dark absolute bottom-[16%] left-[2%] flex animate-[float_8s_ease-in-out_infinite] items-center gap-1.5 rounded-full py-1.5 pl-1.5 pr-3">
+                <span class="grid h-6 w-6 place-items-center rounded-full bg-[#C8203F]/25 text-[#ff8da1]"><yc-icon name="gift" [size]="13" /></span>
+                <span class="whitespace-nowrap text-2xs font-semibold text-white">{{ slide.chips[0]?.label || 'Regalos con garantía' }}</span>
               </div>
             </div>
           } @else {
@@ -165,7 +160,7 @@
         </div>
 
         <!-- Disclaimer -->
-        <p class="absolute bottom-5 left-0 right-0 px-5 text-2xs text-ink-500 md:px-8">
+        <p [class.hidden]="slide.decor === 'xmas'" class="absolute bottom-5 left-0 right-0 px-5 text-2xs text-ink-500 md:px-8">
           <span class="container-page block">Imágenes de referencia. Precios y disponibilidad sujetos a cambios según inventario.</span>
         </p>
         }

@@ -1206,64 +1206,38 @@
   filter: drop-shadow(0 2px 2px rgba(15, 28, 50, 0.18));
 }
 
-/* --- Hero: deep pine night sky with stars -------------------------------- */
-.xmas-hero-bg {
+/* --- Home gift guide: deep pine velvet band with gold accents ----------- */
+.xmas-guide {
   background:
-    radial-gradient(1.2px 1.2px at 12% 18%, #fff, transparent),
-    radial-gradient(1px 1px at 28% 42%, rgba(255, 255, 255, 0.8), transparent),
-    radial-gradient(1.4px 1.4px at 44% 12%, #fff4d6, transparent),
-    radial-gradient(1px 1px at 62% 30%, rgba(255, 255, 255, 0.7), transparent),
-    radial-gradient(1.3px 1.3px at 84% 10%, #fff, transparent),
-    radial-gradient(1px 1px at 92% 46%, rgba(255, 255, 255, 0.7), transparent),
-    radial-gradient(90% 70% at 75% 100%, rgba(31, 138, 85, 0.35), transparent 70%),
-    radial-gradient(70% 60% at 85% 20%, rgba(200, 32, 63, 0.18), transparent 70%),
-    linear-gradient(180deg, #04120c 0%, #062016 55%, #0a2a1c 100%);
+    radial-gradient(60% 80% at 50% -10%, rgba(232, 198, 112, 0.16), transparent 65%),
+    radial-gradient(40% 60% at 100% 100%, rgba(200, 32, 63, 0.16), transparent 70%),
+    radial-gradient(40% 60% at 0% 100%, rgba(31, 138, 85, 0.22), transparent 70%),
+    linear-gradient(180deg, #06140e 0%, #0b2a1c 100%);
+}
+.xmas-guide::before {
+  /* fine gold hairlines top & bottom */
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-block: 1px solid rgba(232, 198, 112, 0.28);
+}
+.xmas-guide-icon {
+  background: linear-gradient(135deg, #fff4d6 0%, #f2cf63 35%, #c9973a 70%, #8a6421 100%);
+  box-shadow:
+    0 10px 28px -10px rgba(232, 198, 112, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* --- Tree animations (yc-xmas-tree) -------------------------------------- */
-.xt-light {
-  animation: xmas-twinkle 2.2s ease-in-out infinite;
+/* --- Hero photo: warm editorial grade + soft fade into the copy side ---- */
+.xmas-hero-photo {
+  object-position: 62% 42%;
+  filter: saturate(1.08) contrast(1.06) brightness(0.92) sepia(0.12);
 }
-.xt-star {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: xt-star 3.2s ease-in-out infinite;
-}
-@keyframes xt-star {
-  0%,
-  100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 6px rgba(242, 207, 99, 0.7));
-  }
-  50% {
-    transform: scale(1.08);
-    filter: drop-shadow(0 0 16px rgba(242, 207, 99, 1));
-  }
-}
-.xt-bauble {
-  transform-box: fill-box;
-  transform-origin: 50% 0;
-  animation: xt-swing 4.5s ease-in-out infinite;
-}
-@keyframes xt-swing {
-  0%,
-  100% {
-    transform: rotate(-4deg);
-  }
-  50% {
-    transform: rotate(4deg);
-  }
-}
-.xt-breathe {
-  animation: xt-breathe 5s ease-in-out infinite;
-}
-@keyframes xt-breathe {
-  0%,
-  100% {
-    opacity: 0.28;
-  }
-  50% {
-    opacity: 0.45;
+@media (min-width: 1024px) {
+  .xmas-hero-photo {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 32%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 32%);
   }
 }
 

@@ -12,7 +12,6 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../icon/icon';
-import { XmasTree } from '../xmas-tree/xmas-tree';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CampaignService } from '../../../core/services/campaign.service';
 import { CampaignDef } from '../../../core/config/campaigns';
@@ -58,7 +57,7 @@ interface HeroSlide {
 @Component({
   selector: 'yc-hero-carousel',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Icon, XmasTree],
+  imports: [RouterLink, Icon],
   host: {
     class: 'block',
     '(mouseenter)': 'pause()',

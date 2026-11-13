@@ -150,8 +150,9 @@ export const CAMPAIGNS: Partial<Record<CampaignId, CampaignDef>> = {
       titleTop: 'Esta Navidad,',
       titleMain: 'regala tecnología',
       subtitle:
-        'Portátiles, monitores y accesorios con garantía para sorprender en casa o premiar a tu equipo de trabajo. Celebra con lo mejor de Yes Computo.',
-      image: '/img/hero/workspace.jpg',
+        'Portátiles, monitores y accesorios con garantía para sorprender a quien más quieres.',
+      // Photo: freestocks on Unsplash (Unsplash License) — real hands, real gift.
+      image: '/img/hero/navidad.jpg',
       ctaLabel: 'Ver ideas de regalo',
       ctaLink: '/catalogo',
       chips: [

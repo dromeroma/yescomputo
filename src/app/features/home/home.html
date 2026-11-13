@@ -1,6 +1,49 @@
 <!-- ============================ HERO CAROUSEL ============================ -->
 <yc-hero-carousel />
 
+<!-- ============================ GUÍA DE REGALOS (solo Modo Navidad) ============================ -->
+@if (campaign.campaign()?.id === 'navidad') {
+  <section class="xmas-guide relative overflow-hidden py-14 text-white md:py-20">
+    <div class="xmas-snow xmas-snow--fine opacity-60" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute inset-x-0 top-0 hidden md:block" aria-hidden="true">
+      <span class="xmas-ornament left-[6%]" style="--o: #E8C670; --len: 70px; --size: 30px; --sway-delay: -1s"></span>
+      <span class="xmas-ornament left-[10%]" style="--o: #C8203F; --len: 34px; --size: 22px; --sway-delay: -2.4s"></span>
+      <span class="xmas-ornament right-[8%]" style="--o: #1F8A55; --len: 52px; --size: 26px; --sway-delay: -0.6s"></span>
+      <span class="xmas-ornament right-[4%]" style="--o: #E8C670; --len: 86px; --size: 34px; --sway-delay: -1.8s"></span>
+    </div>
+
+    <div class="container-page relative">
+      <div class="mx-auto max-w-2xl text-center">
+        <span class="inline-flex items-center gap-2 rounded-full border border-[#E8C670]/30 bg-[#E8C670]/10 px-4 py-1.5 text-2xs font-bold uppercase tracking-[0.22em] text-[#F2CF63]">
+          <yc-icon name="gift" [size]="14" /> Temporada navideña
+        </span>
+        <h2 class="mt-5 font-display text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
+          Guía de <span class="text-gradient-xmas">regalos</span>
+        </h2>
+        <p class="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-white/70 sm:text-base">
+          Ideas con garantía para cada persona especial. Te asesoramos para que aciertes con el regalo.
+        </p>
+      </div>
+
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        @for (g of giftGuide; track g.title) {
+          <a [routerLink]="g.link" [queryParams]="g.query ?? {}"
+            class="shine group relative flex flex-col overflow-hidden rounded-3xl border border-[#E8C670]/20 bg-white/[0.04] p-6 backdrop-blur transition-all duration-500 hover:-translate-y-1.5 hover:border-[#E8C670]/45 hover:bg-white/[0.07]">
+            <span class="xmas-guide-icon grid h-14 w-14 place-items-center rounded-2xl text-[#2a1a04]">
+              <yc-icon [name]="g.icon" [size]="26" />
+            </span>
+            <h3 class="mt-5 font-display text-lg font-bold text-white">{{ g.title }}</h3>
+            <p class="mt-1.5 flex-1 text-sm leading-relaxed text-white/65">{{ g.text }}</p>
+            <span class="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-[#F2CF63]">
+              {{ g.cta }} <yc-icon name="arrow-right" [size]="15" class="transition-transform duration-300 group-hover:translate-x-1" />
+            </span>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+}
+
 <!-- ============================ CATEGORIES (tira compacta) ============================ -->
 <section class="border-b border-line py-4 md:py-5">
   <div class="container-page mb-2.5 flex items-center justify-between gap-4">

@@ -42,6 +42,48 @@ export class Home implements OnInit {
   protected readonly campaign = inject(CampaignService);
   private readonly features = inject(FeaturesService);
 
+  /** Christmas gift guide (shown only in Modo Navidad) → catalog searches. */
+  protected readonly giftGuide: {
+    icon: string;
+    title: string;
+    text: string;
+    cta: string;
+    link: string;
+    query?: Record<string, string>;
+  }[] = [
+    {
+      icon: 'laptop',
+      title: 'Para quien estudia',
+      text: 'Portátiles livianos y confiables para clases, tareas y proyectos.',
+      cta: 'Ver portátiles',
+      link: '/catalogo',
+      query: { search: 'portátil' },
+    },
+    {
+      icon: 'monitor',
+      title: 'Para quien trabaja',
+      text: 'Monitores y equipos que hacen rendir cada jornada en casa u oficina.',
+      cta: 'Ver monitores',
+      link: '/catalogo',
+      query: { search: 'monitor' },
+    },
+    {
+      icon: 'headphones',
+      title: 'Para quien ama la música',
+      text: 'Diademas y audio para disfrutar sin interrupciones.',
+      cta: 'Ver audio',
+      link: '/catalogo',
+      query: { search: 'diadema' },
+    },
+    {
+      icon: 'building',
+      title: 'Regalos para tu equipo',
+      text: 'Regalos corporativos con asesoría y cotización personalizada.',
+      cta: 'Cotizar ahora',
+      link: '/contacto',
+    },
+  ];
+
   /** Premium "Asesor de compra" entry point (gated by buy_advisor). */
   protected readonly advisorEnabled = this.features.flag('buy_advisor');
   /** Premium "Trade-in" entry point (gated by tradein). */
