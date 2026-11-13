@@ -107,6 +107,22 @@
     </div>
   </div>
 
+  <!-- Season's greeting — Christmas mode only -->
+  @if (campaign.campaign()?.id === 'navidad') {
+    <div class="xmas-greeting border-t border-white/10">
+      <div class="container-page flex items-center justify-center gap-4 py-7 text-center">
+        <span class="xmas-greeting-rule hidden sm:block" aria-hidden="true"></span>
+        <p class="font-display text-base leading-relaxed text-white/85 sm:text-lg">
+          <span class="text-[#E8C670]" aria-hidden="true">✦</span>
+          Yes Computo les desea <span class="text-gradient-xmas font-semibold">felices fiestas</span>
+          y un próspero {{ newYear }}
+          <span class="text-[#E8C670]" aria-hidden="true">✦</span>
+        </p>
+        <span class="xmas-greeting-rule hidden sm:block" aria-hidden="true"></span>
+      </div>
+    </div>
+  }
+
   <!-- Bottom legal -->
   <div class="border-t border-white/10">
     <div class="container-page flex flex-col items-center gap-3 py-5 text-xs text-ink-500 sm:flex-row sm:justify-between">

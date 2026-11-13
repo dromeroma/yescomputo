@@ -1180,6 +1180,17 @@
   }
 }
 
+/* --- Footer season's greeting ----------------------------------------- */
+.xmas-greeting {
+  background: radial-gradient(60% 140% at 50% 0%, rgba(232, 198, 112, 0.09), transparent 70%);
+}
+.xmas-greeting-rule {
+  height: 1px;
+  width: 72px;
+  flex: none;
+  background: linear-gradient(90deg, transparent, rgba(232, 198, 112, 0.7), transparent);
+}
+
 /* --- Snow resting on the footer's top edge ------------------------------ */
 .camp-snowcap {
   display: none;

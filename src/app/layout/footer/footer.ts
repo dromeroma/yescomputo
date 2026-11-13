@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { APP_CONFIG } from '../../core/config/app-config';
 import { CatalogService } from '../../core/services/catalog.service';
+import { CampaignService } from '../../core/services/campaign.service';
 import { Logo } from '../../shared/components/logo/logo';
 import { Icon } from '../../shared/components/icon/icon';
 
@@ -16,6 +17,13 @@ export class Footer {
   private readonly catalog = inject(CatalogService);
   protected readonly config = inject(APP_CONFIG);
   protected readonly year = 2026;
+  protected readonly campaign = inject(CampaignService);
+
+  /** Year wished for in the Christmas greeting (next year in Nov/Dec). */
+  protected readonly newYear = (() => {
+    const now = new Date();
+    return now.getMonth() >= 10 ? now.getFullYear() + 1 : now.getFullYear();
+  })();
 
   protected readonly categories = toSignal(this.catalog.getCategories(), { initialValue: [] });
 
