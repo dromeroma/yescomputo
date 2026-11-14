@@ -78,8 +78,48 @@ jobs:
           </IfModule>
           HT
 
+      # El cPanel a veces corta la conexión FTP ("AggregateError: (control socket)").
+      # Se reintenta hasta 3 veces con pausa; solo falla el despliegue si fallan las 3.
       - name: Subir a cPanel por FTP
+        id: ftp1
         if: steps.gate.outputs.ready == 'true'
+        continue-on-error: true
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # El servidor exige TLS (rechaza FTP en texto plano) → FTP sobre TLS explícito.
+          protocol: ftps
+          port: 21
+          local-dir: ./dist/yescomputo/browser/
+          # La cuenta FTP debe estar limitada a la carpeta public_html (ver pasos),
+          # así el raíz FTP ya ES public_html y subimos a "./".
+          server-dir: ./
+      - name: Esperar antes de reintentar
+        if: steps.gate.outputs.ready == 'true' && steps.ftp1.outcome == 'failure'
+        run: sleep 45
+      - name: Subir a cPanel por FTP (2º intento)
+        id: ftp2
+        if: steps.gate.outputs.ready == 'true' && steps.ftp1.outcome == 'failure'
+        continue-on-error: true
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # El servidor exige TLS (rechaza FTP en texto plano) → FTP sobre TLS explícito.
+          protocol: ftps
+          port: 21
+          local-dir: ./dist/yescomputo/browser/
+          # La cuenta FTP debe estar limitada a la carpeta public_html (ver pasos),
+          # así el raíz FTP ya ES public_html y subimos a "./".
+          server-dir: ./
+      - name: Esperar antes del último intento
+        if: steps.gate.outputs.ready == 'true' && steps.ftp1.outcome == 'failure' && steps.ftp2.outcome == 'failure'
+        run: sleep 90
+      - name: Subir a cPanel por FTP (3er intento)
+        if: steps.gate.outputs.ready == 'true' && steps.ftp1.outcome == 'failure' && steps.ftp2.outcome == 'failure'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.FTP_SERVER }}
