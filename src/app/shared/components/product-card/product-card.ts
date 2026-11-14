@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnDestroy, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, DestroyRef, ElementRef, inject, input, OnDestroy, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Product } from '../../../core/models';
 import { CartService } from '../../../core/services/cart.service';
@@ -18,8 +18,6 @@ import { ProductImage } from '../product-image/product-image';
   host: { class: 'group relative block h-full reveal' },
   template: `
     <article
-      (mouseenter)="onEnter()"
-      (mouseleave)="onLeave()"
       class="shine relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface-raised
              shadow-card transition-[transform,box-shadow,border-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
              hover:-translate-y-1.5 hover:border-line-strong hover:shadow-card-hover"
@@ -146,31 +144,68 @@ export class ProductCard implements OnDestroy {
 
   private readonly cart = inject(CartService);
 
-  // --- Image cycling on hover (when the product has more than one photo) ----
+  // --- Fotos que se pasan solas (computador y celular, sin depender del cursor) ---
+  // Solo con 2+ fotos, mientras la tarjeta está en pantalla y la pestaña visible.
+  // La siguiente foto se precarga antes de mostrarla para que no parpadee.
   protected readonly imgIndex = signal(0);
-  /** The image shown on the card (cycles through all on hover). */
+  /** The image shown on the card (cycles through all automatically). */
   protected readonly cardImage = computed(() => {
     const imgs = this.product().images;
     return imgs?.[this.imgIndex() % (imgs.length || 1)]?.url ?? imgs?.[0]?.url;
   });
   private cycleTimer: ReturnType<typeof setInterval> | null = null;
+  private inView = false;
 
-  protected onEnter(): void {
-    const imgs = this.product().images;
-    if (!imgs || imgs.length < 2 || this.cycleTimer) return;
-    this.cycleTimer = setInterval(() => this.imgIndex.update((i) => i + 1), 1100);
+  constructor() {
+    const host = inject(ElementRef).nativeElement as HTMLElement;
+    const destroyRef = inject(DestroyRef);
+    afterNextRender(() => {
+      if (typeof IntersectionObserver === 'undefined') return;
+      if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+      const io = new IntersectionObserver(([e]) => {
+        this.inView = e.isIntersecting;
+        this.syncCycle();
+      }, { threshold: 0.35 });
+      io.observe(host);
+      const onVis = () => this.syncCycle();
+      document.addEventListener('visibilitychange', onVis);
+      destroyRef.onDestroy(() => {
+        io.disconnect();
+        document.removeEventListener('visibilitychange', onVis);
+      });
+    });
   }
 
-  protected onLeave(): void {
+  private syncCycle(): void {
+    const run = this.inView && !document.hidden && (this.product().images?.length ?? 0) > 1;
+    if (run && !this.cycleTimer) {
+      // Desfase al azar para que las tarjetas de una fila no cambien todas a la vez.
+      const every = 2800 + Math.round(Math.random() * 900);
+      this.cycleTimer = setInterval(() => this.nextImage(), every);
+    } else if (!run) {
+      this.stopCycle();
+    }
+  }
+
+  private nextImage(): void {
+    const imgs = this.product().images;
+    const next = (this.imgIndex() + 1) % imgs.length;
+    const pre = new Image();
+    const show = () => this.imgIndex.set(next);
+    pre.onload = show;
+    pre.onerror = show;
+    pre.src = imgs[next].url;
+  }
+
+  private stopCycle(): void {
     if (this.cycleTimer) {
       clearInterval(this.cycleTimer);
       this.cycleTimer = null;
     }
-    this.imgIndex.set(0);
   }
 
   ngOnDestroy(): void {
-    this.onLeave();
+    this.stopCycle();
   }
 
   protected readonly discount = computed(() => {
